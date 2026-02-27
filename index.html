@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maze Trap: All-in-One (Editor & Game)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Metamorphous&family=Orbitron:wght@700&family=Caveat:wght@700&family=Cinzel:wght@700&family=Macondo&family=Montserrat:wght@800&family=Comic+Neue:wght@700&family=Pacifico&display=swap" rel="stylesheet">
+    <style id="dynamic-styles">
+        /* Стили редактора и общие стили игры будут здесь */
+        :root { --ui-color: #39ff14; --q-color: #ffe600; --prog-color: #00ff66; --game-font: 'Metamorphous', serif; }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #000; color: #ddd; font-family: sans-serif; overflow: hidden; }
+        
+        /* СТИЛИ РЕДАКТОРА */
+        #editor-ui { display: flex; flex-direction: column; height: 100vh; overflow-y: auto; background: #1a1a1a; pointer-events: auto; }
+        header { display: flex; align-items: center; justify-content: space-between; padding: 15px 30px; background: #000; border-bottom: 2px solid var(--ui-color); box-shadow: 0 0 15px var(--ui-color); }
+        .tab-btn { background: #222; border: 1px solid #444; color: #aaa; padding: 10px 15px; cursor: pointer; border-radius: 5px 5px 0 0; font-family: 'Metamorphous', serif; margin-right: 5px; }
+        .tab-btn.active { background: #1a1a1a; color: #ffe600; border-color: #ffe600; border-bottom: none; }
+        main { padding: 30px; flex-grow: 1; }
+        .tab-content { display: none; max-width: 1100px; margin: 0 auto; }
+        .tab-content.active { display: block; }
+        .form-group { margin-bottom: 15px; background: #222; padding: 15px; border-radius: 8px; border: 1px solid #333; }
+        label { display: block; margin-bottom: 8px; color: #fff; font-weight: bold; font-size: 14px; }
+        input, select, textarea { width: 100%; padding: 10px; background: #000; color: #fff; border: 1px solid #555; border-radius: 5px; box-sizing: border-box; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .btn-main { background: transparent; border: 2px solid var(--ui-color); color: var(--ui-color); padding: 12px 25px; border-radius: 30px; cursor: pointer; font-family: 'Metamorphous', serif; font-weight: bold; }
+        
+        /* ПРЕДПРОСМОТР В РЕДАКТОРЕ */
+        .preview-card { background: rgba(15, 5, 25, 0.95); border: 2px solid var(--ui-color); border-radius: 20px; padding: 30px; text-align: center; width: 85%; max-width: 400px; box-sizing: border-box; }
+        .ans-btn-preview { width: 100%; padding: 15px; margin: 10px 0; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.3); border-radius: 10px; color: #fff; box-sizing: border-box; text-align: center; }
+
+        /* СТИЛИ ИГРЫ */
+        #game-ui { display: none; position: relative; width: 100%; height: 100vh; overflow: hidden; }
+        #game-container { width: 100%; height: 100%; background-size: 100% 100%; position: relative; }
+        canvas { position: absolute; top:0; left:0; z-index: 1; }
+        .ui-layer { position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.85); z-index: 100; display: flex; justify-content: center; align-items: center; }
+        .hidden { display: none !important; }
+        .neon-card { background: rgba(15, 5, 25, 0.95); border: 2px solid var(--ui-color); border-radius: 20px; padding: 30px; text-align: center; width: 90%; max-width: 450px; box-sizing: border-box; font-family: var(--game-font); }
+        .ans-btn { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.3); color: #fff; padding: 15px; margin: 10px 0; border-radius: 10px; cursor: pointer; font-family: var(--game-font); font-size: 20px; box-sizing: border-box; transition: 0.2s; }
+        .ans-btn:hover { background: rgba(255,255,255,0.15); border-color: var(--ui-color); transform: scale(1.02); }
+        
+        /* HUD */
+        #hud-top { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); width: 40%; z-index: 50; }
+        #progress-bar { height: 15px; background: rgba(0,0,0,0.7); border: 2px solid var(--prog-color); border-radius: 10px; overflow: hidden; box-shadow: 0 0 10px var(--prog-color); }
+        #progress-fill { height: 100%; background: var(--prog-color); width: 0%; transition: 0.5s; }
+        
+        .pulse-urgent { animation: pulseRed 0.4s infinite alternate; color: #ff0000 !important; }
+        @keyframes pulseRed { from { text-shadow: 0 0 5px #f00; transform: scale(1); } to { text-shadow: 0 0 20px #f00; transform: scale(1.1); } }
+    </style>
+</head>
+<body>
+
+<div id="editor-ui">
+    <header>
+        <div style="display:flex; align-items:center; gap:15px;">
+            <img src="https://img.genially.com/67961b32a116fb001568a75e/aa411ed1-1aef-4f00-a1a6-59b64d18dc7a.png" height="50">
+            <h1>MAZE TRAP BUILDER v5.0</h1>
+        </div>
+        <button class="btn-main" style="background:#ffe600; color:#000; border:none; padding:15px 30px;" onclick="generateGeniallyLink()">🔗 СГЕНЕРИРОВАТЬ ССЫЛКУ ДЛЯ GENIALLY</button>
+    </header>
+
+    <div style="padding: 10px 30px; background:#000;">
+        <button class="tab-btn active" onclick="openTab('t-design', this)">1. ДИЗАЙН</button>
+        <button class="tab-btn" onclick="openTab('t-levels', this)">2. УРОВНИ</button>
+        <button class="tab-btn" onclick="openTab('t-questions', this)">3. ВОПРОСЫ</button>
+        <button class="tab-btn" onclick="openTab('t-preview', this)">4. ПРЕДПРОСМОТР</button>
+    </div>
+
+    <main>
+        <div id="t-design" class="tab-content active">
+            <div class="grid-2">
+                <div class="form-group"><label>Язык:</label><select id="cfg-lang"><option value="ru">Русский</option><option value="kk">Казахский</option><option value="en">English</option></select></div>
+                <div class="form-group"><label>Шрифт:</label><select id="cfg-font" onchange="syncStyles()"><option value="'Metamorphous', serif">Metamorphous</option><option value="'Orbitron', sans-serif">Orbitron</option><option value="'Caveat', cursive">Caveat</option></select></div>
+                <div class="form-group"><label>Цвет неона:</label><input type="color" id="cfg-ui-color" value="#39ff14" oninput="syncStyles()"></div>
+                <div class="form-group"><label>Цвет прогресс-бара:</label><input type="color" id="cfg-prog-color" value="#00ff66" oninput="syncStyles()"></div>
+            </div>
+            <h3>Ссылки на спрайты (Genially):</h3>
+            <div class="grid-2">
+                <div class="form-group"><label>Золотая Маска:</label><input type="text" id="cfg-img-mask" value="https://img.genially.com/67961b32a116fb001568a75e/4db0de92-1c31-4b38-8c29-df8dc6712266.png"></div>
+                <div class="form-group"><label>Пушка (Shooter):</label><input type="text" id="cfg-img-shooter" value="https://img.genially.com/67961b32a116fb001568a75e/ff229730-a24f-4a1b-8050-c77cb309e646.png"></div>
+                <div class="form-group"><label>Сердце:</label><input type="text" id="cfg-img-heart" value="https://img.genially.com/67961b32a116fb001568a75e/213dec47-3717-4811-a68b-20fe7262ec2d.png"></div>
+                <div class="form-group"><label>Часы:</label><input type="text" id="cfg-img-clock" value="https://img.genially.com/67961b32a116fb001568a75e/6aa141cb-f83b-4167-9de0-25eeff46e4e2.png"></div>
+            </div>
+        </div>
+
+        <div id="t-levels" class="tab-content">
+            <div id="lvls-list"></div>
+            <button class="btn-main" onclick="addLvl()">+ Добавить Уровень</button>
+        </div>
+
+        <div id="t-questions" class="tab-content">
+            <div class="form-group">
+                <label>Массовый импорт (Вопрос. Ответ1 | Ответ2):</label>
+                <textarea id="bulk-q" style="height: 300px;" placeholder="I ___ a dog. have | has"></textarea>
+            </div>
+        </div>
+
+        <div id="t-preview" class="tab-content">
+            <div style="background:#000; height: 500px; display:flex; justify-content:center; align-items:center; border: 2px solid var(--ui-color); border-radius:10px;">
+                <div class="preview-card" id="p-card">
+                    <img id="p-mask" src="" style="width:70px; margin-bottom:15px;">
+                    <div id="p-q" style="color:var(--q-color); font-size:24px; margin-bottom:20px;">Это пример симметричного вопроса?</div>
+                    <div class="ans-btn-preview">Вариант ответа 1</div>
+                    <div class="ans-btn-preview">Вариант ответа 2</div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<div id="game-ui">
+    <div id="game-container">
+        <canvas id="gameCanvas"></canvas>
+        <div id="hud-top">
+            <div id="progress-bar"><div id="progress-fill"></div></div>
+            <div id="hud-data" style="display:flex; justify-content:space-between; margin-top:10px; font-weight:bold; font-size:20px;">
+                <div id="h-lives">❤️ 3</div>
+                <div id="h-time">⏱️ 120</div>
+                <div id="h-score">⭐ 0</div>
+            </div>
+        </div>
+        
+        <div id="start-screen" class="ui-layer">
+            <div class="neon-card">
+                <h1 id="s-title">MAZE TRAP</h1>
+                <p id="s-goal">Цель: Ответить на все вопросы</p>
+                <button class="ans-btn" style="border-color:var(--ui-color)" onclick="startGame()">ИГРАТЬ</button>
+            </div>
+        </div>
+
+        <div id="quiz-screen" class="ui-layer hidden">
+            <div class="neon-card">
+                <img class="mask-icon" src="" style="width:60px; margin-bottom:10px;">
+                <div id="game-q-text" style="color:var(--q-color); font-size:26px; margin-bottom:20px;">?</div>
+                <div id="game-ans-box"></div>
+            </div>
+        </div>
+
+        <div id="end-screen" class="ui-layer hidden">
+            <div class="neon-card">
+                <h2 id="e-status">GAME OVER</h2>
+                <p id="e-score">Score: 0</p>
+                <button class="ans-btn" onclick="location.reload()">ЗАНОВО</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// --- ПЕРЕМЕННЫЕ И НАСТРОЙКИ ---
+let editorLevels = [{bg: "https://img.genially.com/67961b32a116fb001568a75e/ccde12e3-391b-41b3-9e20-803cfa4b5506.png", path: '[]', qCount: 5}];
+const I18N = {
+    ru: { start: "ИГРАТЬ", goal: "Цель: Ответить на все вопросы", over: "КОНЕЦ ИГРЫ", win: "ПОБЕДА!" },
+    kk: { start: "ОЙНАУ", goal: "Мақсат: Барлық сұрақтарға жауап беру", over: "ОЙЫН АЯҚТАЛДЫ", win: "ЖЕҢІС!" },
+    en: { start: "PLAY", goal: "Goal: Answer all questions", over: "GAME OVER", win: "YOU WIN!" }
+};
+
+// --- ЛОГИКА РЕДАКТОРА ---
+function openTab(id, btn) {
+    document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.getElementById(id).classList.add('active'); btn.classList.add('active');
+    if(id === 't-preview') syncStyles();
+}
+
+function addLvl() {
+    editorLevels.push({bg: "", path: '[]', qCount: 5}); renderLvls();
+}
+
+function renderLvls() {
+    const cont = document.getElementById('lvls-list'); cont.innerHTML = '';
+    editorLevels.forEach((l, i) => {
+        cont.innerHTML += `<div class="form-group">
+            <label>Уровень ${i+1}</label>
+            <input type="text" placeholder="Ссылка на фон" value="${l.bg}" onchange="editorLevels[${i}].bg=this.value">
+            <textarea placeholder="Код траектории" onchange="editorLevels[${i}].path=this.value">${l.path}</textarea>
+        </div>`;
+    });
+}
+renderLvls();
+
+function syncStyles() {
+    const color = document.getElementById('cfg-ui-color').value;
+    const font = document.getElementById('cfg-font').value;
+    document.documentElement.style.setProperty('--ui-color', color);
+    document.documentElement.style.setProperty('--game-font', font);
+    document.getElementById('p-card').style.fontFamily = font;
+    document.getElementById('p-card').style.borderColor = color;
+    document.getElementById('p-mask').src = document.getElementById('cfg-img-mask').value;
+}
+
+// ГЕНЕРАЦИЯ ССЫЛКИ (BASE64 шифрование настроек)
+function generateGeniallyLink() {
+    const config = {
+        lang: document.getElementById('cfg-lang').value,
+        font: document.getElementById('cfg-font').value,
+        ui: document.getElementById('cfg-ui-color').value,
+        prog: document.getElementById('cfg-prog-color').value,
+        mask: document.getElementById('cfg-img-mask').value,
+        shooter: document.getElementById('cfg-img-shooter').value,
+        heart: document.getElementById('cfg-img-heart').value,
+        clock: document.getElementById('cfg-img-clock').value,
+        lvls: editorLevels,
+        qs: document.getElementById('bulk-q').value
+    };
+    
+    const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(config))));
+    const baseUrl = window.location.href.split('?')[0];
+    const finalUrl = `${baseUrl}?data=${encoded}`;
+    
+    const dummy = document.createElement("input");
+    document.body.appendChild(dummy);
+    dummy.value = finalUrl; dummy.select();
+    document.execCommand("copy");
+    document.body.removeChild(dummy);
+    
+    alert("ССЫЛКА СКОПИРОВАНА!\n\nТеперь просто вставьте её в Genially.");
+}
+
+// --- ЛОГИКА ИГРЫ (ДВИЖОК v53) ---
+let gameData = null;
+let G = { lives: 3, score: 0, time: 120, state: 'idle', currentLvl: 0, qDone: 0 };
+
+window.onload = () => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.has('data')) {
+        document.getElementById('editor-ui').style.display = 'none';
+        document.getElementById('game-ui').style.display = 'block';
+        try {
+            gameData = JSON.parse(decodeURIComponent(escape(atob(params.get('data')))));
+            initGameEngine();
+        } catch(e) { console.error("Ошибка данных", e); }
+    }
+};
+
+function initGameEngine() {
+    const d = gameData;
+    document.documentElement.style.setProperty('--ui-color', d.ui);
+    document.documentElement.style.setProperty('--game-font', d.font);
+    document.documentElement.style.setProperty('--prog-color', d.prog);
+    
+    const t = I18N[d.lang] || I18N.en;
+    document.getElementById('s-goal').innerText = t.goal;
+    document.querySelector('#start-screen .ans-btn').innerText = t.start;
+    
+    // Подготовка вопросов
+    const lines = d.qs.split('\n').filter(l => l.includes('|'));
+    G.questions = lines.map(line => {
+        const parts = line.split('.');
+        const qText = parts[0];
+        const answers = parts[1].split('|').map(a => a.trim());
+        return { q: qText, a: answers[0], options: answers.sort(() => Math.random() - 0.5) };
+    });
+    
+    G.levels = d.lvls.map(l => ({
+        bg: l.bg,
+        path: JSON.parse(l.path || '[]'),
+        qCount: l.qCount
+    }));
+}
+
+function startGame() {
+    document.getElementById('start-screen').classList.add('hidden');
+    G.state = 'playing';
+    G.time = 120;
+    G.lives = 3;
+    G.qDone = 0;
+    updateHUD();
+    
+    // Запуск таймера
+    G.timer = setInterval(() => {
+        if(G.state === 'playing') {
+            G.time--;
+            if(G.time <= 5) {
+                document.getElementById('h-time').classList.add('pulse-urgent');
+                // Тут можно добавить звук тиканья
+            }
+            if(G.time <= 0) endGame(false);
+            updateHUD();
+        }
+    }, 1000);
+
+    // Запуск анимации (упрощенно)
+    runGameLoop();
+    
+    // Временная симуляция: через 3 секунды задаем вопрос
+    setTimeout(() => spawnQuestion(), 2000);
+}
+
+function spawnQuestion() {
+    if(G.state !== 'playing') return;
+    G.state = 'paused';
+    const q = G.questions[Math.floor(Math.random() * G.questions.length)];
+    document.getElementById('quiz-screen').classList.remove('hidden');
+    document.getElementById('game-q-text').innerText = q.q;
+    const box = document.getElementById('game-ans-box');
+    box.innerHTML = '';
+    
+    q.options.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = 'ans-btn';
+        btn.innerText = opt;
+        btn.onclick = () => {
+            if(opt === q.a) {
+                G.qDone++; G.score += 100;
+                document.getElementById('quiz-screen').classList.add('hidden');
+                G.state = 'playing';
+                if(G.qDone >= G.levels[G.currentLvl].qCount) endGame(true);
+            } else {
+                G.lives--;
+                if(G.lives <= 0) endGame(false);
+            }
+            updateHUD();
+        };
+        box.appendChild(btn);
+    });
+}
+
+function updateHUD() {
+    document.getElementById('h-lives').innerText = "❤️ " + G.lives;
+    document.getElementById('h-time').innerText = "⏱️ " + G.time;
+    document.getElementById('h-score').innerText = "⭐ " + G.score;
+    const progress = (G.qDone / G.levels[G.currentLvl].qCount) * 100;
+    document.getElementById('progress-fill').style.width = progress + "%";
+}
+
+function endGame(win) {
+    G.state = 'over';
+    clearInterval(G.timer);
+    document.getElementById('end-screen').classList.remove('hidden');
+    const t = I18N[gameData.lang] || I18N.en;
+    document.getElementById('e-status').innerText = win ? t.win : t.over;
+    document.getElementById('e-score').innerText = "Score: " + G.score;
+}
+
+// Заглушка для рендеринга (в полной версии здесь будет ваш Canvas движок)
+function runGameLoop() {
+    const cvs = document.getElementById('gameCanvas');
+    const ctx = cvs.getContext('2d');
+    cvs.width = window.innerWidth; cvs.height = window.innerHeight;
+    
+    function draw() {
+        if(G.state === 'playing' || G.state === 'paused') {
+            ctx.clearRect(0,0,cvs.width, cvs.height);
+            // Отрисовка траектории и маски
+            // (Здесь будет код отрисовки из v53)
+        }
+        requestAnimationFrame(draw);
+    }
+    draw();
+}
+</script>
+</body>
+</html>
