@@ -3,105 +3,138 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Maze Trap: All-in-One (Editor & Game)</title>
-    <link href="https://fonts.googleapis.com/css2?family=Metamorphous&family=Orbitron:wght@700&family=Caveat:wght@700&family=Cinzel:wght@700&family=Macondo&family=Montserrat:wght@800&family=Comic+Neue:wght@700&family=Pacifico&display=swap" rel="stylesheet">
-    <style id="dynamic-styles">
-        /* Стили редактора и общие стили игры будут здесь */
-        :root { --ui-color: #39ff14; --q-color: #ffe600; --prog-color: #00ff66; --game-font: 'Metamorphous', serif; }
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #000; color: #ddd; font-family: sans-serif; overflow: hidden; }
+    <title>Maze Trap - English Bootcamp</title>
+    <link href="https://fonts.googleapis.com/css2?family=Metamorphous&family=Orbitron:wght@400;700;900&family=Caveat:wght@700&family=Cinzel:wght@700&family=Macondo&family=Montserrat:wght@800&family=Comic+Neue:wght@700&family=Pacifico&display=swap" rel="stylesheet">
+    
+    <style>
+        /* =========================================
+           БАЗОВЫЕ ПЕРЕКЛЮЧАТЕЛИ (ИЗОЛЯЦИЯ СТИЛЕЙ)
+           ========================================= */
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; }
         
-        /* СТИЛИ РЕДАКТОРА */
-        #editor-ui { display: flex; flex-direction: column; height: 100vh; overflow-y: auto; background: #1a1a1a; pointer-events: auto; }
-        header { display: flex; align-items: center; justify-content: space-between; padding: 15px 30px; background: #000; border-bottom: 2px solid var(--ui-color); box-shadow: 0 0 15px var(--ui-color); }
-        .tab-btn { background: #222; border: 1px solid #444; color: #aaa; padding: 10px 15px; cursor: pointer; border-radius: 5px 5px 0 0; font-family: 'Metamorphous', serif; margin-right: 5px; }
-        .tab-btn.active { background: #1a1a1a; color: #ffe600; border-color: #ffe600; border-bottom: none; }
-        main { padding: 30px; flex-grow: 1; }
-        .tab-content { display: none; max-width: 1100px; margin: 0 auto; }
-        .tab-content.active { display: block; }
-        .form-group { margin-bottom: 15px; background: #222; padding: 15px; border-radius: 8px; border: 1px solid #333; }
-        label { display: block; margin-bottom: 8px; color: #fff; font-weight: bold; font-size: 14px; }
-        input, select, textarea { width: 100%; padding: 10px; background: #000; color: #fff; border: 1px solid #555; border-radius: 5px; box-sizing: border-box; }
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .btn-main { background: transparent; border: 2px solid var(--ui-color); color: var(--ui-color); padding: 12px 25px; border-radius: 30px; cursor: pointer; font-family: 'Metamorphous', serif; font-weight: bold; }
+        #editor-ui, #game-ui { display: none; }
         
-        /* ПРЕДПРОСМОТР В РЕДАКТОРЕ */
-        .preview-card { background: rgba(15, 5, 25, 0.95); border: 2px solid var(--ui-color); border-radius: 20px; padding: 30px; text-align: center; width: 85%; max-width: 400px; box-sizing: border-box; }
-        .ans-btn-preview { width: 100%; padding: 15px; margin: 10px 0; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.3); border-radius: 10px; color: #fff; box-sizing: border-box; text-align: center; }
+        /* РЕЖИМ РЕДАКТОРА */
+        body.mode-editor { background: #111; color: #ddd; font-family: 'Segoe UI', sans-serif; overflow-y: auto; }
+        body.mode-editor #editor-ui { display: flex; flex-direction: column; min-height: 100vh; }
+        
+        /* РЕЖИМ ИГРЫ */
+        body.mode-game { background: #000; overflow: hidden; user-select: none; -webkit-user-select: none; }
+        body.mode-game #game-ui { display: block; }
 
-        /* СТИЛИ ИГРЫ */
-        #game-ui { display: none; position: relative; width: 100%; height: 100vh; overflow: hidden; }
-        #game-container { width: 100%; height: 100%; background-size: 100% 100%; position: relative; }
-        canvas { position: absolute; top:0; left:0; z-index: 1; }
-        .ui-layer { position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.85); z-index: 100; display: flex; justify-content: center; align-items: center; }
+        /* =========================================
+           СТИЛИ РЕДАКТОРА
+           ========================================= */
+        #editor-ui header { display: flex; align-items: center; justify-content: space-between; padding: 15px 30px; background: #000; border-bottom: 2px solid #39ff14; box-shadow: 0 0 15px #39ff14; }
+        .logo-container { display: flex; align-items: center; gap: 15px; }
+        .logo-container img { height: 50px; filter: drop-shadow(0 0 10px #39ff14); }
+        .logo-container h1 { margin: 0; font-family: 'Metamorphous', serif; color: #fff; font-size: 20px; }
+        
+        .tabs { display: flex; gap: 5px; padding: 0 30px; background: #000; }
+        .tab-btn { background: #222; border: 1px solid #444; color: #aaa; padding: 10px 15px; cursor: pointer; border-radius: 5px 5px 0 0; font-family: 'Metamorphous', serif; font-weight: bold; }
+        .tab-btn.active { background: #1a1a1a; color: #ffe600; border-color: #ffe600; border-bottom: none; }
+
+        #editor-ui main { flex-grow: 1; padding: 25px; background: #1a1a1a; }
+        .tab-content { display: none; max-width: 1000px; margin: 0 auto; }
+        .tab-content.active { display: block; }
+
+        .form-group { margin-bottom: 15px; background: #222; padding: 15px; border-radius: 8px; border: 1px solid #333; }
+        .form-group label { display: block; margin-bottom: 8px; color: #fff; font-weight: bold; font-size: 14px; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px; background: #000; color: #fff; border: 1px solid #555; border-radius: 5px; box-sizing: border-box; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        
+        .btn-action { background: transparent; border: 2px solid #39ff14; color: #39ff14; padding: 12px 25px; border-radius: 30px; cursor: pointer; font-family: 'Metamorphous', serif; font-weight: bold; transition: 0.3s; }
+        .btn-action:hover { background: #39ff14; color: #000; box-shadow: 0 0 15px #39ff14; }
+        .btn-generate { background: #ffe600; color: #000; border: none; padding: 15px 30px; font-size: 16px; border-radius: 50px; cursor: pointer; font-family: 'Metamorphous', serif; font-weight: bold; box-shadow: 0 0 20px rgba(255, 230, 0, 0.4); }
+
+        /* =========================================
+           СТИЛИ ИГРЫ (ДВИЖОК v53.1)
+           ========================================= */
+        :root {
+            --ui-color: #39ff14; --q-color: #ffe600; --prog-color: #00ff66;
+            --q-size: 28px; --a-color: #ffffff; --a-bg: rgba(51, 51, 51, 0.6); --a-size: 22px;
+            --game-font: 'Metamorphous', serif;
+            --neon-glow: 0 0 10px var(--ui-color);
+        }
+        
+        #game-ui #game-container { position: relative; width: 100%; height: 100%; background-color: #000; background-size: 100% 100%; background-position: center; display: flex; justify-content: center; align-items: center; font-family: var(--game-font); }
+        #game-ui canvas { display: block; position: absolute; top: 0; left: 0; z-index: 1; }
+
+        .game-hud-wrap { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 15px; z-index: 25; width: 45%; max-width: 450px; }
+        .game-prog-cont { flex-grow: 1; height: 18px; background: rgba(0, 0, 0, 0.7); border: 2px solid var(--prog-color); border-radius: 20px; box-shadow: 0 0 10px var(--prog-color); overflow: hidden; }
+        .game-prog-fill { width: 0%; height: 100%; background: var(--prog-color); box-shadow: 0 0 15px var(--prog-color), inset 0 0 5px rgba(255,255,255,0.8); transition: width 0.5s; }
+        .game-val { color: #fff; font-size: 24px; font-weight: bold; text-shadow: 0 2px 5px #000; }
+        
+        .game-hud-left { position: absolute; top: 15px; left: 20px; display: flex; gap: 20px; z-index: 20; }
+        .game-hud-right { position: absolute; top: 15px; right: 20px; z-index: 20; }
+        .game-hud-item { display: flex; align-items: center; gap: 8px; }
+        .game-icon { width: 35px; height: 35px; object-fit: contain; filter: drop-shadow(0 0 5px rgba(255,255,255,0.3)); }
+        
+        .pulse-urgent { animation: pulseRed 0.3s infinite alternate; color: #ff0000 !important; display: inline-block; font-size: 30px;}
+        @keyframes pulseRed { from { text-shadow: 0 0 10px #f00; transform: scale(1); } to { text-shadow: 0 0 30px #f00, 0 0 50px #f00; transform: scale(1.2); } }
+
+        .game-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: auto; z-index: 100; display: flex; justify-content: center; align-items: center; background: rgba(0,0,0,0.85); }
         .hidden { display: none !important; }
-        .neon-card { background: rgba(15, 5, 25, 0.95); border: 2px solid var(--ui-color); border-radius: 20px; padding: 30px; text-align: center; width: 90%; max-width: 450px; box-sizing: border-box; font-family: var(--game-font); }
-        .ans-btn { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.3); color: #fff; padding: 15px; margin: 10px 0; border-radius: 10px; cursor: pointer; font-family: var(--game-font); font-size: 20px; box-sizing: border-box; transition: 0.2s; }
-        .ans-btn:hover { background: rgba(255,255,255,0.15); border-color: var(--ui-color); transform: scale(1.02); }
+        .game-card { background: rgba(15, 5, 25, 0.95); border: 2px solid var(--ui-color); box-shadow: var(--neon-glow); border-radius: 20px; padding: 30px 20px; text-align: center; color: #fff; max-height: 95vh; overflow-y: auto; display: flex; flex-direction: column; align-items: center; width: 90%; max-width: 450px; box-sizing: border-box; }
+        #start-screen .game-card { max-width: 750px; }
         
-        /* HUD */
-        #hud-top { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); width: 40%; z-index: 50; }
-        #progress-bar { height: 15px; background: rgba(0,0,0,0.7); border: 2px solid var(--prog-color); border-radius: 10px; overflow: hidden; box-shadow: 0 0 10px var(--prog-color); }
-        #progress-fill { height: 100%; background: var(--prog-color); width: 0%; transition: 0.5s; }
+        .game-btn { background: transparent; border: 2px solid var(--ui-color); color: var(--ui-color); padding: 15px 40px; font-size: 22px; border-radius: 50px; cursor: pointer; margin-top: 20px; transition: 0.3s; font-family: var(--game-font); font-weight: bold; box-sizing: border-box;}
+        .game-btn:hover { background: var(--ui-color); color: #000; box-shadow: 0 0 25px var(--ui-color); transform: scale(1.05); }
+
+        .game-ans-btn { width: 100%; background: var(--a-bg); border: 1px solid rgba(255, 255, 255, 0.3); color: var(--a-color); padding: 15px 20px; margin: 10px 0; border-radius: 10px; cursor: pointer; text-align: center; transition: 0.2s; font-size: var(--a-size); font-family: var(--game-font); box-sizing: border-box;}
+        .game-ans-btn:hover { background: rgba(255, 255, 255, 0.2); border-color: var(--ui-color); color: var(--ui-color); text-shadow: 0 0 8px var(--ui-color); transform: scale(1.02); }
+
+        /* Всплывающий текст бонусов со шрифтом игры */
+        #game-float-text { position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); font-size: 60px; color: #fff; text-shadow: 0 0 20px #00ffff; font-weight: 900; opacity: 0; pointer-events: none; z-index: 150; transition: opacity 0.5s, transform 0.5s; white-space: nowrap; font-family: var(--game-font); }
         
-        .pulse-urgent { animation: pulseRed 0.4s infinite alternate; color: #ff0000 !important; }
-        @keyframes pulseRed { from { text-shadow: 0 0 5px #f00; transform: scale(1); } to { text-shadow: 0 0 20px #f00; transform: scale(1.1); } }
+        .shake { animation: shakeAnim 0.4s; }
+        @keyframes shakeAnim { 0% { transform: translate(0,0); } 20% { transform: translate(-4px, 2px); } 40% { transform: translate(4px, -2px); } 60% { transform: translate(-4px, -2px); } 80% { transform: translate(4px, 2px); } 100% { transform: translate(0,0); } }
     </style>
 </head>
 <body>
 
 <div id="editor-ui">
     <header>
-        <div style="display:flex; align-items:center; gap:15px;">
-            <img src="https://img.genially.com/67961b32a116fb001568a75e/aa411ed1-1aef-4f00-a1a6-59b64d18dc7a.png" height="50">
-            <h1>MAZE TRAP BUILDER v5.0</h1>
+        <div class="logo-container">
+            <img src="https://img.genially.com/67961b32a116fb001568a75e/aa411ed1-1aef-4f00-a1a6-59b64d18dc7a.png">
+            <h1>MAZE TRAP BUILDER (All-in-One)</h1>
         </div>
-        <button class="btn-main" style="background:#ffe600; color:#000; border:none; padding:15px 30px;" onclick="generateGeniallyLink()">🔗 СГЕНЕРИРОВАТЬ ССЫЛКУ ДЛЯ GENIALLY</button>
+        <button class="btn-generate" onclick="generateGeniallyLink()">🔗 СГЕНЕРИРОВАТЬ ССЫЛКУ ДЛЯ GENIALLY</button>
     </header>
 
-    <div style="padding: 10px 30px; background:#000;">
-        <button class="tab-btn active" onclick="openTab('t-design', this)">1. ДИЗАЙН</button>
-        <button class="tab-btn" onclick="openTab('t-levels', this)">2. УРОВНИ</button>
-        <button class="tab-btn" onclick="openTab('t-questions', this)">3. ВОПРОСЫ</button>
-        <button class="tab-btn" onclick="openTab('t-preview', this)">4. ПРЕДПРОСМОТР</button>
+    <div class="tabs">
+        <button class="tab-btn active" onclick="openTab('tab-settings', this)">1. НАСТРОЙКИ</button>
+        <button class="tab-btn" onclick="openTab('tab-levels', this)">2. УРОВНИ</button>
+        <button class="tab-btn" onclick="openTab('tab-questions', this)">3. ВОПРОСЫ</button>
     </div>
 
     <main>
-        <div id="t-design" class="tab-content active">
+        <div id="tab-settings" class="tab-content active">
             <div class="grid-2">
                 <div class="form-group"><label>Язык:</label><select id="cfg-lang"><option value="ru">Русский</option><option value="kk">Казахский</option><option value="en">English</option></select></div>
-                <div class="form-group"><label>Шрифт:</label><select id="cfg-font" onchange="syncStyles()"><option value="'Metamorphous', serif">Metamorphous</option><option value="'Orbitron', sans-serif">Orbitron</option><option value="'Caveat', cursive">Caveat</option></select></div>
-                <div class="form-group"><label>Цвет неона:</label><input type="color" id="cfg-ui-color" value="#39ff14" oninput="syncStyles()"></div>
-                <div class="form-group"><label>Цвет прогресс-бара:</label><input type="color" id="cfg-prog-color" value="#00ff66" oninput="syncStyles()"></div>
+                <div class="form-group"><label>Шрифт:</label><select id="cfg-font"><option value="'Metamorphous', serif">Metamorphous</option><option value="'Orbitron', sans-serif">Orbitron</option><option value="'Caveat', cursive">Caveat</option></select></div>
+                <div class="form-group"><label>Цвет неона:</label><input type="color" id="cfg-ui-color" value="#39ff14"></div>
+                <div class="form-group"><label>Цвет прогресса:</label><input type="color" id="cfg-prog-color" value="#00ff66"></div>
+                <div class="form-group"><label>Время на уровень (сек):</label><input type="number" id="cfg-time" value="120"></div>
             </div>
-            <h3>Ссылки на спрайты (Genially):</h3>
+            <h3>Иконки (Ссылки)</h3>
             <div class="grid-2">
-                <div class="form-group"><label>Золотая Маска:</label><input type="text" id="cfg-img-mask" value="https://img.genially.com/67961b32a116fb001568a75e/4db0de92-1c31-4b38-8c29-df8dc6712266.png"></div>
-                <div class="form-group"><label>Пушка (Shooter):</label><input type="text" id="cfg-img-shooter" value="https://img.genially.com/67961b32a116fb001568a75e/ff229730-a24f-4a1b-8050-c77cb309e646.png"></div>
-                <div class="form-group"><label>Сердце:</label><input type="text" id="cfg-img-heart" value="https://img.genially.com/67961b32a116fb001568a75e/213dec47-3717-4811-a68b-20fe7262ec2d.png"></div>
-                <div class="form-group"><label>Часы:</label><input type="text" id="cfg-img-clock" value="https://img.genially.com/67961b32a116fb001568a75e/6aa141cb-f83b-4167-9de0-25eeff46e4e2.png"></div>
+                <div class="form-group"><label>Маска (Цель):</label><input type="text" id="cfg-mask" value="https://img.genially.com/67961b32a116fb001568a75e/4db0de92-1c31-4b38-8c29-df8dc6712266.png"></div>
+                <div class="form-group"><label>Сердце:</label><input type="text" id="cfg-heart" value="https://img.genially.com/67961b32a116fb001568a75e/213dec47-3717-4811-a68b-20fe7262ec2d.png"></div>
+                <div class="form-group"><label>Часы:</label><input type="text" id="cfg-clock" value="https://img.genially.com/67961b32a116fb001568a75e/6aa141cb-f83b-4167-9de0-25eeff46e4e2.png"></div>
+                <div class="form-group"><label>Платформа:</label><input type="text" id="cfg-shooter" value="https://img.genially.com/67961b32a116fb001568a75e/ff229730-a24f-4a1b-8050-c77cb309e646.png"></div>
             </div>
         </div>
 
-        <div id="t-levels" class="tab-content">
-            <div id="lvls-list"></div>
-            <button class="btn-main" onclick="addLvl()">+ Добавить Уровень</button>
+        <div id="tab-levels" class="tab-content">
+            <div id="levels-container"></div>
+            <button class="btn-action" onclick="addEditorLevel()">+ Добавить уровень</button>
         </div>
 
-        <div id="t-questions" class="tab-content">
+        <div id="tab-questions" class="tab-content">
             <div class="form-group">
-                <label>Массовый импорт (Вопрос. Ответ1 | Ответ2):</label>
-                <textarea id="bulk-q" style="height: 300px;" placeholder="I ___ a dog. have | has"></textarea>
-            </div>
-        </div>
-
-        <div id="t-preview" class="tab-content">
-            <div style="background:#000; height: 500px; display:flex; justify-content:center; align-items:center; border: 2px solid var(--ui-color); border-radius:10px;">
-                <div class="preview-card" id="p-card">
-                    <img id="p-mask" src="" style="width:70px; margin-bottom:15px;">
-                    <div id="p-q" style="color:var(--q-color); font-size:24px; margin-bottom:20px;">Это пример симметричного вопроса?</div>
-                    <div class="ans-btn-preview">Вариант ответа 1</div>
-                    <div class="ans-btn-preview">Вариант ответа 2</div>
-                </div>
+                <label>Массовый ввод вопросов (Формат: Вопрос. Пр_Ответ | Непр_Ответ)</label>
+                <textarea id="cfg-questions" style="height: 300px; font-family: monospace;" placeholder="I ___ a dog. have | has"></textarea>
             </div>
         </div>
     </main>
@@ -110,243 +143,358 @@
 <div id="game-ui">
     <div id="game-container">
         <canvas id="gameCanvas"></canvas>
-        <div id="hud-top">
-            <div id="progress-bar"><div id="progress-fill"></div></div>
-            <div id="hud-data" style="display:flex; justify-content:space-between; margin-top:10px; font-weight:bold; font-size:20px;">
-                <div id="h-lives">❤️ 3</div>
-                <div id="h-time">⏱️ 120</div>
-                <div id="h-score">⭐ 0</div>
-            </div>
-        </div>
         
-        <div id="start-screen" class="ui-layer">
-            <div class="neon-card">
-                <h1 id="s-title">MAZE TRAP</h1>
-                <p id="s-goal">Цель: Ответить на все вопросы</p>
-                <button class="ans-btn" style="border-color:var(--ui-color)" onclick="startGame()">ИГРАТЬ</button>
+        <div class="game-hud-wrap">
+            <div class="game-prog-cont"><div id="game-prog-fill" class="game-prog-fill"></div></div>
+            <span id="game-q-disp" style="color:var(--prog-color); font-size:22px; font-weight:bold;">0/0</span>
+        </div>
+
+        <div class="game-hud-left">
+            <div class="game-hud-item"><img class="game-icon dyn-heart" src=""><span id="game-lives" class="game-val">3</span></div>
+            <div class="game-hud-item"><img class="game-icon" src="https://img.genially.com/67961b32a116fb001568a75e/03a676ec-a263-478b-a675-d6e17a7a36e1.png"><span id="game-score" class="game-val">0</span></div>
+        </div>
+
+        <div class="game-hud-right">
+            <div class="game-hud-item"><img class="game-icon dyn-clock" src=""><span id="game-time" class="game-val">120</span></div>
+        </div>
+
+        <div id="game-float-text"></div>
+
+        <div id="start-screen" class="game-layer">
+            <div class="game-card">
+                <img src="" class="dyn-mask" style="width:90px; margin-bottom:15px; filter: drop-shadow(0 0 10px var(--ui-color));">
+                <h1 style="margin:0 0 10px; color:#fff; text-shadow:0 0 10px var(--ui-color); font-size:2.2em;">MAZE TRAP</h1>
+                <p id="t-goal" style="color:var(--ui-color); font-size:1.2em; margin-bottom:20px;">GOAL: ANSWER ALL QUESTIONS</p>
+                <button id="btn-start" class="game-btn">START GAME</button>
             </div>
         </div>
 
-        <div id="quiz-screen" class="ui-layer hidden">
-            <div class="neon-card">
-                <img class="mask-icon" src="" style="width:60px; margin-bottom:10px;">
-                <div id="game-q-text" style="color:var(--q-color); font-size:26px; margin-bottom:20px;">?</div>
-                <div id="game-ans-box"></div>
+        <div id="quiz-screen" class="game-layer hidden">
+            <div class="game-card" style="width:90%; max-width:450px;">
+                <img src="" class="dyn-mask" style="width:70px; margin-bottom:15px;">
+                <h2 id="q-text" style="color:var(--q-color); text-shadow:0 0 10px var(--q-color); font-size:var(--q-size); margin-bottom:20px;">?</h2>
+                <div id="q-content" style="width:100%;"></div>
             </div>
         </div>
 
-        <div id="end-screen" class="ui-layer hidden">
-            <div class="neon-card">
-                <h2 id="e-status">GAME OVER</h2>
-                <p id="e-score">Score: 0</p>
-                <button class="ans-btn" onclick="location.reload()">ЗАНОВО</button>
+        <div id="end-screen" class="game-layer hidden">
+            <div class="game-card" style="width:90%; max-width:450px;">
+                <img src="" class="dyn-mask" style="width:70px; margin-bottom:15px;">
+                <h1 id="end-title" style="margin:0 0 10px; color:#fff; text-shadow:0 0 10px var(--ui-color); font-size:2.2em;">GAME OVER</h1>
+                <p id="st-total" style="color:var(--ui-color); font-size:1.6em; font-weight:bold; margin:20px 0;">SCORE: 0</p>
+                <button id="btn-restart" class="game-btn">PLAY AGAIN</button>
             </div>
         </div>
     </div>
 </div>
 
 <script>
-// --- ПЕРЕМЕННЫЕ И НАСТРОЙКИ ---
-let editorLevels = [{bg: "https://img.genially.com/67961b32a116fb001568a75e/ccde12e3-391b-41b3-9e20-803cfa4b5506.png", path: '[]', qCount: 5}];
-const I18N = {
-    ru: { start: "ИГРАТЬ", goal: "Цель: Ответить на все вопросы", over: "КОНЕЦ ИГРЫ", win: "ПОБЕДА!" },
-    kk: { start: "ОЙНАУ", goal: "Мақсат: Барлық сұрақтарға жауап беру", over: "ОЙЫН АЯҚТАЛДЫ", win: "ЖЕҢІС!" },
-    en: { start: "PLAY", goal: "Goal: Answer all questions", over: "GAME OVER", win: "YOU WIN!" }
-};
+// ==========================================
+// ЛОГИКА МАРШРУТИЗАТОРА (EDITOR vs GAME)
+// ==========================================
+const urlParams = new URLSearchParams(window.location.search);
+let isGameMode = urlParams.has('data');
 
-// --- ЛОГИКА РЕДАКТОРА ---
+if (isGameMode) {
+    document.body.classList.add('mode-game');
+    try {
+        const decodedData = JSON.parse(decodeURIComponent(escape(atob(urlParams.get('data')))));
+        initGameEngine(decodedData);
+    } catch(e) {
+        alert("Ошибка загрузки данных игры. Проверьте ссылку.");
+    }
+} else {
+    document.body.classList.add('mode-editor');
+    initEditor();
+}
+
+// ==========================================
+// КОД РЕДАКТОРА
+// ==========================================
+let editorLevels = [{bg: "https://img.genially.com/67961b32a116fb001568a75e/ccde12e3-391b-41b3-9e20-803cfa4b5506.png", path: '[{"x":0.0254,"y":0.444},{"x":0.5101,"y":0.4726}]', qCount: 5}];
+
+function initEditor() { renderEditorLevels(); }
+
 function openTab(id, btn) {
-    document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
-    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-    document.getElementById(id).classList.add('active'); btn.classList.add('active');
-    if(id === 't-preview') syncStyles();
+    document.querySelectorAll('#editor-ui .tab-content').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('#editor-ui .tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    btn.classList.add('active');
 }
 
-function addLvl() {
-    editorLevels.push({bg: "", path: '[]', qCount: 5}); renderLvls();
+function addEditorLevel() {
+    editorLevels.push({bg: "", path: '[]', qCount: 5});
+    renderEditorLevels();
 }
 
-function renderLvls() {
-    const cont = document.getElementById('lvls-list'); cont.innerHTML = '';
+function renderEditorLevels() {
+    const cont = document.getElementById('levels-container');
+    cont.innerHTML = '';
     editorLevels.forEach((l, i) => {
-        cont.innerHTML += `<div class="form-group">
-            <label>Уровень ${i+1}</label>
-            <input type="text" placeholder="Ссылка на фон" value="${l.bg}" onchange="editorLevels[${i}].bg=this.value">
-            <textarea placeholder="Код траектории" onchange="editorLevels[${i}].path=this.value">${l.path}</textarea>
+        cont.innerHTML += `
+        <div class="form-group">
+            <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+                <h3 style="margin:0; color:#39ff14;">УРОВЕНЬ ${i+1}</h3>
+                <button onclick="editorLevels.splice(${i},1); renderEditorLevels()" style="background:#ff3300; border:none; color:#fff; border-radius:5px; padding:5px 10px; cursor:pointer;">Удалить</button>
+            </div>
+            <label>Фон (ссылка):</label><input type="text" value="${l.bg}" onchange="editorLevels[${i}].bg=this.value; updatePathField(${i})" id="bg-in-${i}" style="margin-bottom:10px;">
+            <label>Кол-во вопросов:</label><input type="number" value="${l.qCount}" onchange="editorLevels[${i}].qCount=parseInt(this.value)" style="margin-bottom:10px;">
+            <label>Код траектории (Path):</label><textarea onchange="editorLevels[${i}].path=this.value" style="height:80px; font-family:monospace;">${l.path}</textarea>
         </div>`;
     });
 }
-renderLvls();
 
-function syncStyles() {
-    const color = document.getElementById('cfg-ui-color').value;
-    const font = document.getElementById('cfg-font').value;
-    document.documentElement.style.setProperty('--ui-color', color);
-    document.documentElement.style.setProperty('--game-font', font);
-    document.getElementById('p-card').style.fontFamily = font;
-    document.getElementById('p-card').style.borderColor = color;
-    document.getElementById('p-mask').src = document.getElementById('cfg-img-mask').value;
-}
-
-// ГЕНЕРАЦИЯ ССЫЛКИ (BASE64 шифрование настроек)
 function generateGeniallyLink() {
+    const questionsRaw = document.getElementById('cfg-questions').value.split('\n');
+    const questionsArr = [];
+    questionsRaw.forEach(line => {
+        if(line.includes('|')) {
+            const parts = line.split('.');
+            if(parts.length >= 2) {
+                const qText = parts[0].trim();
+                const opts = parts[1].split('|').map(s=>s.trim());
+                questionsArr.push({ type: 'mcq', q: qText, o: [...opts].sort(()=>Math.random()-0.5), a: opts[0], lvl: 'all' });
+            }
+        }
+    });
+
     const config = {
         lang: document.getElementById('cfg-lang').value,
-        font: document.getElementById('cfg-font').value,
-        ui: document.getElementById('cfg-ui-color').value,
-        prog: document.getElementById('cfg-prog-color').value,
-        mask: document.getElementById('cfg-img-mask').value,
-        shooter: document.getElementById('cfg-img-shooter').value,
-        heart: document.getElementById('cfg-img-heart').value,
-        clock: document.getElementById('cfg-img-clock').value,
-        lvls: editorLevels,
-        qs: document.getElementById('bulk-q').value
+        fontFamily: document.getElementById('cfg-font').value,
+        uiColor: document.getElementById('cfg-ui-color').value,
+        progColor: document.getElementById('cfg-prog-color').value,
+        timerStart: parseInt(document.getElementById('cfg-time').value) || 120,
+        imgMask: document.getElementById('cfg-mask').value,
+        imgHeart: document.getElementById('cfg-heart').value,
+        imgClock: document.getElementById('cfg-clock').value,
+        imgShooter: document.getElementById('cfg-shooter').value,
+        levels: editorLevels.map(l => ({ bg: `url('${l.bg}')`, path: JSON.parse(l.path || '[]'), qCount: l.qCount })),
+        questions: questionsArr
     };
-    
+
     const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(config))));
     const baseUrl = window.location.href.split('?')[0];
     const finalUrl = `${baseUrl}?data=${encoded}`;
     
     const dummy = document.createElement("input");
     document.body.appendChild(dummy);
-    dummy.value = finalUrl; dummy.select();
+    dummy.value = finalUrl;
+    dummy.select();
     document.execCommand("copy");
     document.body.removeChild(dummy);
     
-    alert("ССЫЛКА СКОПИРОВАНА!\n\nТеперь просто вставьте её в Genially.");
+    alert("✅ ССЫЛКА СКОПИРОВАНА!\n\nИспользуйте её в Genially (Вставить -> Другие -> Вставить внешнюю ссылку).");
 }
 
-// --- ЛОГИКА ИГРЫ (ДВИЖОК v53) ---
-let gameData = null;
-let G = { lives: 3, score: 0, time: 120, state: 'idle', currentLvl: 0, qDone: 0 };
-
-window.onload = () => {
-    const params = new URLSearchParams(window.location.search);
-    if (params.has('data')) {
-        document.getElementById('editor-ui').style.display = 'none';
-        document.getElementById('game-ui').style.display = 'block';
-        try {
-            gameData = JSON.parse(decodeURIComponent(escape(atob(params.get('data')))));
-            initGameEngine();
-        } catch(e) { console.error("Ошибка данных", e); }
-    }
+// ==========================================
+// КОД ИГРЫ (ДВИЖОК v53.1)
+// ==========================================
+const I18N = {
+    en: { start: "START GAME", next: "NEXT LEVEL", play: "PLAY AGAIN", over: "GAME OVER", cleared: "LEVEL CLEARED!", quest: "QUEST COMPLETED!", goal: "GOAL: ANSWER ALL QUESTIONS" },
+    ru: { start: "НАЧАТЬ ИГРУ", next: "СЛЕДУЮЩИЙ УРОВЕНЬ", play: "ИГРАТЬ СНОВА", over: "ИГРА ОКОНЧЕНА", cleared: "УРОВЕНЬ ПРОЙДЕН!", quest: "КВЕСТ ЗАВЕРШЕН!", goal: "ЦЕЛЬ: ОТВЕТИТЬ НА ВСЕ ВОПРОСЫ" },
+    kk: { start: "ОЙЫНДЫ БАСТАУ", next: "КЕЛЕСІ ДЕҢГЕЙ", play: "ҚАЙТА ОЙНАУ", over: "ОЙЫН АЯҚТАЛДЫ", cleared: "ДЕҢГЕЙ АЯҚТАЛДЫ!", quest: "КВЕСТ АЯҚТАЛДЫ!", goal: "МАҚСАТ: БАРЛЫҚ СҰРАҚТАРҒА ЖАУАП БЕРУ" }
 };
 
-function initGameEngine() {
-    const d = gameData;
-    document.documentElement.style.setProperty('--ui-color', d.ui);
-    document.documentElement.style.setProperty('--game-font', d.font);
-    document.documentElement.style.setProperty('--prog-color', d.prog);
+let GAME_CFG = null;
+let G_ENGINE = null;
+
+function initGameEngine(data) {
+    GAME_CFG = data;
+    const root = document.documentElement;
+    root.style.setProperty('--game-font', data.fontFamily);
+    root.style.setProperty('--ui-color', data.uiColor);
+    root.style.setProperty('--prog-color', data.progColor);
     
-    const t = I18N[d.lang] || I18N.en;
-    document.getElementById('s-goal').innerText = t.goal;
-    document.querySelector('#start-screen .ans-btn').innerText = t.start;
-    
-    // Подготовка вопросов
-    const lines = d.qs.split('\n').filter(l => l.includes('|'));
-    G.questions = lines.map(line => {
-        const parts = line.split('.');
-        const qText = parts[0];
-        const answers = parts[1].split('|').map(a => a.trim());
-        return { q: qText, a: answers[0], options: answers.sort(() => Math.random() - 0.5) };
-    });
-    
-    G.levels = d.lvls.map(l => ({
-        bg: l.bg,
-        path: JSON.parse(l.path || '[]'),
-        qCount: l.qCount
-    }));
+    document.querySelectorAll('.dyn-mask').forEach(el => el.src = data.imgMask);
+    document.querySelectorAll('.dyn-heart').forEach(el => el.src = data.imgHeart);
+    document.querySelectorAll('.dyn-clock').forEach(el => el.src = data.imgClock);
+
+    const t = I18N[data.lang] || I18N.en;
+    document.getElementById('t-goal').innerText = t.goal;
+    document.getElementById('btn-start').innerText = t.start;
+
+    G_ENGINE = new GameCore();
 }
 
-function startGame() {
-    document.getElementById('start-screen').classList.add('hidden');
-    G.state = 'playing';
-    G.time = 120;
-    G.lives = 3;
-    G.qDone = 0;
-    updateHUD();
-    
-    // Запуск таймера
-    G.timer = setInterval(() => {
-        if(G.state === 'playing') {
-            G.time--;
-            if(G.time <= 5) {
-                document.getElementById('h-time').classList.add('pulse-urgent');
-                // Тут можно добавить звук тиканья
-            }
-            if(G.time <= 0) endGame(false);
-            updateHUD();
-        }
-    }, 1000);
-
-    // Запуск анимации (упрощенно)
-    runGameLoop();
-    
-    // Временная симуляция: через 3 секунды задаем вопрос
-    setTimeout(() => spawnQuestion(), 2000);
+class Part {
+    constructor(x,y,c){ this.x=x; this.y=y; this.c=c; this.life=1; this.vx=(Math.random()-0.5)*6; this.vy=(Math.random()-0.5)*6; }
+    up(){ this.x+=this.vx; this.y+=this.vy; this.life-=0.04; }
+    draw(ctx){ ctx.globalAlpha=this.life; ctx.fillStyle=this.c; ctx.beginPath(); ctx.arc(this.x,this.y,4,0,7); ctx.fill(); ctx.globalAlpha=1; }
 }
 
-function spawnQuestion() {
-    if(G.state !== 'playing') return;
-    G.state = 'paused';
-    const q = G.questions[Math.floor(Math.random() * G.questions.length)];
-    document.getElementById('quiz-screen').classList.remove('hidden');
-    document.getElementById('game-q-text').innerText = q.q;
-    const box = document.getElementById('game-ans-box');
-    box.innerHTML = '';
-    
-    q.options.forEach(opt => {
-        const btn = document.createElement('button');
-        btn.className = 'ans-btn';
-        btn.innerText = opt;
-        btn.onclick = () => {
-            if(opt === q.a) {
-                G.qDone++; G.score += 100;
-                document.getElementById('quiz-screen').classList.add('hidden');
-                G.state = 'playing';
-                if(G.qDone >= G.levels[G.currentLvl].qCount) endGame(true);
-            } else {
-                G.lives--;
-                if(G.lives <= 0) endGame(false);
-            }
-            updateHUD();
+class GameCore {
+    constructor() {
+        this.cvs = document.getElementById('gameCanvas'); this.ctx = this.cvs.getContext('2d');
+        this.w=800; this.h=600; this.state='idle';
+        this.score=0; this.lives=3; this.currentLevelIndex = 0; this.player={x:400, y:550};
+        
+        this.ASSETS = {};
+        this.IMG_URLS = {
+            c_red: 'https://img.genially.com/67961b32a116fb001568a75e/966b4fee-e623-41f6-8bf5-f6d84662cf56.png',
+            c_blue: 'https://img.genially.com/67961b32a116fb001568a75e/9d4f9653-a305-4ecd-b49a-6094fbacaf74.png',
+            c_green: 'https://img.genially.com/67961b32a116fb001568a75e/c377dca1-25bb-4924-8060-430631ae28cc.png',
+            t_question: 'https://img.genially.com/67961b32a116fb001568a75e/87a94615-9492-4862-8d39-d5a93e8fb3e2.png',
+            shooter: GAME_CFG.imgShooter,
+            center_mask: GAME_CFG.imgMask
         };
-        box.appendChild(btn);
-    });
-}
-
-function updateHUD() {
-    document.getElementById('h-lives').innerText = "❤️ " + G.lives;
-    document.getElementById('h-time').innerText = "⏱️ " + G.time;
-    document.getElementById('h-score').innerText = "⭐ " + G.score;
-    const progress = (G.qDone / G.levels[G.currentLvl].qCount) * 100;
-    document.getElementById('progress-fill').style.width = progress + "%";
-}
-
-function endGame(win) {
-    G.state = 'over';
-    clearInterval(G.timer);
-    document.getElementById('end-screen').classList.remove('hidden');
-    const t = I18N[gameData.lang] || I18N.en;
-    document.getElementById('e-status').innerText = win ? t.win : t.over;
-    document.getElementById('e-score').innerText = "Score: " + G.score;
-}
-
-// Заглушка для рендеринга (в полной версии здесь будет ваш Canvas движок)
-function runGameLoop() {
-    const cvs = document.getElementById('gameCanvas');
-    const ctx = cvs.getContext('2d');
-    cvs.width = window.innerWidth; cvs.height = window.innerHeight;
-    
-    function draw() {
-        if(G.state === 'playing' || G.state === 'paused') {
-            ctx.clearRect(0,0,cvs.width, cvs.height);
-            // Отрисовка траектории и маски
-            // (Здесь будет код отрисовки из v53)
-        }
-        requestAnimationFrame(draw);
+        for(let key in this.IMG_URLS) { this.ASSETS[key] = new Image(); this.ASSETS[key].src = this.IMG_URLS[key]; }
+        
+        this.bindEvents(); this.applyLevel(0);
+        this.resize(); setInterval(()=>this.resize(), 500); this.loop();
     }
-    draw();
+
+    bindEvents() {
+        const move=(e)=>{ const r=this.cvs.getBoundingClientRect(); const cx=e.touches?e.touches[0].clientX:e.clientX; this.player.x=Math.max(35, Math.min(this.w-35, cx-r.left)); };
+        this.cvs.addEventListener('mousemove',move); this.cvs.addEventListener('touchmove',e=>{e.preventDefault();move(e)},{passive:false});
+        this.cvs.addEventListener('click',()=>this.shoot());
+        document.getElementById('btn-start').onclick = () => this.start(0);
+        document.getElementById('btn-restart').onclick = () => { 
+            document.getElementById('end-screen').classList.add('hidden'); 
+            if (this.isWin && this.currentLevelIndex < GAME_CFG.levels.length - 1) { this.start(this.currentLevelIndex + 1); } 
+            else { document.getElementById('start-screen').classList.remove('hidden'); } 
+        };
+    }
+
+    applyLevel(idx) { document.getElementById('game-container').style.backgroundImage = GAME_CFG.levels[idx].bg; this.genPath(); }
+
+    resize() { const el=document.getElementById('game-container'); if(el.clientWidth>0 && (el.clientWidth!==this.w || el.clientHeight!==this.h)){ this.w=el.clientWidth; this.h=el.clientHeight; this.cvs.width=this.w; this.cvs.height=this.h; this.player.y = this.h - 50; this.genPath(); } }
+
+    genPath() {
+        if(this.h<100) return; let raw = GAME_CFG.levels[this.currentLevelIndex].path.map(p => ({ x: p.x * this.w, y: p.y * this.h }));
+        this.path=[]; if(raw.length>0) this.path.push(raw[0]);
+        for(let i=0; i<raw.length-1; i++){ let a=raw[i], b=raw[i+1], d=Math.hypot(b.x-a.x, b.y-a.y); let steps=Math.ceil(d); for(let k=1; k<=steps; k++){ let t=k/steps; this.path.push({x:a.x+(b.x-a.x)*t, y:a.y+(b.y-a.y)*t}); } }
+    }
+
+    start(lvlIdx) {
+        document.querySelectorAll('.game-layer').forEach(el=>el.classList.add('hidden')); this.state='playing';
+        if (lvlIdx === 0) { this.score=0; this.lives=3; }
+        this.currentLevelIndex = lvlIdx; this.applyLevel(lvlIdx);
+        
+        let targetCount = GAME_CFG.levels[lvlIdx].qCount;
+        let availableQ = [...GAME_CFG.questions].sort(() => Math.random() - 0.5);
+        this.levelQuestions = availableQ.slice(0, targetCount);
+        if(this.levelQuestions.length === 0) { this.levelQuestions = [{type:"mcq", q:"NO QUESTIONS IN DB", o:["OK"], a:"OK"}]; }
+        
+        this.time = GAME_CFG.timerStart; this.qDone=0; this.combo=0; this.isWin=false; this.nextQIndex=0; 
+        this.balls=[]; this.bullets=[]; this.parts=[]; this.queue=[]; this.curSpacing=44; this.nextCol=this.rndCol();
+        
+        for(let i=0; i<this.levelQuestions.length; i++) this.queue.push('question');
+        while(this.queue.length < 15) this.queue.push('normal');
+        this.queue.sort(() => Math.random() - 0.5);
+        this.ui();
+        
+        if(this.tmr) clearInterval(this.tmr);
+        this.tmr=setInterval(()=>{
+            if(this.state==='playing' || this.state==='paused_for_q'){
+                this.time--;
+                let timeDisp = document.getElementById('game-time');
+                if (this.time <= 5 && this.time > 0) { timeDisp.classList.add('pulse-urgent'); } 
+                else { timeDisp.classList.remove('pulse-urgent'); }
+                this.ui();
+                if(this.time<=0) this.over(false);
+            }
+        },1000);
+    }
+
+    rndCol(){ const cols=["red","blue","green"]; return cols[Math.floor(Math.random()*cols.length)]; }
+    spawn() { if(this.queue.length===0) return; let t = this.queue.shift(); this.balls.push({ d:0, type: t, c: this.rndCol() }); }
+    shoot() { if(this.state!=='playing' || this.bullets.length>0) return; this.bullets.push({x:this.player.x, y:this.player.y-20, c:this.nextCol}); this.nextCol=this.rndCol(); }
+
+    update() {
+        if(this.state!=='playing') return;
+        let need=this.balls.length===0; if(!need && this.balls[this.balls.length-1].d > this.curSpacing) need=true; if(need) this.spawn();
+        if(this.balls.length === 0 && this.queue.length === 0) { this.over(true); return; }
+
+        for(let i=0; i<this.balls.length; i++){
+            let b=this.balls[i]; b.d+=1.2;
+            if(b.d>=this.path.length-1) { this.over(false); return; }
+            let idx=Math.floor(b.d); let p1=this.path[idx]||this.path[this.path.length-1], p2=this.path[idx+1]||p1, f=b.d-idx;
+            b.x=p1.x+(p2.x-p1.x)*f; b.y=p1.y+(p2.y-p1.y)*f;
+        }
+
+        for(let i=this.bullets.length-1; i>=0; i--){
+            let bu=this.bullets[i]; bu.y -= 24; if(bu.y<-50) { this.bullets.splice(i,1); continue; }
+            let hit=false;
+            for(let j=0; j<this.balls.length; j++){ if(Math.hypot(bu.x-this.balls[j].x, bu.y-this.balls[j].y) < 30){ this.hit(j, bu); hit=true; break; } }
+            if(hit) this.bullets.splice(i,1);
+        }
+        for(let i=this.parts.length-1; i>=0; i--){ this.parts[i].up(); if(this.parts[i].life<=0) this.parts.splice(i,1); }
+    }
+
+    hit(idx, bullet) {
+        let b = this.balls[idx]; for(let k=0;k<8;k++) this.parts.push(new Part(b.x, b.y, "#fff"));
+        if(b.type === 'normal' && b.c === bullet.c) { this.score += 50; this.showFlash("MATCH!"); }
+        if(b.type === 'question'){ this.state='paused_for_q'; this.balls.splice(idx,1); this.ask(); return; }
+        this.balls.splice(idx,1); this.ui();
+    }
+
+    showFlash(txt){ const el=document.getElementById('game-float-text'); el.innerText=txt; el.style.opacity=1; el.style.transform="translate(-50%,-50%) scale(1.5)"; setTimeout(()=>{ el.style.opacity=0; el.style.transform="translate(-50%,-50%) scale(1)"; },800); }
+
+    ask() {
+        const q = this.levelQuestions[this.nextQIndex % this.levelQuestions.length]; this.nextQIndex++; 
+        document.getElementById('quiz-screen').classList.remove('hidden'); 
+        document.getElementById('q-text').innerText = q.q; 
+        const c = document.getElementById('q-content'); c.innerHTML='';
+        q.o.forEach(opt=>{ 
+            const b=document.createElement('div'); b.className='game-ans-btn'; b.innerText=opt; 
+            b.onclick=()=>{
+                document.getElementById('quiz-screen').classList.add('hidden');
+                if(opt===q.a) { this.qDone++; this.score+=100; this.balls.forEach(bl => bl.d = Math.max(0, bl.d - 100)); this.showFlash("CORRECT!"); } 
+                else { this.lives--; document.getElementById('game-container').classList.add('shake'); setTimeout(()=>document.getElementById('game-container').classList.remove('shake'),400); }
+                this.ui();
+                if(this.lives<=0) { this.over(false); }
+                else if(this.qDone >= this.levelQuestions.length) { this.over(true); } 
+                else { this.state='playing'; }
+            }; 
+            c.appendChild(b); 
+        });
+    }
+
+    over(win) {
+        this.state='gameover'; clearInterval(this.tmr); this.isWin = win; 
+        document.getElementById('end-screen').classList.remove('hidden');
+        const t = I18N[GAME_CFG.lang] || I18N.en;
+        let titleEl = document.getElementById('end-title'); let btnEl = document.getElementById('btn-restart');
+        
+        if (win) {
+            if (this.currentLevelIndex < GAME_CFG.levels.length - 1) { titleEl.innerText = t.cleared; btnEl.innerText = t.next; } 
+            else { titleEl.innerText = t.quest; btnEl.innerText = t.play; }
+        } else { titleEl.innerText = t.over; btnEl.innerText = t.play; }
+        document.getElementById('st-total').innerText = "SCORE: " + this.score; 
+    }
+
+    ui() {
+        document.getElementById('game-lives').innerText=this.lives; document.getElementById('game-score').innerText=this.score;
+        document.getElementById('game-time').innerText=this.time; document.getElementById('game-q-disp').innerText=this.qDone+"/"+this.levelQuestions.length;
+        document.getElementById('game-prog-fill').style.width = ((this.qDone / this.levelQuestions.length) * 100) + '%';
+    }
+
+    drawImg(key, x, y, size) { if(this.ASSETS[key] && this.ASSETS[key].complete) { this.ctx.drawImage(this.ASSETS[key], x - size/2, y - size/2, size, size); } }
+
+    draw() {
+        this.ctx.clearRect(0,0,this.w,this.h);
+
+        if(this.path && this.path.length>0){
+            const last = this.path[this.path.length-1];
+            if (this.ASSETS['center_mask'] && this.ASSETS['center_mask'].complete) {
+                this.ctx.save(); let maskSize = 90;
+                if (this.time <= 5 && this.time > 0 && this.state !== 'gameover') {
+                    this.ctx.shadowBlur = 20 + Math.abs(Math.sin(Date.now() / 100)) * 30; this.ctx.shadowColor = "#ff0000"; maskSize = 90 + Math.abs(Math.sin(Date.now() / 100)) * 20; 
+                } else if (GAME_CFG.neonEnabled) { this.ctx.shadowBlur = 20; this.ctx.shadowColor = GAME_CFG.uiColor; }
+                this.ctx.drawImage(this.ASSETS['center_mask'], last.x - maskSize/2, last.y - maskSize/2, maskSize, maskSize); this.ctx.restore();
+            }
+        }
+
+        this.parts.forEach(p=>p.draw(this.ctx));
+        this.balls.forEach(b=>{ let imgKey = b.type==='question' ? 't_question' : 'c_'+b.c; this.drawImg(imgKey, b.x, b.y, 50); });
+        this.bullets.forEach(b=>{ this.drawImg("c_" + b.c, b.x, b.y, 44); });
+
+        this.ctx.save(); this.ctx.translate(this.player.x, this.player.y);
+        this.drawImg("shooter", 0, 0, 90);
+        if(this.bullets.length===0){ this.drawImg("c_" + this.nextCol, 0, -15, 30); }
+        this.ctx.restore();
+    }
+    loop() { this.update(); this.draw(); requestAnimationFrame(()=>this.loop()); }
 }
 </script>
 </body>
