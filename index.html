@@ -383,11 +383,19 @@ class GameCore {
         this.cfg = window.GAME_CFG;
         this.initDOM(); this.cvs = document.getElementById('gameCanvas'); this.ctx = this.cvs.getContext('2d');
         this.w=800; this.h=600; this.state='idle'; this.score=0; this.maxLives = this.cfg.lives; this.lives=this.maxLives; this.currentLevelIndex = 0; this.player={x:400, y:550};
+        
+        // ---- ФИНАЛЬНОЕ ИСПРАВЛЕНИЕ: ЖЕСТКАЯ ЗАЩИТА СТАРТОВЫХ МАССИВОВ ----
+        this.balls = []; 
+        this.bullets = []; 
+        this.parts = []; 
+        this.queue = [];
+        this.path = [];
+        // ------------------------------------------------------------------
+
         this.ASSETS = {}; this.IMG_URLS = { c_red: 'https://img.genially.com/67961b32a116fb001568a75e/966b4fee-e623-41f6-8bf5-f6d84662cf56.png', c_blue: 'https://img.genially.com/67961b32a116fb001568a75e/9d4f9653-a305-4ecd-b49a-6094fbacaf74.png', c_green: 'https://img.genially.com/67961b32a116fb001568a75e/c377dca1-25bb-4924-8060-430631ae28cc.png', c_yellow: 'https://img.genially.com/67961b32a116fb001568a75e/0a927476-ce04-4639-b1a4-cd50af772e9d.png', t_question: 'https://img.genially.com/67961b32a116fb001568a75e/87a94615-9492-4862-8d39-d5a93e8fb3e2.png', shooter: this.cfg.imgShooter, center_mask: this.cfg.imgMask };
         for(let key in this.IMG_URLS) { this.ASSETS[key] = new Image(); this.ASSETS[key].src = this.IMG_URLS[key]; }
         this.bindEvents(); this.applyLevel(0); 
         
-        // ---- ИСПРАВЛЕНИЕ #1: Окно и clientWidth (Защита от ошибки) ----
         this.resizeInterval = setInterval(() => { this.resize(); }, 200);
         this.loop();
     }
@@ -413,11 +421,9 @@ class GameCore {
     }
     applyLevel(idx) { document.getElementById('game-container').style.backgroundImage = `url('${this.cfg.levels[idx].bg}')`; this.genPath(); }
     
-    // ---- ИСПРАВЛЕНИЕ #1 (Продолжение) ----
     resize() { 
         const el = document.getElementById('game-container'); 
-        if (!el || el.clientWidth === 0) return; // Если контейнера еще нет, просто ждем
-        
+        if (!el || el.clientWidth === 0) return; 
         if (el.clientWidth !== this.w || el.clientHeight !== this.h) { 
             this.w = el.clientWidth; 
             this.h = el.clientHeight; 
@@ -441,7 +447,9 @@ class GameCore {
     shoot() { if(this.state!=='playing' || this.bullets.length>0) return; this.bullets.push({x:this.player.x, y:this.player.y-20, c:this.nextCol}); this.nextCol=this.rndCol(); }
     update() {
         if(this.state!=='playing') return; let need=this.balls.length===0; if(!need && this.balls[this.balls.length-1].d > this.curSpacing) need=true; if(need) this.spawn(); if(this.balls.length === 0 && this.queue.length === 0) { this.over(true); return; }
-        for(let i=0; i<this.balls.length; i++){ let b=this.balls[i]; b.d+=1.2; if(b.d>=this.path.length-1) { this.over(false); return; } let idx=Math.floor(b.d); let p1=this.path[idx]||this.path[this.path.length-1], p2=this.path[idx+1]||p1, f=b.d-idx; b.x=p1.x+(p2.x-p1.x)*f; b.y=p1.y+(p2.y-p1.y)*f; }
+        
+        // Добавлена броня '?' 
+        this.balls?.forEach((b, i) => { b.d+=1.2; if(b.d>=this.path.length-1) { this.over(false); return; } let idx=Math.floor(b.d); let p1=this.path[idx]||this.path[this.path.length-1], p2=this.path[idx+1]||p1, f=b.d-idx; b.x=p1.x+(p2.x-p1.x)*f; b.y=p1.y+(p2.y-p1.y)*f; });
         for(let i=this.bullets.length-1; i>=0; i--){ let bu=this.bullets[i]; bu.y -= 24; if(bu.y<-50) { this.bullets.splice(i,1); continue; } let hit=false; for(let j=0; j<this.balls.length; j++){ if(Math.hypot(bu.x-this.balls[j].x, bu.y-this.balls[j].y) < 30){ this.hit(j, bu); hit=true; break; } } if(hit) this.bullets.splice(i,1); }
         for(let i=this.parts.length-1; i>=0; i--){ this.parts[i].up(); if(this.parts[i].life<=0) this.parts.splice(i,1); }
     }
@@ -456,7 +464,6 @@ class GameCore {
     ask() {
         const q = this.levelQuestions[this.nextQIndex % this.levelQuestions.length]; this.nextQIndex++; document.getElementById('g-quiz-screen').classList.remove('g-hidden'); document.getElementById('g-q-text').innerText = q.q; const c = document.getElementById('g-q-content'); c.innerHTML='';
         
-        // ---- ИСПРАВЛЕНИЕ #2: Защита forEach для кнопок вопроса (q.o || []) ----
         if (q.type === 'mcq') { 
             (q.o || []).forEach(opt=>{ 
                 const b=document.createElement('div'); b.className='g-ans-btn'; b.innerText=opt; b.onclick=()=>this.check(opt===q.a); c.appendChild(b); 
@@ -477,7 +484,7 @@ class GameCore {
 
     check(isOk) {
         document.getElementById('g-quiz-screen').classList.add('g-hidden');
-        if(isOk) { this.combo++; this.qDone++; this.score+=(100*this.combo); this.balls.forEach(bl => bl.d = Math.max(0, bl.d - 100)); this.showFlash("COMBO!"); } else { this.combo=0; this.lives--; document.getElementById('game-container').classList.add('g-shake'); setTimeout(()=>document.getElementById('game-container').classList.remove('g-shake'),400); }
+        if(isOk) { this.combo++; this.qDone++; this.score+=(100*this.combo); this.balls?.forEach(bl => bl.d = Math.max(0, bl.d - 100)); this.showFlash("COMBO!"); } else { this.combo=0; this.lives--; document.getElementById('game-container').classList.add('g-shake'); setTimeout(()=>document.getElementById('game-container').classList.remove('g-shake'),400); }
         this.ui(); if(this.lives<=0) { this.over(false); } else if(this.qDone >= this.levelQuestions.length) { this.over(true); } else { this.state='playing'; }
     }
     over(win) {
@@ -488,10 +495,16 @@ class GameCore {
     }
     ui() { document.getElementById('g-lives').innerText=this.lives; document.getElementById('g-score').innerText=this.score; document.getElementById('g-time').innerText=this.time; document.getElementById('g-q-disp').innerText=this.qDone+"/"+this.levelQuestions.length; document.getElementById('g-prog-fill').style.width = ((this.qDone / this.levelQuestions.length) * 100) + '%'; }
     drawImg(key, x, y, size) { if(this.ASSETS[key] && this.ASSETS[key].complete) { this.ctx.drawImage(this.ASSETS[key], x - size/2, y - size/2, size, size); } }
+    
     draw() {
         this.ctx.clearRect(0,0,this.w,this.h);
         if(this.path && this.path.length>0){ const last = this.path[this.path.length-1]; if (this.ASSETS['center_mask'] && this.ASSETS['center_mask'].complete) { this.ctx.save(); let maskSize = 90; if (this.cfg.neonEnabled) { this.ctx.shadowBlur = 20; this.ctx.shadowColor = this.cfg.uiColor; } this.ctx.drawImage(this.ASSETS['center_mask'], last.x - maskSize/2, last.y - maskSize/2, maskSize, maskSize); this.ctx.restore(); } }
-        this.parts.forEach(p=>p.draw(this.ctx)); this.balls.forEach(b=>{ let imgKey = b.type==='question' ? 't_question' : 'c_'+b.c; this.drawImg(imgKey, b.x, b.y, 50); }); this.bullets.forEach(b=>{ this.drawImg("c_" + b.c, b.x, b.y, 44); });
+        
+        // Добавлена броня '?' 
+        this.parts?.forEach(p=>p.draw(this.ctx)); 
+        this.balls?.forEach(b=>{ let imgKey = b.type==='question' ? 't_question' : 'c_'+b.c; this.drawImg(imgKey, b.x, b.y, 50); }); 
+        this.bullets?.forEach(b=>{ this.drawImg("c_" + b.c, b.x, b.y, 44); });
+        
         this.ctx.save(); this.ctx.translate(this.player.x, this.player.y); this.drawImg("shooter", 0, 0, 90); if(this.bullets.length===0){ this.drawImg("c_" + this.nextCol, 0, -15, 30); } this.ctx.restore();
     }
     loop() { this.update(); this.draw(); requestAnimationFrame(()=>this.loop()); }
@@ -506,21 +519,16 @@ window.onload = () => {
     let playIdx = href.indexOf('#play=');
     
     if (playIdx !== -1) {
-        // Мы в режиме ИГРЫ (внутри Genially)
         document.getElementById('editor-ui').style.display = 'none';
         document.getElementById('game-wrapper').style.display = 'block';
         
         let b64 = href.substring(playIdx + 6);
         
         try {
-            // Защита от URL-encode (Genially любит менять = на %3D и + на %2B)
             try { b64 = decodeURIComponent(b64); } catch(e) {}
-            
-            // Восстанавливаем оригинальный Base64
             b64 = b64.replace(/-/g, '+').replace(/_/g, '/');
             while(b64.length % 4) b64 += '=';
             
-            // Безопасное чтение русских букв и юникода
             let utf8Bytes = atob(b64);
             let jsonStr = decodeURIComponent(utf8Bytes.split('').map(function(c) {
                 return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
@@ -530,7 +538,6 @@ window.onload = () => {
             new GameCore();
             
         } catch(e) {
-            // Если что-то пошло не так, покажем детальную ошибку
             document.getElementById('game-wrapper').innerHTML = `
                 <div style="color:white;text-align:center;margin-top:20vh;font-family:sans-serif;">
                     <h1 style="color:#ff3333;">ОШИБКА РАСШИФРОВКИ ИГРЫ</h1>
@@ -541,7 +548,6 @@ window.onload = () => {
             `;
         }
     } else {
-        // Открываем обычный интерфейс РЕДАКТОРА
         document.getElementById('editor-ui').style.display = 'block';
         renderLevels(); updateQLevelSelect(); updatePreviewBgSelect();
     }
@@ -686,8 +692,6 @@ function drawPreviewPath() {
     let lvlIdx = parseInt(sel);
     if(levels[lvlIdx] && levels[lvlIdx].path) {
         let pathArr = []; try { pathArr = typeof levels[lvlIdx].path === 'string' ? JSON.parse(levels[lvlIdx].path) : levels[lvlIdx].path; } catch(e){}
-        
-        // ---- ИСПРАВЛЕНИЕ #3: Защита forEach для отрисовки линии ----
         if(Array.isArray(pathArr) && pathArr.length > 0) {
             ctx.beginPath(); ctx.strokeStyle = document.getElementById('cfg-ui-color').value; ctx.lineWidth = 4; ctx.setLineDash([10, 10]);
             pathArr.forEach((p, i) => { let px = p.x * cvs.width; let py = p.y * cvs.height; if(i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py); });
@@ -721,18 +725,11 @@ function generateEmbedCode() {
         levels: cleanLevels, questions: questionsDB
     };
 
-    // 1. Идеальное кодирование в URL-Safe Base64 (без символов +, / и =)
     let configStr = JSON.stringify(config);
     let utf8Bytes = encodeURIComponent(configStr).replace(/%([0-9A-F]{2})/g, function(match, p1) { return String.fromCharCode('0x' + p1); });
     let configB64 = btoa(utf8Bytes).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
-    
-    // 2. Берем текущую ссылку редактора
     let editorUrl = window.location.href.split('#')[0] + '#play=';
-    
-    // 3. Прячем ваш адрес GitHub через HTML-сущности (маскировка)
     let hiddenUrl = editorUrl.split('').map(c => '&#' + c.charCodeAt(0) + ';').join('');
-    
-    // 4. Склеиваем
     let finalSrc = hiddenUrl + configB64;
 
     let embedCode = `<iframe src="${finalSrc}" width="100%" height="600" style="border:none; border-radius: 10px;" allowfullscreen></iframe>`;
