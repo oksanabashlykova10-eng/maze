@@ -15,14 +15,12 @@
 
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; }
         
-        /* ПЕРЕКЛЮЧАТЕЛЬ РЕЖИМОВ */
         #editor-ui, #game-ui { display: none; }
         body.mode-editor { background: var(--bg-dark); color: #ddd; font-family: 'Segoe UI', sans-serif; overflow-y: auto; }
         body.mode-editor #editor-ui { display: block; }
         body.mode-game { background: #000; overflow: hidden; }
         body.mode-game #game-ui { display: block; width: 100%; height: 100vh; }
 
-        /* --- СТИЛИ РЕДАКТОРА --- */
         header { display: flex; align-items: center; justify-content: space-between; padding: 15px 30px; background: #000; border-bottom: 2px solid var(--ui-color); box-shadow: 0 0 15px var(--ui-color); }
         .logo-container { display: flex; align-items: center; gap: 15px; }
         .logo-container img { height: 60px; filter: drop-shadow(0 0 10px var(--ui-color)); }
@@ -51,7 +49,6 @@
         .btn-main:hover { background: var(--ui-color); color: #000; box-shadow: 0 0 15px var(--ui-color); }
         .btn-del { background: #ff3333; color: #fff; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; }
 
-        /* ПРЕДПРОСМОТР */
         .preview-box { width: 100%; height: 500px; background: #000; background-size: cover; background-position: center; position: relative; border: 2px solid var(--ui-color); border-radius: 10px; overflow: hidden; }
         .preview-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: flex; justify-content: center; align-items: center; transition: 0.3s; }
         .preview-overlay.hidden { opacity: 0; pointer-events: none; }
@@ -59,7 +56,6 @@
         #p-q { color: var(--q-color); font-size: var(--q-size); margin-bottom: 20px; font-family: var(--game-font); }
         .ans-btn-preview { width: 100%; padding: 15px; margin: 10px 0; background: var(--a-bg); border: 1px solid rgba(255,255,255,0.3); border-radius: 10px; color: var(--a-color); box-sizing: border-box; text-align: center; font-size: var(--a-size); font-family: var(--game-font); }
 
-        /* СПИСОК ВОПРОСОВ */
         .q-item { background: #000; border: 1px solid #444; padding: 15px; margin-bottom: 10px; border-radius: 8px; display: flex; justify-content: space-between; align-items: flex-start; }
         .q-item-content { flex-grow: 1; }
         .q-item-type { font-size: 11px; color: #888; text-transform: uppercase; margin-bottom: 5px; }
@@ -68,14 +64,12 @@
         .q-item-o { font-size: 12px; color: #aaa; }
         .q-item-lvl { display: inline-block; background: #333; padding: 2px 6px; border-radius: 4px; font-size: 11px; color: #fff; margin-top: 5px; }
 
-        /* МОДАЛЬНЫЕ ОКНА */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; justify-content: center; align-items: center; }
         .modal-content { background: #1a1a1a; padding: 25px; border-radius: 10px; width: 90%; max-width: 800px; border: 2px solid var(--ui-color); max-height: 90vh; overflow-y: auto; }
-        .preset-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 15px; }
-        .preset-img { width: 100%; height: 120px; object-fit: cover; border-radius: 8px; cursor: pointer; border: 2px solid transparent; transition: 0.2s; }
+        .preset-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 15px; }
+        .preset-img { width: 100%; height: 200px; object-fit: cover; border-radius: 8px; cursor: pointer; border: 2px solid transparent; transition: 0.2s; }
         .preset-img:hover { border-color: var(--ui-color); transform: scale(1.05); }
 
-        /* ЭКСПОРТ */
         #export-code { width: 100%; height: 180px; background: #000; color: #00ff66; font-family: monospace; border: 1px solid #555; padding: 15px; box-sizing: border-box; font-size: 14px; margin-bottom: 20px; border-radius: 8px; resize: none; word-wrap: break-word; }
     </style>
 </head>
@@ -196,7 +190,7 @@
 
         <div id="tab-levels" class="tab-content">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
-                <h2>Настройка уровней игры</h2>
+                <h2>Настройка уровней игры (Ваши уровни уже загружены!)</h2>
                 <button class="btn-main" onclick="addLevel()">+ ДОБАВИТЬ УРОВЕНЬ</button>
             </div>
             <div id="levels-container"></div>
@@ -260,7 +254,7 @@
                 <h2>Предпросмотр экрана викторины и траектории</h2>
                 <div>
                     <select id="preview-bg-sel" onchange="changePreviewBg()" style="width:250px; display:inline-block; margin-right:10px; padding:8px;">
-                        </select>
+                    </select>
                     <button class="btn-main" onclick="togglePreviewMode()">Вкл/Выкл Плашку Вопроса</button>
                 </div>
             </div>
@@ -294,7 +288,7 @@
 
     <div id="bg-modal" class="modal">
         <div class="modal-content">
-            <h2 style="color:var(--ui-color); margin-top:0;">Выберите фон из галереи</h2>
+            <h2 style="color:var(--ui-color); margin-top:0;">Ваши фоны</h2>
             <div class="preset-grid" id="bg-presets"></div>
             <button class="btn-main" style="margin-top:20px; width:100%; border-color:#ff3333; color:#ff3333;" onclick="closeModal('bg-modal')">Закрыть</button>
         </div>
@@ -304,9 +298,6 @@
 <div id="game-ui"></div>
 
 <script>
-// ==========================================
-// ЛОГИКА МАРШРУТИЗАЦИИ
-// ==========================================
 const urlParams = new URLSearchParams(window.location.search);
 if (urlParams.has('data')) {
     document.body.classList.add('mode-game');
@@ -315,18 +306,22 @@ if (urlParams.has('data')) {
     document.body.classList.add('mode-editor');
 }
 
-// ==========================================
-// ЛОГИКА РЕДАКТОРА
-// ==========================================
+// ВАШИ 4 ФОНА ИЗ ГЕНИАЛИ
 const PRESETS = [
     "https://img.genially.com/67961b32a116fb001568a75e/ccde12e3-391b-41b3-9e20-803cfa4b5506.png",
-    "https://img.genially.com/67961b32a116fb001568a75e/d197607a-d0b1-41b8-89bd-a0b22a578351.png",
-    "https://img.genially.com/67961b32a116fb001568a75e/74f83966-2d33-40ea-a0d0-fb97f76634c0.png",
-    "https://img.genially.com/67961b32a116fb001568a75e/0a58da81-2dd3-4b68-8de9-b22de7ff3cd2.png",
-    "https://img.genially.com/67961b32a116fb001568a75e/7454c7d0-1017-4db9-8dce-03cc456b3e0b.png"
+    "https://img.genially.com/67961b32a116fb001568a75e/1edee495-af5e-4626-ac29-f3197e2c736e.png",
+    "https://img.genially.com/67961b32a116fb001568a75e/f7c9eff0-f1eb-4302-92ab-4586dbcd51de.png",
+    "https://img.genially.com/67961b32a116fb001568a75e/b40dc413-b697-41ba-87f5-b6766c421faa.png"
 ];
 
-let levels = [];
+// ВАШИ 4 УРОВНЯ С ЗАРАНЕЕ ВШИТЫМИ ПУТЯМИ!
+let levels = [
+    { bg: PRESETS[0], path: '[{"x":0.0254,"y":0.444},{"x":0.0729,"y":0.4356},{"x":0.1178,"y":0.4225},{"x":0.1579,"y":0.395},{"x":0.2021,"y":0.3532},{"x":0.2396,"y":0.3043},{"x":0.2791,"y":0.2553},{"x":0.324,"y":0.2052},{"x":0.3709,"y":0.1801},{"x":0.4184,"y":0.155},{"x":0.4619,"y":0.149},{"x":0.5068,"y":0.1502},{"x":0.5503,"y":0.1586},{"x":0.5891,"y":0.1801},{"x":0.6253,"y":0.2016},{"x":0.6621,"y":0.2458},{"x":0.6909,"y":0.2959},{"x":0.7157,"y":0.3687},{"x":0.7244,"y":0.4476},{"x":0.707,"y":0.5347},{"x":0.6742,"y":0.6064},{"x":0.6374,"y":0.6517},{"x":0.5878,"y":0.684},{"x":0.5282,"y":0.6935},{"x":0.4673,"y":0.6828},{"x":0.4211,"y":0.6506},{"x":0.3829,"y":0.5992},{"x":0.3555,"y":0.5311},{"x":0.3508,"y":0.4392},{"x":0.3742,"y":0.3652},{"x":0.4124,"y":0.3246},{"x":0.4592,"y":0.2947},{"x":0.5054,"y":0.2923},{"x":0.5476,"y":0.3126},{"x":0.5818,"y":0.3437},{"x":0.6032,"y":0.4022},{"x":0.5999,"y":0.4607},{"x":0.5878,"y":0.5108},{"x":0.5624,"y":0.5347},{"x":0.5269,"y":0.5323},{"x":0.5101,"y":0.4726}]', qCount: 5 },
+    { bg: PRESETS[1], path: '[{"x":0.002,"y":0.4843},{"x":0.2428,"y":0.4798},{"x":0.2526,"y":0.4798},{"x":0.2604,"y":0.4798},{"x":0.2611,"y":0.4557},{"x":0.2617,"y":0.2869},{"x":0.2611,"y":0.2583},{"x":0.2786,"y":0.2583},{"x":0.5781,"y":0.2553},{"x":0.5957,"y":0.2583},{"x":0.5762,"y":0.2929},{"x":0.3288,"y":0.6486},{"x":0.3164,"y":0.6682},{"x":0.349,"y":0.6712},{"x":0.4805,"y":0.6742},{"x":0.4987,"y":0.6727},{"x":0.5143,"y":0.6486},{"x":0.6367,"y":0.4602},{"x":0.651,"y":0.4286},{"x":0.6875,"y":0.4316},{"x":0.804,"y":0.4331},{"x":0.8171,"y":0.4331},{"x":0.8177,"y":0.5054}]', qCount: 5 },
+    { bg: PRESETS[2], path: '[{"x":0.623,"y":0.5853},{"x":0.6211,"y":0.5476},{"x":0.6211,"y":0.4964},{"x":0.6159,"y":0.4497},{"x":0.6016,"y":0.4316},{"x":0.5859,"y":0.4241},{"x":0.5703,"y":0.4271},{"x":0.556,"y":0.4482},{"x":0.5397,"y":0.4994},{"x":0.5228,"y":0.5823},{"x":0.4987,"y":0.641},{"x":0.4674,"y":0.6908},{"x":0.4421,"y":0.7104},{"x":0.4115,"y":0.7239},{"x":0.375,"y":0.7345},{"x":0.3385,"y":0.733},{"x":0.3099,"y":0.7194},{"x":0.2813,"y":0.6968},{"x":0.2565,"y":0.6802},{"x":0.2305,"y":0.641},{"x":0.2122,"y":0.6019},{"x":0.1973,"y":0.5597},{"x":0.1855,"y":0.5054},{"x":0.1803,"y":0.4557},{"x":0.1829,"y":0.403},{"x":0.1927,"y":0.3547},{"x":0.2064,"y":0.3186},{"x":0.2233,"y":0.2884},{"x":0.2441,"y":0.2583},{"x":0.2663,"y":0.2402},{"x":0.2936,"y":0.2312},{"x":0.3229,"y":0.2251},{"x":0.3529,"y":0.2327},{"x":0.3796,"y":0.2523},{"x":0.3984,"y":0.2824},{"x":0.4128,"y":0.311},{"x":0.4219,"y":0.3623},{"x":0.4154,"y":0.415},{"x":0.3939,"y":0.4331},{"x":0.3737,"y":0.4286},{"x":0.3581,"y":0.4105},{"x":0.3464,"y":0.3864},{"x":0.3294,"y":0.3698},{"x":0.3092,"y":0.3623},{"x":0.2891,"y":0.3728},{"x":0.2708,"y":0.3984},{"x":0.2546,"y":0.4482},{"x":0.2585,"y":0.5115},{"x":0.2734,"y":0.5446},{"x":0.2962,"y":0.5778},{"x":0.3249,"y":0.6019},{"x":0.3581,"y":0.6109},{"x":0.39,"y":0.6019},{"x":0.4193,"y":0.5838},{"x":0.4427,"y":0.5536},{"x":0.4616,"y":0.5054},{"x":0.4746,"y":0.4572},{"x":0.4857,"y":0.3969},{"x":0.5,"y":0.3562},{"x":0.5332,"y":0.3065},{"x":0.5625,"y":0.2884},{"x":0.5911,"y":0.2779},{"x":0.6224,"y":0.2884},{"x":0.6484,"y":0.3171},{"x":0.6719,"y":0.3608},{"x":0.6849,"y":0.4075},{"x":0.6947,"y":0.4632},{"x":0.709,"y":0.5039},{"x":0.7337,"y":0.516},{"x":0.7585,"y":0.5175},{"x":0.7793,"y":0.516},{"x":0.7995,"y":0.522},{"x":0.8164,"y":0.5145}]', qCount: 5 },
+    { bg: PRESETS[3], path: '[{"x":0.1322,"y":0.6863},{"x":0.1484,"y":0.6983},{"x":0.2038,"y":0.7375},{"x":0.2682,"y":0.7646},{"x":0.3405,"y":0.7917},{"x":0.4238,"y":0.7887},{"x":0.4785,"y":0.7661},{"x":0.5156,"y":0.7074},{"x":0.526,"y":0.635},{"x":0.5098,"y":0.5612},{"x":0.485,"y":0.5235},{"x":0.4401,"y":0.4919},{"x":0.3047,"y":0.4858},{"x":0.2454,"y":0.4843},{"x":0.194,"y":0.4451},{"x":0.1641,"y":0.3517},{"x":0.1732,"y":0.2432},{"x":0.2142,"y":0.1784},{"x":0.2604,"y":0.1423},{"x":0.3145,"y":0.1362},{"x":0.3548,"y":0.1362},{"x":0.3887,"y":0.1634},{"x":0.4115,"y":0.2025},{"x":0.4264,"y":0.2447},{"x":0.4408,"y":0.2854},{"x":0.4661,"y":0.3231},{"x":0.4928,"y":0.3412},{"x":0.5267,"y":0.3472},{"x":0.5566,"y":0.3366},{"x":0.5911,"y":0.311},{"x":0.6185,"y":0.2688},{"x":0.6536,"y":0.2327},{"x":0.6888,"y":0.204},{"x":0.7318,"y":0.2055},{"x":0.7708,"y":0.2281},{"x":0.7988,"y":0.2869},{"x":0.8151,"y":0.3427},{"x":0.8177,"y":0.3909},{"x":0.8138,"y":0.4647},{"x":0.7982,"y":0.513},{"x":0.7819,"y":0.5521},{"x":0.7656,"y":0.5778},{"x":0.7637,"y":0.6516},{"x":0.7624,"y":0.7089},{"x":0.7487,"y":0.7435},{"x":0.7227,"y":0.7767}]', qCount: 5 }
+];
+
 let questionsDB = [];
 let targetLvlInput = null;
 
@@ -340,7 +335,6 @@ function openTab(id, btn) {
     if(id==='tab-preview') { updatePreview(); drawPreviewPath(); }
 }
 
-// Уровни
 function addLevel() {
     levels.push({ bg: PRESETS[0], path: "[]", qCount: 5 });
     renderLevels(); updateQLevelSelect(); updatePreviewBgSelect();
@@ -362,7 +356,7 @@ function renderLevels() {
                 <div>
                     <label>Фон (Изображение):</label>
                     <div style="display:flex; gap:10px;">
-                        <div style="width:60px; height:40px; border-radius:5px; border:1px solid #555; background-size:cover; background-position:center; ${bgStyle}"></div>
+                        <div style="width:120px; height:60px; border-radius:5px; border:1px solid #555; background-size:cover; background-position:center; ${bgStyle}"></div>
                         <input type="text" id="lvl-bg-${i}" value="${l.bg}" onchange="levels[${i}].bg=this.value; renderLevels(); updatePreviewBgSelect();">
                         <button class="btn-main" style="padding:10px;" onclick="openBgModal('lvl-bg-${i}', ${i})">Выбрать</button>
                     </div>
@@ -370,10 +364,10 @@ function renderLevels() {
                     <input type="number" value="${l.qCount}" onchange="levels[${i}].qCount=parseInt(this.value)">
                 </div>
                 <div>
-                    <label>Код траектории (Вставьте массив координат [{"x":...}]):</label>
-                    <textarea onchange="levels[${i}].path=this.value; drawPreviewPath();" style="height:90px;">${l.path}</textarea>
+                    <label>Код траектории (Path):</label>
+                    <textarea onchange="levels[${i}].path=this.value; drawPreviewPath();" style="height:90px; font-family:monospace; font-size:11px;">${l.path}</textarea>
                     <div style="text-align:right; margin-top:5px;">
-                        <a href="https://gemini-ai-collaborator.github.io/path-generator/generator.html" target="_blank" style="color:var(--ui-color); font-size:12px;">Удобный генератор траекторий -></a>
+                        <a href="https://gemini-ai-collaborator.github.io/path-generator/generator.html" target="_blank" style="color:var(--ui-color); font-size:12px;">Генератор траекторий -></a>
                     </div>
                 </div>
             </div>
@@ -381,7 +375,6 @@ function renderLevels() {
     });
 }
 
-// Модалка фонов
 function openBgModal(targetId, index) {
     targetLvlInput = { id: targetId, idx: index };
     const grid = document.getElementById('bg-presets');
@@ -401,7 +394,6 @@ function openBgModal(targetId, index) {
 }
 function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
-// Вопросы
 function toggleQType() {
     const t = document.getElementById('q-type').value;
     document.getElementById('wrap-mcq').style.display = t==='mcq' ? 'block' : 'none';
@@ -414,7 +406,6 @@ function updateQLevelSelect() {
     levels.forEach((_, i) => sel.innerHTML += `<option value="${i}">Только Уровень ${i+1}</option>`);
 }
 
-// МАССОВОЕ ДОБАВЛЕНИЕ
 function importBulkQuestions() {
     const lines = document.getElementById('bulk-q').value.split('\n');
     let added = 0;
@@ -487,7 +478,6 @@ function renderQuestions() {
     });
 }
 
-// Предпросмотр
 function updatePreviewBgSelect() {
     const sel = document.getElementById('preview-bg-sel');
     sel.innerHTML = '<option value="">Черный фон (Без картинки)</option>';
@@ -521,7 +511,6 @@ function updatePreview() {
     root.style.setProperty('--q-size', document.getElementById('cfg-q-size').value + 'px');
     root.style.setProperty('--a-size', document.getElementById('cfg-a-size').value + 'px');
     root.style.setProperty('--game-font', document.getElementById('cfg-font').value);
-    
     root.style.setProperty('--neon-glow', isNeon ? `0 0 10px ${uiC}` : 'none');
     
     let hex = document.getElementById('cfg-a-bg').value; 
@@ -530,7 +519,6 @@ function updatePreview() {
 
     document.getElementById('p-mask').src = document.getElementById('cfg-img-mask').value;
     document.getElementById('p-mask').style.filter = `drop-shadow(0 0 10px ${uiC})`;
-    
     document.getElementById('p-card').style.boxShadow = isNeon ? `0 0 15px ${uiC}` : 'none';
     
     drawPreviewPath();
@@ -542,7 +530,7 @@ function drawPreviewPath() {
     ctx.clearRect(0, 0, cvs.width, cvs.height);
     
     const sel = document.getElementById('preview-bg-sel').value;
-    if(sel === "") return; // Если черный фон, не рисуем
+    if(sel === "") return; 
     
     let lvlIdx = parseInt(sel);
     if(levels[lvlIdx] && levels[lvlIdx].path) {
@@ -566,7 +554,6 @@ function drawPreviewPath() {
     }
 }
 
-// ЭКСПОРТ (ГЕНЕРАЦИЯ ССЫЛКИ)
 function generateGeniallyLink() {
     try {
         let cleanLevels = levels.map(l => {
@@ -603,12 +590,11 @@ function generateGeniallyLink() {
         const textarea = document.getElementById('export-code');
         textarea.value = finalUrl;
         
-        // Автоматически прокручиваем к ссылке
+        // Автоскролл вниз к результату
         textarea.scrollIntoView({behavior: "smooth"});
-        
-        alert("✅ Ссылка успешно сгенерирована! Нажмите кнопку 'СКОПИРОВАТЬ ССЫЛКУ'.");
+        alert("✅ Ссылка успешно сгенерирована! Теперь нажмите 'СКОПИРОВАТЬ ССЫЛКУ'.");
     } catch (error) {
-        alert("❌ Ошибка при генерации! Проверьте, правильно ли введен 'Код траектории' во вкладке Уровни.");
+        alert("❌ Ошибка при генерации! Проверьте, правильно ли введен код в поле 'Код траектории'.");
         console.error(error);
     }
 }
@@ -623,8 +609,12 @@ function copyToClipboard() {
     alert("🔗 Ссылка скопирована в буфер обмена!");
 }
 
-// Инициализация
-addLevel();
+// Запускаем отрисовку уровней при старте
+window.onload = () => {
+    renderLevels();
+    updateQLevelSelect();
+    updatePreviewBgSelect();
+};
 </script>
 </body>
 </html>
