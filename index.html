@@ -29,7 +29,7 @@
         .logo-container h1 { margin: 0; font-family: 'Metamorphous', serif; color: #fff; text-shadow: 0 0 10px var(--ui-color); font-size: 22px; }
         
         .tabs { display: flex; gap: 5px; padding: 0 30px; background: #000; }
-        .tab-btn { background: #222; border: 1px solid #444; color: #aaa; padding: 10px 15px; cursor: pointer; border-radius: 5px 5px 0 0; font-family: 'Metamorphous', serif; }
+        .tab-btn { background: #222; border: 1px solid #444; color: #aaa; padding: 12px 20px; cursor: pointer; border-radius: 8px 8px 0 0; font-family: 'Metamorphous', serif; font-size: 14px; font-weight: bold; }
         .tab-btn:hover { background: #333; color: #fff; }
         .tab-btn.active { background: var(--panel-bg); color: #ffe600; border-color: #ffe600; border-bottom: none; }
 
@@ -69,14 +69,14 @@
         .q-item-lvl { display: inline-block; background: #333; padding: 2px 6px; border-radius: 4px; font-size: 11px; color: #fff; margin-top: 5px; }
 
         /* МОДАЛЬНЫЕ ОКНА */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; justify-content: center; align-items: center; }
         .modal-content { background: #1a1a1a; padding: 25px; border-radius: 10px; width: 90%; max-width: 800px; border: 2px solid var(--ui-color); max-height: 90vh; overflow-y: auto; }
         .preset-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 15px; }
         .preset-img { width: 100%; height: 120px; object-fit: cover; border-radius: 8px; cursor: pointer; border: 2px solid transparent; transition: 0.2s; }
         .preset-img:hover { border-color: var(--ui-color); transform: scale(1.05); }
 
         /* ЭКСПОРТ */
-        #export-code { width: 100%; height: 150px; background: #000; color: #00ff66; font-family: monospace; border: 1px solid #555; padding: 15px; box-sizing: border-box; font-size: 14px; margin-bottom: 20px; border-radius: 8px; }
+        #export-code { width: 100%; height: 180px; background: #000; color: #00ff66; font-family: monospace; border: 1px solid #555; padding: 15px; box-sizing: border-box; font-size: 14px; margin-bottom: 20px; border-radius: 8px; resize: none; word-wrap: break-word; }
     </style>
 </head>
 <body>
@@ -85,7 +85,7 @@
     <header>
         <div class="logo-container">
             <img src="https://img.genially.com/67961b32a116fb001568a75e/aa411ed1-1aef-4f00-a1a6-59b64d18dc7a.png">
-            <h1>MAZE TRAP BUILDER 4.3 (All-in-One Edition)</h1>
+            <h1>MAZE TRAP BUILDER (All-in-One Edition)</h1>
         </div>
     </header>
 
@@ -101,24 +101,30 @@
         <div id="tab-design" class="tab-content active">
             <div class="grid-2">
                 <div class="form-group">
-                    <label>Язык интерфейса:</label>
+                    <label>Язык интерфейса (в игре):</label>
                     <select id="cfg-lang">
                         <option value="ru">Русский</option>
-                        <option value="en">English</option>
-                        <option value="uk">Українська</option>
+                        <option value="en">English (Английский)</option>
+                        <option value="uk">Українська (Украинский)</option>
                         <option value="de">Deutsch (Немецкий)</option>
                         <option value="fr">Français (Французский)</option>
-                        <option value="kk">Казахский</option>
+                        <option value="kk">Қазақша (Казахский)</option>
                     </select>
                 </div>
-                <div class="form-group">
-                    <label>Время на уровень (сек):</label>
-                    <input type="number" id="cfg-time" value="120">
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>Кол-во жизней (1-5):</label>
+                        <input type="number" id="cfg-lives" min="1" max="5" value="3">
+                    </div>
+                    <div class="form-group">
+                        <label>Время на уровень (сек):</label>
+                        <input type="number" id="cfg-time" value="120">
+                    </div>
                 </div>
             </div>
 
             <div class="form-group">
-                <label>Цвета интерфейса и шрифты:</label>
+                <label>Цвета интерфейса:</label>
                 <div class="grid-4">
                     <div class="color-picker-group">
                         <span style="font-size:12px; color:#aaa;">Неон (UI)</span>
@@ -131,20 +137,26 @@
                         <input type="text" id="txt-prog-color" value="#00ff66" oninput="document.getElementById('cfg-prog-color').value=this.value">
                     </div>
                     <div class="color-picker-group">
-                        <span style="font-size:12px; color:#aaa;">Вопрос</span>
+                        <span style="font-size:12px; color:#aaa;">Текст Вопроса</span>
                         <input type="color" id="cfg-q-color" value="#ffe600" oninput="syncColor(this, 'txt-q-color'); updatePreview()">
                         <input type="text" id="txt-q-color" value="#ffe600" oninput="document.getElementById('cfg-q-color').value=this.value; updatePreview()">
                     </div>
                     <div class="color-picker-group">
-                        <span style="font-size:12px; color:#aaa;">Ответ (Текст)</span>
+                        <span style="font-size:12px; color:#aaa;">Текст Ответа</span>
                         <input type="color" id="cfg-a-color" value="#ffffff" oninput="syncColor(this, 'txt-a-color'); updatePreview()">
                         <input type="text" id="txt-a-color" value="#ffffff" oninput="document.getElementById('cfg-a-color').value=this.value; updatePreview()">
                     </div>
                     <div class="color-picker-group" style="grid-column: span 2;">
-                        <span style="font-size:12px; color:#aaa;">Ответ (Фон кнопок Hex)</span>
+                        <span style="font-size:12px; color:#aaa;">Фон кнопок ответа (Hex)</span>
                         <input type="color" id="cfg-a-bg" value="#333333" oninput="syncColor(this, 'txt-a-bg'); updatePreview()">
                         <input type="text" id="txt-a-bg" value="#333333" oninput="document.getElementById('cfg-a-bg').value=this.value; updatePreview()">
                     </div>
+                </div>
+                <div style="margin-top: 15px;">
+                    <label style="display:inline-flex; align-items:center; cursor:pointer;">
+                        <input type="checkbox" id="cfg-neon" checked style="width:20px; height:20px; margin-right:10px;" onchange="updatePreview()">
+                        Включить неоновое свечение (Glow Effect)
+                    </label>
                 </div>
             </div>
 
@@ -184,8 +196,8 @@
 
         <div id="tab-levels" class="tab-content">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
-                <h2>Настройка уровней</h2>
-                <button class="btn-main" onclick="addLevel()">+ Добавить уровень</button>
+                <h2>Настройка уровней игры</h2>
+                <button class="btn-main" onclick="addLevel()">+ ДОБАВИТЬ УРОВЕНЬ</button>
             </div>
             <div id="levels-container"></div>
         </div>
@@ -194,59 +206,71 @@
             <div class="grid-2">
                 <div>
                     <h2>База вопросов</h2>
-                    <div id="questions-list" style="max-height: 500px; overflow-y: auto; padding-right: 10px;"></div>
+                    <div id="questions-list" style="max-height: 600px; overflow-y: auto; padding-right: 10px;"></div>
                 </div>
                 
-                <div class="form-group" style="position: sticky; top: 20px;">
-                    <h3 style="margin-top:0; color:var(--ui-color);">Добавить вопрос</h3>
-                    <label>Тип вопроса:</label>
-                    <select id="q-type" onchange="toggleQType()">
-                        <option value="mcq">Выбор ответа (Кнопки)</option>
-                        <option value="order">Сборка фразы из слов</option>
-                        <option value="input">Ручной ввод текста</option>
-                    </select>
-
-                    <label style="margin-top:10px;">Текст вопроса:</label>
-                    <textarea id="q-text" placeholder="Введите вопрос..."></textarea>
-
-                    <div id="wrap-mcq">
-                        <label style="margin-top:10px;">Правильный ответ:</label>
-                        <input type="text" id="q-mcq-a" placeholder="Правильный вариант">
-                        <label style="margin-top:10px;">Неправильные ответы (через |):</label>
-                        <input type="text" id="q-mcq-w" placeholder="Ложь 1 | Ложь 2 | Ложь 3">
+                <div style="position: sticky; top: 20px;">
+                    <div class="form-group">
+                        <h3 style="margin-top:0; color:var(--ui-color);">Массовое добавление вопросов</h3>
+                        <label>Вставьте список (Вопрос . Правильный | Ложь 1 | Ложь 2):</label>
+                        <textarea id="bulk-q" style="height: 120px;" placeholder="Dog переводится как... . Собака | Кот | Мышь&#10;2 + 2 = . 4 | 5 | 3"></textarea>
+                        <button class="btn-main" style="width:100%; margin-top:10px;" onclick="importBulkQuestions()">+ Загрузить список</button>
                     </div>
 
-                    <div id="wrap-order" style="display:none;">
-                        <label style="margin-top:10px;">Фраза (слова через пробел):</label>
-                        <input type="text" id="q-order-a" placeholder="I have a dog">
+                    <div class="form-group">
+                        <h3 style="margin-top:0; color:var(--ui-color);">Добавить один сложный вопрос</h3>
+                        <label>Тип вопроса:</label>
+                        <select id="q-type" onchange="toggleQType()">
+                            <option value="mcq">Выбор ответа (Кнопки)</option>
+                            <option value="order">Сборка фразы из слов</option>
+                            <option value="input">Ручной ввод текста</option>
+                        </select>
+
+                        <label style="margin-top:10px;">Текст вопроса:</label>
+                        <textarea id="q-text" placeholder="Введите вопрос..."></textarea>
+
+                        <div id="wrap-mcq">
+                            <label style="margin-top:10px;">Правильный ответ:</label>
+                            <input type="text" id="q-mcq-a" placeholder="Правильный вариант">
+                            <label style="margin-top:10px;">Неправильные ответы (через |):</label>
+                            <input type="text" id="q-mcq-w" placeholder="Ложь 1 | Ложь 2 | Ложь 3">
+                        </div>
+
+                        <div id="wrap-order" style="display:none;">
+                            <label style="margin-top:10px;">Фраза (слова через пробел):</label>
+                            <input type="text" id="q-order-a" placeholder="I have a dog">
+                        </div>
+
+                        <div id="wrap-input" style="display:none;">
+                            <label style="margin-top:10px;">Правильный ответ (можно несколько через |):</label>
+                            <input type="text" id="q-input-a" placeholder="dog | a dog">
+                        </div>
+
+                        <label style="margin-top:10px;">Для какого уровня?</label>
+                        <select id="q-lvl"><option value="all">Для всех уровней</option></select>
+
+                        <button class="btn-main" style="width:100%; margin-top:20px;" onclick="saveQuestion()">+ Добавить вопрос</button>
                     </div>
-
-                    <div id="wrap-input" style="display:none;">
-                        <label style="margin-top:10px;">Правильный ответ (можно несколько через |):</label>
-                        <input type="text" id="q-input-a" placeholder="dog | a dog">
-                    </div>
-
-                    <label style="margin-top:10px;">Уровень:</label>
-                    <select id="q-lvl"><option value="all">Для всех уровней</option></select>
-
-                    <button class="btn-main" style="width:100%; margin-top:20px;" onclick="saveQuestion()">+ Сохранить вопрос</button>
                 </div>
             </div>
         </div>
 
         <div id="tab-preview" class="tab-content">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 15px;">
-                <h2>Предпросмотр экрана викторины</h2>
+                <h2>Предпросмотр экрана викторины и траектории</h2>
                 <div>
-                    <select id="preview-bg-sel" onchange="changePreviewBg()" style="width:200px; display:inline-block; margin-right:10px;">
+                    <select id="preview-bg-sel" onchange="changePreviewBg()" style="width:250px; display:inline-block; margin-right:10px; padding:8px;">
                         </select>
-                    <button class="btn-main" onclick="togglePreviewMode()">Вкл/Выкл Плашку</button>
+                    <button class="btn-main" onclick="togglePreviewMode()">Вкл/Выкл Плашку Вопроса</button>
                 </div>
             </div>
+            
             <div class="preview-box" id="p-box">
+                <canvas id="preview-canvas" width="800" height="500" style="position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none;"></canvas>
+                
                 <div class="preview-overlay" id="p-overlay">
                     <div class="preview-card" id="p-card">
-                        <img id="p-mask" src="" style="width:90px; margin-bottom:15px;">
+                        <img id="p-mask" src="" style="width:90px; margin-bottom:15px; filter: drop-shadow(0 0 10px #fff);">
                         <div id="p-q">What is the capital of Great Britain?</div>
                         <div class="ans-btn-preview" id="p-btn1">London</div>
                         <div class="ans-btn-preview" id="p-btn2">Paris</div>
@@ -257,29 +281,27 @@
         </div>
 
         <div id="tab-export" class="tab-content">
-            <h2>Готовая ссылка для Genially</h2>
-            <p>Скопируйте эту ссылку и вставьте её в Genially (Вставить -> Другие -> Вставить внешнюю ссылку).</p>
-            <textarea id="export-code" readonly></textarea>
-            <button class="btn-main" style="background:var(--ui-color); color:#000; width:100%; font-size:18px;" onclick="copyToClipboard()">📋 СКОПИРОВАТЬ ССЫЛКУ</button>
-            <button class="btn-main" style="width:100%; margin-top:15px;" onclick="generateGeniallyLink()">🔄 Обновить ссылку (сгенерировать заново)</button>
+            <h2>Ваша готовая ссылка</h2>
+            <p>1. Нажмите "Сгенерировать ссылку".<br>2. Скопируйте её.<br>3. Вставьте в Genially (Вставить -> Другие -> Вставить внешнюю ссылку).</p>
+            
+            <button class="btn-main" style="width:100%; margin-bottom:15px; background:var(--ui-color); color:#000; font-size:18px;" onclick="generateGeniallyLink()">⚙️ СГЕНЕРИРОВАТЬ / ОБНОВИТЬ ССЫЛКУ</button>
+            
+            <textarea id="export-code" placeholder="Здесь появится ваша ссылка..." readonly></textarea>
+            
+            <button class="btn-main" style="width:100%;" onclick="copyToClipboard()">📋 СКОПИРОВАТЬ ССЫЛКУ</button>
         </div>
     </main>
 
     <div id="bg-modal" class="modal">
         <div class="modal-content">
-            <h2 style="color:var(--ui-color); margin-top:0;">Выбрать фон</h2>
+            <h2 style="color:var(--ui-color); margin-top:0;">Выберите фон из галереи</h2>
             <div class="preset-grid" id="bg-presets"></div>
-            <button class="btn-main" style="margin-top:20px; width:100%;" onclick="closeModal('bg-modal')">Отмена</button>
+            <button class="btn-main" style="margin-top:20px; width:100%; border-color:#ff3333; color:#ff3333;" onclick="closeModal('bg-modal')">Закрыть</button>
         </div>
     </div>
 </div>
 
-<div id="game-ui">
-    <div style="color:#fff; text-align:center; padding-top:20vh; font-family:sans-serif;">
-        <h1>ИГРА ЗАГРУЖАЕТСЯ...</h1>
-        <p>Если вы видите этот текст, значит маршрутизатор работает отлично!<br>Движок игры мы вставим сюда на следующем шаге.</p>
-    </div>
-</div>
+<div id="game-ui"></div>
 
 <script>
 // ==========================================
@@ -288,7 +310,7 @@
 const urlParams = new URLSearchParams(window.location.search);
 if (urlParams.has('data')) {
     document.body.classList.add('mode-game');
-    // initGameEngine(JSON.parse(decodeURIComponent(escape(atob(urlParams.get('data'))))));
+    document.getElementById('game-ui').innerHTML = "<h1 style='color:#fff; text-align:center; padding-top:20%; font-family:sans-serif;'>ИГРА ЗАГРУЖАЕТСЯ...<br>Переходите к Шагу 2!</h1>";
 } else {
     document.body.classList.add('mode-editor');
 }
@@ -309,12 +331,13 @@ let questionsDB = [];
 let targetLvlInput = null;
 
 function syncColor(src, targetId) { document.getElementById(targetId).value = src.value; }
+
 function openTab(id, btn) {
     document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
     document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
     document.getElementById(id).classList.add('active');
     btn.classList.add('active');
-    if(id==='tab-preview') updatePreview();
+    if(id==='tab-preview') { updatePreview(); drawPreviewPath(); }
 }
 
 // Уровни
@@ -343,12 +366,12 @@ function renderLevels() {
                         <input type="text" id="lvl-bg-${i}" value="${l.bg}" onchange="levels[${i}].bg=this.value; renderLevels(); updatePreviewBgSelect();">
                         <button class="btn-main" style="padding:10px;" onclick="openBgModal('lvl-bg-${i}', ${i})">Выбрать</button>
                     </div>
-                    <label style="margin-top:15px;">Количество вопросов:</label>
+                    <label style="margin-top:15px;">Количество вопросов на уровне:</label>
                     <input type="number" value="${l.qCount}" onchange="levels[${i}].qCount=parseInt(this.value)">
                 </div>
                 <div>
-                    <label>Код траектории (Path):</label>
-                    <textarea onchange="levels[${i}].path=this.value">${l.path}</textarea>
+                    <label>Код траектории (Вставьте массив координат [{"x":...}]):</label>
+                    <textarea onchange="levels[${i}].path=this.value; drawPreviewPath();" style="height:90px;">${l.path}</textarea>
                     <div style="text-align:right; margin-top:5px;">
                         <a href="https://gemini-ai-collaborator.github.io/path-generator/generator.html" target="_blank" style="color:var(--ui-color); font-size:12px;">Удобный генератор траекторий -></a>
                     </div>
@@ -390,6 +413,27 @@ function updateQLevelSelect() {
     sel.innerHTML = '<option value="all">Для всех уровней</option>';
     levels.forEach((_, i) => sel.innerHTML += `<option value="${i}">Только Уровень ${i+1}</option>`);
 }
+
+// МАССОВОЕ ДОБАВЛЕНИЕ
+function importBulkQuestions() {
+    const lines = document.getElementById('bulk-q').value.split('\n');
+    let added = 0;
+    lines.forEach(line => {
+        if(line.includes('.')) {
+            let parts = line.split('.');
+            let qText = parts[0].trim();
+            let opts = parts[1].split('|').map(s=>s.trim()).filter(s=>s!=="");
+            if(qText && opts.length >= 2) {
+                questionsDB.push({ type: 'mcq', q: qText, o: [...opts].sort(()=>Math.random()-0.5), a: opts[0], lvl: 'all' });
+                added++;
+            }
+        }
+    });
+    document.getElementById('bulk-q').value = '';
+    alert("Успешно добавлено вопросов: " + added);
+    renderQuestions();
+}
+
 function saveQuestion() {
     const type = document.getElementById('q-type').value;
     const qText = document.getElementById('q-text').value.trim();
@@ -412,7 +456,6 @@ function saveQuestion() {
     }
     questionsDB.push(qObj);
     
-    // Очистка формы
     document.getElementById('q-text').value = '';
     document.getElementById('q-mcq-a').value = ''; document.getElementById('q-mcq-w').value = '';
     document.getElementById('q-order-a').value = ''; document.getElementById('q-input-a').value = '';
@@ -447,13 +490,20 @@ function renderQuestions() {
 // Предпросмотр
 function updatePreviewBgSelect() {
     const sel = document.getElementById('preview-bg-sel');
-    sel.innerHTML = '<option value="">Черный фон</option>';
-    levels.forEach((l, i) => sel.innerHTML += `<option value="${l.bg}">Фон уровня ${i+1}</option>`);
+    sel.innerHTML = '<option value="">Черный фон (Без картинки)</option>';
+    levels.forEach((l, i) => sel.innerHTML += `<option value="${i}">Фон Уровня ${i+1}</option>`);
     changePreviewBg();
 }
 function changePreviewBg() {
-    const bg = document.getElementById('preview-bg-sel').value;
-    document.getElementById('p-box').style.backgroundImage = bg ? `url('${bg}')` : 'none';
+    const sel = document.getElementById('preview-bg-sel').value;
+    const box = document.getElementById('p-box');
+    if(sel === "") {
+        box.style.backgroundImage = 'none';
+    } else {
+        let lvlIdx = parseInt(sel);
+        if(levels[lvlIdx]) box.style.backgroundImage = `url('${levels[lvlIdx].bg}')`;
+    }
+    drawPreviewPath();
 }
 function togglePreviewMode() {
     document.getElementById('p-overlay').classList.toggle('hidden');
@@ -461,6 +511,7 @@ function togglePreviewMode() {
 function updatePreview() {
     const root = document.documentElement;
     const uiC = document.getElementById('cfg-ui-color').value;
+    const isNeon = document.getElementById('cfg-neon').checked;
     const qC = document.getElementById('cfg-q-color').value;
     const aC = document.getElementById('cfg-a-color').value;
     
@@ -471,53 +522,105 @@ function updatePreview() {
     root.style.setProperty('--a-size', document.getElementById('cfg-a-size').value + 'px');
     root.style.setProperty('--game-font', document.getElementById('cfg-font').value);
     
+    root.style.setProperty('--neon-glow', isNeon ? `0 0 10px ${uiC}` : 'none');
+    
     let hex = document.getElementById('cfg-a-bg').value; 
     let r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
     root.style.setProperty('--a-bg', `rgba(${r},${g},${b}, 0.6)`);
 
     document.getElementById('p-mask').src = document.getElementById('cfg-img-mask').value;
+    document.getElementById('p-mask').style.filter = `drop-shadow(0 0 10px ${uiC})`;
+    
+    document.getElementById('p-card').style.boxShadow = isNeon ? `0 0 15px ${uiC}` : 'none';
+    
+    drawPreviewPath();
+}
+
+function drawPreviewPath() {
+    const cvs = document.getElementById('preview-canvas');
+    const ctx = cvs.getContext('2d');
+    ctx.clearRect(0, 0, cvs.width, cvs.height);
+    
+    const sel = document.getElementById('preview-bg-sel').value;
+    if(sel === "") return; // Если черный фон, не рисуем
+    
+    let lvlIdx = parseInt(sel);
+    if(levels[lvlIdx] && levels[lvlIdx].path) {
+        let pathArr = [];
+        try { pathArr = JSON.parse(levels[lvlIdx].path); } catch(e){}
+        
+        if(pathArr.length > 0) {
+            ctx.beginPath();
+            ctx.strokeStyle = document.getElementById('cfg-ui-color').value;
+            ctx.lineWidth = 4;
+            ctx.setLineDash([10, 10]);
+            pathArr.forEach((p, i) => {
+                let px = p.x * cvs.width;
+                let py = p.y * cvs.height;
+                if(i === 0) ctx.moveTo(px, py);
+                else ctx.lineTo(px, py);
+            });
+            ctx.stroke();
+            ctx.setLineDash([]);
+        }
+    }
 }
 
 // ЭКСПОРТ (ГЕНЕРАЦИЯ ССЫЛКИ)
 function generateGeniallyLink() {
-    // Очищаем уровни перед экспортом
-    let cleanLevels = levels.map(l => {
-        let parsedPath = [];
-        try { parsedPath = JSON.parse(l.path || '[]'); } catch(e){}
-        return { bg: l.bg.startsWith('url') ? l.bg : `url('${l.bg}')`, path: parsedPath, qCount: l.qCount };
-    });
+    try {
+        let cleanLevels = levels.map(l => {
+            let parsedPath = [];
+            try { parsedPath = JSON.parse(l.path || '[]'); } catch(e){}
+            return { bg: l.bg.startsWith('url') ? l.bg : `url('${l.bg}')`, path: parsedPath, qCount: l.qCount };
+        });
 
-    const config = {
-        lang: document.getElementById('cfg-lang').value,
-        timerStart: parseInt(document.getElementById('cfg-time').value) || 120,
-        fontFamily: document.getElementById('cfg-font').value,
-        uiColor: document.getElementById('cfg-ui-color').value,
-        progColor: document.getElementById('cfg-prog-color').value,
-        qColor: document.getElementById('cfg-q-color').value,
-        qSize: document.getElementById('cfg-q-size').value + "px",
-        aColor: document.getElementById('cfg-a-color').value,
-        aSize: document.getElementById('cfg-a-size').value + "px",
-        aBgHex: document.getElementById('cfg-a-bg').value,
-        imgShooter: document.getElementById('cfg-img-shooter').value,
-        imgMask: document.getElementById('cfg-img-mask').value,
-        imgHeart: document.getElementById('cfg-img-heart').value,
-        imgClock: document.getElementById('cfg-img-clock').value,
-        levels: cleanLevels,
-        questions: questionsDB
-    };
+        const config = {
+            lang: document.getElementById('cfg-lang').value,
+            lives: parseInt(document.getElementById('cfg-lives').value) || 3,
+            timerStart: parseInt(document.getElementById('cfg-time').value) || 120,
+            neonEnabled: document.getElementById('cfg-neon').checked,
+            fontFamily: document.getElementById('cfg-font').value,
+            uiColor: document.getElementById('cfg-ui-color').value,
+            progColor: document.getElementById('cfg-prog-color').value,
+            qColor: document.getElementById('cfg-q-color').value,
+            qSize: document.getElementById('cfg-q-size').value + "px",
+            aColor: document.getElementById('cfg-a-color').value,
+            aSize: document.getElementById('cfg-a-size').value + "px",
+            aBgHex: document.getElementById('cfg-a-bg').value,
+            imgShooter: document.getElementById('cfg-img-shooter').value,
+            imgMask: document.getElementById('cfg-img-mask').value,
+            imgHeart: document.getElementById('cfg-img-heart').value,
+            imgClock: document.getElementById('cfg-img-clock').value,
+            levels: cleanLevels,
+            questions: questionsDB
+        };
 
-    // Создаем Base64 ссылку
-    const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(config))));
-    const baseUrl = window.location.href.split('?')[0];
-    const finalUrl = `${baseUrl}?data=${encoded}`;
+        const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(config))));
+        const baseUrl = window.location.href.split('?')[0];
+        const finalUrl = `${baseUrl}?data=${encoded}`;
 
-    document.getElementById('export-code').value = finalUrl;
+        const textarea = document.getElementById('export-code');
+        textarea.value = finalUrl;
+        
+        // Автоматически прокручиваем к ссылке
+        textarea.scrollIntoView({behavior: "smooth"});
+        
+        alert("✅ Ссылка успешно сгенерирована! Нажмите кнопку 'СКОПИРОВАТЬ ССЫЛКУ'.");
+    } catch (error) {
+        alert("❌ Ошибка при генерации! Проверьте, правильно ли введен 'Код траектории' во вкладке Уровни.");
+        console.error(error);
+    }
 }
 
 function copyToClipboard() {
     let copyText = document.getElementById("export-code");
+    if(copyText.value === "") {
+        alert("Сначала нажмите 'СГЕНЕРИРОВАТЬ ССЫЛКУ'!");
+        return;
+    }
     copyText.select(); document.execCommand("copy");
-    alert("Ссылка скопирована! Вставьте её в Genially.");
+    alert("🔗 Ссылка скопирована в буфер обмена!");
 }
 
 // Инициализация
