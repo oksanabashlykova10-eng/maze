@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Maze Trap - Скрытый Редактор</title>
+    <title>Maze Trap - Iframe Editor</title>
     <link href="https://fonts.googleapis.com/css2?family=Metamorphous&family=Orbitron:wght@700&family=Caveat:wght@700&family=Cinzel:wght@700&family=Macondo&family=Montserrat:wght@800&family=Comic+Neue:wght@700&family=Pacifico&display=swap" rel="stylesheet">
     
     <style>
@@ -71,7 +71,7 @@
 <header>
     <div class="logo-container">
         <img src="https://img.genially.com/67961b32a116fb001568a75e/aa411ed1-1aef-4f00-a1a6-59b64d18dc7a.png">
-        <h1>MAZE TRAP: PRO BUILDER</h1>
+        <h1>MAZE TRAP: IFRAME EDITOR</h1>
     </div>
 </header>
 
@@ -88,7 +88,14 @@
         <div class="grid-2">
             <div class="form-group">
                 <label>Язык интерфейса:</label>
-                <select id="cfg-lang"><option value="ru">Русский</option><option value="en">English</option></select>
+                <select id="cfg-lang">
+                    <option value="ru">Русский</option>
+                    <option value="en">English (Английский)</option>
+                    <option value="uk">Українська (Украинский)</option>
+                    <option value="de">Deutsch (Немецкий)</option>
+                    <option value="fr">Français (Французский)</option>
+                    <option value="kk">Қазақша (Казахский)</option>
+                </select>
             </div>
             <div class="grid-2">
                 <div class="form-group"><label>Жизни (1-5):</label><input type="number" id="cfg-lives" min="1" max="5" value="3"></div>
@@ -139,6 +146,12 @@
                 <select id="cfg-font" onchange="updatePreview()">
                     <option value="'Metamorphous', serif">Metamorphous</option>
                     <option value="'Orbitron', sans-serif">Orbitron</option>
+                    <option value="'Caveat', cursive">Caveat</option>
+                    <option value="'Cinzel', serif">Cinzel</option>
+                    <option value="'Macondo', cursive">Macondo</option>
+                    <option value="'Montserrat', sans-serif">Montserrat</option>
+                    <option value="'Comic Neue', cursive">Comic Neue</option>
+                    <option value="'Pacifico', cursive">Pacifico</option>
                 </select>
             </div>
             <div class="grid-2">
@@ -176,6 +189,41 @@
                     <textarea id="bulk-q" style="height: 120px;" placeholder="Dog переводится как... . Собака | Кот | Мышь"></textarea>
                     <button class="btn-main" style="width:100%; margin-top:10px;" onclick="importBulkQuestions()">+ Загрузить список</button>
                 </div>
+                
+                <div class="form-group">
+                    <h3 style="margin-top:0; color:var(--ui-color);">Добавить один сложный вопрос</h3>
+                    <label>Тип вопроса:</label>
+                    <select id="q-type" onchange="toggleQType()">
+                        <option value="mcq">Выбор ответа (Кнопки)</option>
+                        <option value="order">Сборка фразы из слов</option>
+                        <option value="input">Ручной ввод текста</option>
+                    </select>
+                    
+                    <label style="margin-top:10px;">Текст вопроса:</label>
+                    <textarea id="q-text" placeholder="Введите вопрос..."></textarea>
+                    
+                    <div id="wrap-mcq">
+                        <label style="margin-top:10px;">Правильный ответ:</label>
+                        <input type="text" id="q-mcq-a" placeholder="Правильный вариант">
+                        <label style="margin-top:10px;">Неправильные ответы (через |):</label>
+                        <input type="text" id="q-mcq-w" placeholder="Ложь 1 | Ложь 2 | Ложь 3">
+                    </div>
+                    
+                    <div id="wrap-order" style="display:none;">
+                        <label style="margin-top:10px;">Фраза (слова через пробел):</label>
+                        <input type="text" id="q-order-a" placeholder="I have a dog">
+                    </div>
+                    
+                    <div id="wrap-input" style="display:none;">
+                        <label style="margin-top:10px;">Правильный ответ (можно несколько через |):</label>
+                        <input type="text" id="q-input-a" placeholder="dog | a dog">
+                    </div>
+                    
+                    <label style="margin-top:10px;">Для какого уровня?</label>
+                    <select id="q-lvl"><option value="all">Для всех уровней</option></select>
+                    
+                    <button class="btn-main" style="width:100%; margin-top:20px;" onclick="saveQuestion()">+ Добавить вопрос</button>
+                </div>
             </div>
         </div>
     </div>
@@ -204,11 +252,10 @@
 
     <div id="tab-export" class="tab-content">
         <div style="text-align: center; padding: 20px;">
-            <h2 style="color:var(--ui-color); font-size:28px;">Скрытый Embed-код для Genially</h2>
+            <h2 style="color:var(--ui-color); font-size:28px;">Сгенерировать IFRAME для Genially</h2>
             <p style="color:#aaa; max-width:700px; margin: 0 auto 20px;">
-                Нажмите кнопку ниже, чтобы сгенерировать <b>iframe код</b>. В этом коде зашифрована вся ваша игра.<br>
-                Перейдите в Genially -> <b>Insert</b> -> <b>Others</b> (Вставить -> Другое) и вставьте этот код. <br>
-                Никто никогда не увидит ваш логин на GitHub!
+                Этот код содержит в себе всю игру (через шифрование Base64). Вам не нужно ничего скачивать и загружать на GitHub.<br>
+                Просто скопируйте его и вставьте в Genially (<b>Insert -> Others -> Iframe</b>).
             </p>
             <button class="btn-main" style="width:100%; margin-bottom:15px; background:var(--ui-color); color:#000; font-size:20px;" onclick="generateEmbedCode()">⚙️ СГЕНЕРИРОВАТЬ IFRAME КОД</button>
             <textarea id="export-code" placeholder="Здесь появится ваш <iframe src='...'> код..." readonly></textarea>
@@ -231,7 +278,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://fonts.googleapis.com/css2?family=Metamorphous&family=Orbitron:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Metamorphous&family=Orbitron:wght@700&family=Caveat:wght@700&family=Cinzel:wght@700&family=Macondo&family=Montserrat:wght@800&family=Comic+Neue:wght@700&family=Pacifico&display=swap" rel="stylesheet">
     <style>
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #000; overflow: hidden; user-select: none; }
         #game-container { position: relative; width: 100%; height: 100%; background-color: #000; background-size: 100% 100%; background-position: center; display: flex; justify-content: center; align-items: center; transition: 0.5s; }
@@ -253,6 +300,12 @@
         .g-btn-neon:hover { background: var(--ui-color); color: #000; box-shadow: 0 0 25px var(--ui-color); transform: scale(1.05); }
         .g-ans-btn { width: 100%; background: var(--a-bg); border: 1px solid rgba(255, 255, 255, 0.3); color: var(--a-color); padding: 15px 20px; margin: 10px 0; border-radius: 10px; cursor: pointer; text-align: center; transition: 0.2s; font-size: var(--a-size); font-family: var(--game-font); box-sizing: border-box;}
         .g-ans-btn:hover { background: rgba(255, 255, 255, 0.2); border-color: var(--ui-color); color: var(--ui-color); text-shadow: 0 0 8px var(--ui-color); transform: scale(1.02); }
+        .g-input-field { width: 90%; padding: 15px; background: rgba(0,0,0,0.5); border: 2px solid var(--ui-color); color:#fff; font-size: var(--a-size); text-align:center; border-radius: 10px; font-family: var(--game-font); margin-bottom: 20px; box-sizing: border-box; outline:none;}
+        .g-order-slots { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 20px; min-height: 50px; border-bottom: 2px solid #555; padding: 15px; width: 100%; box-sizing: border-box;}
+        .g-word-slot { font-size: var(--a-size); color: var(--ui-color); padding: 0 8px; border-bottom: 2px solid var(--ui-color); }
+        .g-word-btn { background: var(--a-bg); border: 1px solid rgba(255,255,255,0.3); color: var(--a-color); padding: 12px 20px; border-radius: 8px; cursor: pointer; margin: 6px; font-size: var(--a-size); font-family: var(--game-font); transition: 0.2s;}
+        .g-word-btn:hover { border-color:var(--ui-color); color: var(--ui-color);}
+        .g-word-btn.used { opacity: 0.3; pointer-events: none; }
         #g-float-text { position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); font-size: 60px; color: #fff; text-shadow: 0 0 20px #00ffff; font-weight: 900; opacity: 0; pointer-events: none; z-index: 150; transition: opacity 0.5s, transform 0.5s; white-space: nowrap; font-family: var(--game-font); }
         .g-shake { animation: gShakeAnim 0.4s; }
         @keyframes gShakeAnim { 0% { transform: translate(0,0); } 20% { transform: translate(-4px, 2px); } 40% { transform: translate(4px, -2px); } 60% { transform: translate(-4px, -2px); } 80% { transform: translate(4px, 2px); } 100% { transform: translate(0,0); } }
@@ -295,7 +348,14 @@
 
 <script>
 const GAME_CFG = /*INSERT_CONFIG_HERE*/;
-const I18N = { en: { start: "START GAME", next: "NEXT LEVEL", play: "PLAY AGAIN", over: "GAME OVER", cleared: "LEVEL CLEARED!", quest: "QUEST COMPLETED!", goal: "GOAL: ANSWER ALL QUESTIONS" }, ru: { start: "НАЧАТЬ ИГРУ", next: "СЛЕДУЮЩИЙ УРОВЕНЬ", play: "ИГРАТЬ СНОВА", over: "ИГРА ОКОНЧЕНА", cleared: "УРОВЕНЬ ПРОЙДЕН!", quest: "КВЕСТ ЗАВЕРШЕН!", goal: "ЦЕЛЬ: ОТВЕТИТЬ НА ВСЕ ВОПРОСЫ" } };
+const I18N = { 
+    en: { start: "START GAME", next: "NEXT LEVEL", play: "PLAY AGAIN", over: "GAME OVER", cleared: "LEVEL CLEARED!", quest: "QUEST COMPLETED!", goal: "GOAL: ANSWER ALL QUESTIONS" }, 
+    ru: { start: "НАЧАТЬ ИГРУ", next: "СЛЕДУЮЩИЙ УРОВЕНЬ", play: "ИГРАТЬ СНОВА", over: "ИГРА ОКОНЧЕНА", cleared: "УРОВЕНЬ ПРОЙДЕН!", quest: "КВЕСТ ЗАВЕРШЕН!", goal: "ЦЕЛЬ: ОТВЕТИТЬ НА ВСЕ ВОПРОСЫ" },
+    de: { start: "SPIEL STARTEN", next: "NÄCHSTES LEVEL", play: "NOCHMAL SPIELEN", over: "SPIEL VORBEI", cleared: "LEVEL GESCHAFFT!", quest: "QUEST ABGESCHLOSSEN!", goal: "ZIEL: ALLE FRAGEN BEANTWORTEN" },
+    fr: { start: "COMMENCER", next: "NIVEAU SUIVANT", play: "REJOUER", over: "JEU TERMINÉ", cleared: "NIVEAU TERMINÉ!", quest: "QUÊTE ACHEVÉE!", goal: "OBJECTIF: RÉPONDRE À TOUT" },
+    uk: { start: "ПОЧАТИ ГРУ", next: "НАСТУПНИЙ РІВЕНЬ", play: "ГРАТИ ЗНОВУ", over: "ГРА ЗАКІНЧЕНА", cleared: "РІВЕНЬ ПРОЙДЕНО!", quest: "КВЕСТ ЗАВЕРШЕНО!", goal: "МЕТА: ВІДПОВІСТИ НА ВСІ ПИТАННЯ" },
+    kk: { start: "ОЙЫНДЫ БАСТАУ", next: "КЕЛЕСІ ДЕҢГЕЙ", play: "ҚАЙТА ОЙНАУ", over: "ОЙЫН АЯҚТАЛДЫ", cleared: "ДЕҢГЕЙ АЯҚТАЛДЫ!", quest: "КВЕСТ АЯҚТАЛДЫ!", goal: "МАҚСАТ: БАРЛЫҚ СҰРАҚТАРҒА ЖАУАП БЕРУ" }
+};
 class Part { constructor(x,y,c){ this.x=x; this.y=y; this.c=c; this.life=1; this.vx=(Math.random()-0.5)*6; this.vy=(Math.random()-0.5)*6; } up(){ this.x+=this.vx; this.y+=this.vy; this.life-=0.04; } draw(ctx){ ctx.globalAlpha=this.life; ctx.fillStyle=this.c; ctx.beginPath(); ctx.arc(this.x,this.y,4,0,7); ctx.fill(); ctx.globalAlpha=1; } }
 class GameCore {
     constructor() {
@@ -343,10 +403,23 @@ class GameCore {
         this.balls.splice(idx,1); this.ui();
     }
     showFlash(txt){ const el=document.getElementById('g-float-text'); el.innerText=txt; el.style.opacity=1; el.style.transform="translate(-50%,-50%) scale(1.5)"; setTimeout(()=>{ el.style.opacity=0; el.style.transform="translate(-50%,-50%) scale(1)"; },800); }
+    
     ask() {
         const q = this.levelQuestions[this.nextQIndex % this.levelQuestions.length]; this.nextQIndex++; document.getElementById('g-quiz-screen').classList.remove('g-hidden'); document.getElementById('g-q-text').innerText = q.q; const c = document.getElementById('g-q-content'); c.innerHTML='';
         if (q.type === 'mcq') { q.o.forEach(opt=>{ const b=document.createElement('div'); b.className='g-ans-btn'; b.innerText=opt; b.onclick=()=>this.check(opt===q.a); c.appendChild(b); }); } 
+        else if (q.type === 'order') {
+            const wrp = document.createElement('div'); wrp.style.width="100%"; const slots = document.createElement('div'); slots.className = "g-order-slots"; const pool = document.createElement('div'); let ans = [];
+            const redraw = () => { slots.innerHTML=''; ans.forEach(w=>{ const s=document.createElement('span'); s.className='g-word-slot'; s.innerText=w; slots.appendChild(s); }); };
+            const words = [...q.words].sort(()=>Math.random()-0.5); const wordBtns = [];
+            words.forEach(w=>{ const btn=document.createElement('button'); btn.className='g-word-btn'; btn.innerText=w; btn.onclick=()=>{ if(!ans.includes(w)){ ans.push(w); btn.classList.add('used'); redraw(); } }; pool.appendChild(btn); wordBtns.push(btn); });
+            const btnsDiv = document.createElement('div'); btnsDiv.style.marginTop="20px"; const rst = document.createElement('button'); rst.className='g-btn-neon'; rst.innerText="RESET"; rst.style.marginRight="10px"; rst.onclick=()=>{ ans=[]; redraw(); wordBtns.forEach(b=>b.classList.remove('used')); };
+            const ok = document.createElement('button'); ok.className='g-btn-neon'; ok.innerText="OK"; ok.onclick=()=>this.check(ans.join(" ")===q.a); btnsDiv.append(rst, ok); wrp.append(slots, pool, btnsDiv); c.appendChild(wrp);
+        } else {
+            const w = document.createElement('div'); w.style.textAlign="center"; const i=document.createElement('input'); i.className='g-input-field'; const b=document.createElement('button'); b.className='g-btn-neon'; b.innerText="OK"; 
+            b.onclick=()=>{ let userAns = i.value.trim().toLowerCase(); let correctArr = q.a.toLowerCase().split('|').map(s=>s.trim()); this.check(correctArr.includes(userAns)); }; w.append(i,b); c.appendChild(w); setTimeout(()=>i.focus(), 100);
+        }
     }
+
     check(isOk) {
         document.getElementById('g-quiz-screen').classList.add('g-hidden');
         if(isOk) { this.combo++; this.qDone++; this.score+=(100*this.combo); this.balls.forEach(bl => bl.d = Math.max(0, bl.d - 100)); this.showFlash("COMBO!"); } else { this.combo=0; this.lives--; document.getElementById('game-container').classList.add('g-shake'); setTimeout(()=>document.getElementById('game-container').classList.remove('g-shake'),400); }
@@ -435,7 +508,7 @@ function renderLevels() {
                 </div>
                 <div>
                     <label>Код траектории (Path):</label>
-                    <textarea onchange="levels[${i}].path=this.value; drawPreviewPath();" style="height:90px; font-family:monospace; font-size:11px;">${l.path}</textarea>
+                    <textarea onchange="levels[${i}].path=this.value; drawPreviewPath();" style="height:90px; font-family:monospace; font-size:11px;">${typeof l.path === 'string' ? l.path : JSON.stringify(l.path)}</textarea>
                 </div>
             </div>
         </div>`;
@@ -454,6 +527,18 @@ function openBgModal(targetId, index) {
 }
 function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
+function toggleQType() {
+    const t = document.getElementById('q-type').value;
+    document.getElementById('wrap-mcq').style.display = t==='mcq' ? 'block' : 'none';
+    document.getElementById('wrap-order').style.display = t==='order' ? 'block' : 'none';
+    document.getElementById('wrap-input').style.display = t==='input' ? 'block' : 'none';
+}
+
+function updateQLevelSelect() {
+    const sel = document.getElementById('q-lvl'); sel.innerHTML = '<option value="all">Для всех уровней</option>';
+    levels.forEach((_, i) => sel.innerHTML += `<option value="${i}">Только Уровень ${i+1}</option>`);
+}
+
 function importBulkQuestions() {
     const lines = document.getElementById('bulk-q').value.split('\n'); let added = 0;
     lines.forEach(line => {
@@ -465,12 +550,37 @@ function importBulkQuestions() {
     document.getElementById('bulk-q').value = ''; alert("Добавлено вопросов: " + added); renderQuestions();
 }
 
+function saveQuestion() {
+    const type = document.getElementById('q-type').value; const qText = document.getElementById('q-text').value.trim();
+    if(!qText) return alert("Введите текст вопроса!");
+    let qObj = { type: type, q: qText, lvl: document.getElementById('q-lvl').value };
+    if(type === 'mcq') {
+        const a = document.getElementById('q-mcq-a').value.trim(); const w = document.getElementById('q-mcq-w').value.split('|').map(s=>s.trim()).filter(s=>s!=="");
+        if(!a) return alert("Введите правильный ответ!");
+        qObj.a = a; qObj.o = [a, ...w].sort(()=>Math.random()-0.5);
+    } else if(type === 'order') {
+        const a = document.getElementById('q-order-a').value.trim();
+        if(!a) return alert("Введите фразу!"); qObj.a = a; qObj.words = a.split(' ').map(s=>s.trim()).filter(s=>s!=="");
+    } else if(type === 'input') {
+        const a = document.getElementById('q-input-a').value.trim();
+        if(!a) return alert("Введите правильный ответ!"); qObj.a = a;
+    }
+    questionsDB.push(qObj);
+    document.getElementById('q-text').value = ''; document.getElementById('q-mcq-a').value = ''; document.getElementById('q-mcq-w').value = ''; document.getElementById('q-order-a').value = ''; document.getElementById('q-input-a').value = '';
+    renderQuestions();
+}
+
 function removeQuestion(idx) { questionsDB.splice(idx,1); renderQuestions(); }
 function renderQuestions() {
     const cont = document.getElementById('questions-list'); cont.innerHTML = '';
     if(questionsDB.length === 0) cont.innerHTML = '<p style="color:#666;">Пока нет вопросов.</p>';
     questionsDB.forEach((q, i) => {
-        cont.innerHTML += `<div class="q-item"><div class="q-item-content"><div class="q-item-q">${q.q}</div><div class="q-item-a">Ответ: ${q.a}</div></div><button class="btn-del" style="margin-left:15px;" onclick="removeQuestion(${i})">✖</button></div>`;
+        let details = '';
+        if(q.type === 'mcq') details = `<div class="q-item-a">Ответ: ${q.a}</div><div class="q-item-o">Варианты: ${q.o.join(', ')}</div>`;
+        else if(q.type === 'order') details = `<div class="q-item-a">Собрать фразу: ${q.a}</div>`;
+        else if(q.type === 'input') details = `<div class="q-item-a">Принимаемые ответы: ${q.a}</div>`;
+        let lvlText = q.lvl === 'all' ? 'Все уровни' : `Уровень ${parseInt(q.lvl)+1}`;
+        cont.innerHTML += `<div class="q-item"><div class="q-item-content"><div class="q-item-type">Тип: ${q.type}</div><div class="q-item-q">${q.q}</div>${details}<div class="q-item-lvl">${lvlText}</div></div><button class="btn-del" style="margin-left:15px;" onclick="removeQuestion(${i})">✖</button></div>`;
     });
 }
 
@@ -546,30 +656,29 @@ function generateEmbedCode() {
         questions: questionsDB
     };
 
-    // Берем шаблон игры (HTML)
+    // Берем шаблон игры
     let templateHTML = document.getElementById('game-tpl').innerHTML;
-    // Подставляем конфигурацию
+    // Вставляем все ваши вопросы, уровни и настройки
     let finalHTML = templateHTML.replace("/*INSERT_CONFIG_HERE*/", JSON.stringify(config));
 
-    // Кодируем всю игру в формат Base64
+    // Магия Base64 (безопасно кодирует русский текст)
     let base64EncodedHTML = btoa(unescape(encodeURIComponent(finalHTML)));
     
-    // Оборачиваем это в тег <iframe>
+    // Создаем тот самый iframe
     let embedCode = `<iframe src="data:text/html;base64,${base64EncodedHTML}" width="100%" height="600" style="border:none; width:100%; height:100%; border-radius: 10px;" allowfullscreen></iframe>`;
 
-    // Выводим результат в поле
     let copyText = document.getElementById("export-code");
     copyText.value = embedCode;
     copyText.scrollIntoView({behavior: "smooth"});
     
-    alert("✅ Embed-код успешно сгенерирован!\nНажмите кнопку 'СКОПИРОВАТЬ КОД' и вставьте его в Genially.");
+    alert("✅ Iframe-код успешно сгенерирован!\nНажмите кнопку 'СКОПИРОВАТЬ' и вставьте в Genially.");
 }
 
 function copyToClipboard() {
     let copyText = document.getElementById("export-code");
     if(copyText.value === "") return alert("Сначала сгенерируйте код!");
     copyText.select(); document.execCommand("copy"); 
-    alert("📋 Код скопирован! Теперь идите в Genially -> Insert -> Others и вставьте его туда.");
+    alert("📋 Код скопирован! Теперь идите в Genially -> Insert -> Others -> Iframe и вставьте его туда.");
 }
 </script>
 </body>
