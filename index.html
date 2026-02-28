@@ -16,7 +16,8 @@
         body, html { margin: 0; padding: 0; background: var(--bg-dark); color: #ddd; font-family: 'Segoe UI', sans-serif; overflow-x: hidden; width: 100%; height: 100%; }
         
         /* EDITOR UI CSS */
-        #editor-ui { display: none; min-height: 100vh; overflow-y: auto; overflow-x: hidden; display: flex; flex-direction: column; }
+        #editor-ui { display: none; min-height: 100vh; overflow-y: auto; overflow-x: hidden; }
+        #editor-ui.active { display: flex; flex-direction: column; }
         header { display: flex; align-items: center; justify-content: space-between; padding: 15px 30px; background: #000; border-bottom: 2px solid var(--ui-color); box-shadow: 0 0 15px var(--ui-color); }
         .logo-container { display: flex; align-items: center; gap: 15px; }
         .logo-container img { height: 60px; filter: drop-shadow(0 0 10px var(--ui-color)); }
@@ -89,19 +90,20 @@
 
         .g-ui-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: auto; z-index: 100; display: flex; justify-content: center; align-items: center; background: rgba(0,0,0,0.85); font-family: var(--game-font); font-weight: normal; }
         .g-hidden { display: none !important; }
-        .g-neon-card { background: rgba(15, 5, 25, 0.95); border: 1px solid var(--ui-color); box-shadow: 0 0 30px rgba(57, 255, 20, 0.3), inset 0 0 20px rgba(57, 255, 20, 0.1); border-radius: 20px; padding: 30px 20px; text-align: center; color: #fff; max-height: 95vh; overflow-y: auto; overflow-x: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; box-sizing: border-box; }
-        #g-start-screen .g-neon-card { width: 90%; max-width: 750px; padding: 30px; }
+        .g-neon-card { background: rgba(15, 5, 25, 0.95); border: 1px solid var(--ui-color); box-shadow: 0 0 30px rgba(57, 255, 20, 0.3), inset 0 0 20px rgba(57, 255, 20, 0.1); border-radius: 20px; padding: 25px 20px; text-align: center; color: #fff; max-height: 95vh; overflow-y: auto; overflow-x: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; box-sizing: border-box; scrollbar-width: none; -ms-overflow-style: none; }
+        .g-neon-card::-webkit-scrollbar { width: 0px; background: transparent; display: none; }
+        #g-start-screen .g-neon-card { width: 95%; max-width: 750px; padding: 20px; }
         #g-quiz-screen .g-neon-card, #g-end-screen .g-neon-card { width: 90%; max-width: 450px; min-height: 75vh; }
-        .g-deco-mask { width: 90px; height: auto; margin-bottom: 15px; filter: drop-shadow(0 0 10px var(--ui-color)); }
-        .g-h1 { margin: 0 0 10px; color: #fff; text-shadow: 0 0 10px var(--ui-color), 0 0 20px var(--ui-color); font-size: 2.2em; letter-spacing: 2px; }
-        .g-p { font-size: 1.2em; color: #ccc; margin-bottom: 20px; line-height: 1.4; }
+        .g-deco-mask { width: 80px; height: auto; margin-bottom: 10px; filter: drop-shadow(0 0 10px var(--ui-color)); }
+        .g-h1 { margin: 0 0 5px; color: #fff; text-shadow: 0 0 10px var(--ui-color), 0 0 20px var(--ui-color); font-size: 2em; letter-spacing: 2px; }
+        .g-p { font-size: 1.1em; color: #ccc; margin-bottom: 10px; line-height: 1.4; }
         
-        .g-btn-neon { background: transparent; border: 2px solid var(--ui-color); color: var(--ui-color); padding: 15px 40px; font-size: 22px; border-radius: 50px; cursor: pointer; margin-top: 20px; transition: all 0.3s ease; font-family: var(--game-font); text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 0 10px rgba(57, 255, 20, 0.2); }
+        .g-btn-neon { background: transparent; border: 2px solid var(--ui-color); color: var(--ui-color); padding: 12px 30px; font-size: 20px; border-radius: 50px; cursor: pointer; margin-top: 10px; transition: all 0.3s ease; font-family: var(--game-font); text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 0 10px rgba(57, 255, 20, 0.2); }
         .g-btn-neon:hover { background: var(--ui-color); color: #000; box-shadow: 0 0 25px rgba(57, 255, 20, 0.6); transform: scale(1.05); }
 
-        .rules-grid { display: grid; grid-template-columns: auto 1fr auto 1fr; gap: 12px 20px; text-align: left; margin: 15px 0; font-size: 16px; color: #ddd; background: rgba(255,255,255,0.05); padding: 20px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.1); width: 95%; box-sizing: border-box; }
-        @media (max-width: 650px) { .rules-grid { grid-template-columns: auto 1fr; } }
-        .rules-icon { width: 36px; height: 36px; display: flex; justify-content: center; align-items: center; }
+        .rules-grid { display: grid; grid-template-columns: auto 1fr auto 1fr; gap: 8px 15px; text-align: left; margin: 10px 0; font-size: 15px; color: #ddd; background: rgba(255,255,255,0.05); padding: 15px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.1); width: 100%; box-sizing: border-box; }
+        @media (max-width: 650px) { .rules-grid { grid-template-columns: auto 1fr; gap: 6px 10px; padding: 10px; font-size: 13px; } .rules-icon { width: 28px; height: 28px; } }
+        .rules-icon { width: 32px; height: 32px; display: flex; justify-content: center; align-items: center; }
         .rules-icon img { width: 100%; height: 100%; border-radius: 50%; box-shadow: 0 0 8px rgba(0,0,0,0.8); }
         .rules-desc { display: flex; align-items: center; font-family: 'Segoe UI', sans-serif;}
 
@@ -848,7 +850,7 @@ window.onload = () => {
     let playIdx = href.indexOf('#play=');
     
     if (playIdx !== -1) {
-        document.getElementById('editor-ui').style.display = 'none';
+        // Режим игры: Редактор УЖЕ СКРЫТ благодаря CSS
         document.getElementById('game-wrapper').style.display = 'block';
         
         let b64 = href.substring(playIdx + 6);
@@ -877,7 +879,8 @@ window.onload = () => {
             `;
         }
     } else {
-        document.getElementById('editor-ui').style.display = 'flex';
+        // Режим редактора: Добавляем класс, чтобы показать интерфейс
+        document.getElementById('editor-ui').classList.add('active');
         renderLevels(); updateQLevelSelect(); updatePreviewBgSelect();
     }
 };
