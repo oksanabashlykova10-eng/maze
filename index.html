@@ -388,7 +388,7 @@
 
 <script>
 // ==========================================
-// БАЗА ДАННЫХ (АРХИВАТОР)
+// БАЗА ДАННЫХ (АРХИВАТОР И СЖАТИЕ)
 // ==========================================
 const PRESETS = [
     "https://img.genially.com/67961b32a116fb001568a75e/ccde12e3-391b-41b3-9e20-803cfa4b5506.png",
@@ -419,26 +419,17 @@ let levels = [
 ];
 let questionsDB = [];
 
-// ==========================================
-// БЕЗОПАСНАЯ РАСПАКОВКА
-// ==========================================
 const urlParams = new URLSearchParams(window.location.search);
 if (urlParams.has('data')) {
     document.body.classList.add('mode-game');
     try {
+        // РАСПАКОВКА И ВОССТАНОВЛЕНИЕ СПЕЦСИМВОЛОВ
         const encodedData = urlParams.get('data');
-        if(!encodedData) throw new Error("Пустая ссылка");
-        
-        // Восстанавливаем символы, чтобы браузеры ничего не сломали
-        let base64 = encodedData.replace(/-/g, '+').replace(/_/g, '/');
-        while (base64.length % 4) { base64 += '='; }
-        
-        const decodedStr = decodeURIComponent(escape(atob(base64)));
-        const decoded = JSON.parse(decodedStr);
+        const decoded = JSON.parse(decodeURIComponent(escape(atob(decodeURIComponent(encodedData)))));
         initGameEngine(decoded);
     } catch(e) {
         document.getElementById('game-ui').innerHTML = "<h2 style='color:red; text-align:center; padding-top:20vh;'>Ошибка загрузки.<br>Убедитесь, что вы скопировали ссылку полностью.</h2>";
-        console.error("Ошибка при распаковке данных:", e);
+        console.error(e);
     }
 } else {
     document.body.classList.add('mode-editor');
@@ -599,12 +590,9 @@ function drawPreviewPath() {
 // ----------------------------------------------------
 function generateGeniallyLink() {
     try {
-        let normPPaths = P_PATHS.map(p => p.replace(/\s/g, ''));
-        
         let cleanLevels = levels.map(l => {
-            let pStr = typeof l.path === 'string' ? l.path : JSON.stringify(l.path);
-            let normPStr = pStr.replace(/\s/g, '');
-            let pIdx = normPPaths.indexOf(normPStr);
+            let pStr = (l.path || "").trim();
+            let pIdx = P_PATHS.indexOf(pStr);
             let finalPath = "";
             
             // Если путь стандартный - просто пишем его номер (P0, P1...)
@@ -646,20 +634,16 @@ function generateGeniallyLink() {
             questions: questionsDB
         };
         
-        // Надежно кодируем JSON, используя Base64-URL формат
-        const safeJSON = JSON.stringify(config);
-        const encoded = btoa(unescape(encodeURIComponent(safeJSON)))
-            .replace(/\+/g, '-')
-            .replace(/\//g, '_')
-            .replace(/=+$/, '');
-            
+        // Надежно кодируем JSON, чтобы браузеры не "съедали" символы
+        const safeJSON = encodeURIComponent(JSON.stringify(config));
+        const encoded = encodeURIComponent(btoa(unescape(safeJSON)));
         const finalUrl = `${window.location.href.split('?')[0]}?data=${encoded}`;
         
         const textarea = document.getElementById('export-code'); 
         textarea.value = finalUrl; 
         textarea.scrollIntoView({behavior: "smooth"});
         
-        alert("✅ Ссылка успешно сжата (URL-Safe) и сгенерирована! Нажмите 'СКОПИРОВАТЬ ССЫЛКУ'.");
+        alert("✅ Ссылка успешно сжата и сгенерирована! Нажмите 'СКОПИРОВАТЬ ССЫЛКУ'.");
     } catch (error) { 
         alert("❌ Ошибка при генерации! Проверьте 'Код траектории'."); 
         console.error(error); 
