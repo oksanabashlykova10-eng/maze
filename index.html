@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Maze Trap Master Builder</title>
     <link href="https://fonts.googleapis.com/css2?family=Metamorphous&family=Orbitron:wght@700&family=Caveat:wght@700&family=Cinzel:wght@700&family=Macondo&family=Montserrat:wght@800&family=Comic+Neue:wght@700&family=Pacifico&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.5.0/lz-string.min.js"></script>
     
     <style>
         :root {
@@ -25,7 +26,7 @@
         body.mode-game #game-ui { display: block; width: 100%; height: 100vh; position: relative; }
 
         /* =========================================
-           СТИЛИ РЕДАКТОРА 
+           СТИЛИ РЕДАКТОРА (Наш родной дизайн)
            ========================================= */
         header { display: flex; align-items: center; justify-content: space-between; padding: 15px 30px; background: #000; border-bottom: 2px solid var(--ui-color); box-shadow: 0 0 15px var(--ui-color); }
         .logo-container { display: flex; align-items: center; gap: 15px; }
@@ -237,7 +238,7 @@
 
         <div id="tab-levels" class="tab-content">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
-                <h2>Настройка уровней игры (Ваши 4 уровня готовы!)</h2>
+                <h2>Настройка уровней игры</h2>
                 <button class="btn-main" onclick="addLevel()">+ ДОБАВИТЬ УРОВЕНЬ</button>
             </div>
             <div id="levels-container"></div>
@@ -249,7 +250,6 @@
                     <h2>База вопросов</h2>
                     <div id="questions-list" style="max-height: 600px; overflow-y: auto; padding-right: 10px;"></div>
                 </div>
-                
                 <div style="position: sticky; top: 20px;">
                     <div class="form-group">
                         <h3 style="margin-top:0; color:var(--ui-color);">Массовое добавление вопросов</h3>
@@ -266,30 +266,24 @@
                             <option value="order">Сборка фразы из слов</option>
                             <option value="input">Ручной ввод текста</option>
                         </select>
-
                         <label style="margin-top:10px;">Текст вопроса:</label>
                         <textarea id="q-text" placeholder="Введите вопрос..."></textarea>
-
                         <div id="wrap-mcq">
                             <label style="margin-top:10px;">Правильный ответ:</label>
                             <input type="text" id="q-mcq-a" placeholder="Правильный вариант">
                             <label style="margin-top:10px;">Неправильные ответы (через |):</label>
                             <input type="text" id="q-mcq-w" placeholder="Ложь 1 | Ложь 2 | Ложь 3">
                         </div>
-
                         <div id="wrap-order" style="display:none;">
                             <label style="margin-top:10px;">Фраза (слова через пробел):</label>
                             <input type="text" id="q-order-a" placeholder="I have a dog">
                         </div>
-
                         <div id="wrap-input" style="display:none;">
                             <label style="margin-top:10px;">Правильный ответ (можно несколько через |):</label>
                             <input type="text" id="q-input-a" placeholder="dog | a dog">
                         </div>
-
                         <label style="margin-top:10px;">Для какого уровня?</label>
                         <select id="q-lvl"><option value="all">Для всех уровней</option></select>
-
                         <button class="btn-main" style="width:100%; margin-top:20px;" onclick="saveQuestion()">+ Добавить вопрос</button>
                     </div>
                 </div>
@@ -300,15 +294,12 @@
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 15px;">
                 <h2>Предпросмотр экрана викторины и траектории</h2>
                 <div>
-                    <select id="preview-bg-sel" onchange="changePreviewBg()" style="width:250px; display:inline-block; margin-right:10px; padding:8px;">
-                    </select>
+                    <select id="preview-bg-sel" onchange="changePreviewBg()" style="width:250px; display:inline-block; margin-right:10px; padding:8px;"></select>
                     <button class="btn-main" onclick="togglePreviewMode()">Вкл/Выкл Плашку Вопроса</button>
                 </div>
             </div>
-            
             <div class="preview-box" id="p-box">
                 <canvas id="preview-canvas" width="800" height="500" style="position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none;"></canvas>
-                
                 <div class="preview-overlay" id="p-overlay">
                     <div class="preview-card" id="p-card">
                         <img id="p-mask" src="" style="width:90px; margin-bottom:15px; filter: drop-shadow(0 0 10px #fff);">
@@ -341,23 +332,18 @@
 <div id="game-ui">
     <div id="game-container">
         <canvas id="gameCanvas"></canvas>
-        
         <div class="g-hud-wrap">
             <div class="g-prog-cont"><div id="g-prog-fill" class="g-prog-fill"></div></div>
             <span id="g-q-disp" style="color:var(--prog-color); font-size:22px; font-weight:bold; text-shadow:0 2px 5px #000;">0/0</span>
         </div>
-
         <div class="g-hud-left">
             <div class="g-hud-item"><img class="g-icon dyn-heart" src=""><span id="g-lives" class="g-val">3</span></div>
             <div class="g-hud-item"><img class="g-icon" src="https://img.genially.com/67961b32a116fb001568a75e/03a676ec-a263-478b-a675-d6e17a7a36e1.png"><span id="g-score" class="g-val">0</span></div>
         </div>
-
         <div class="g-hud-right">
             <div class="g-hud-item"><img class="g-icon dyn-clock" src=""><span id="g-time" class="g-val">120</span></div>
         </div>
-
         <div id="g-float-text"></div>
-
         <div id="g-start-screen" class="g-layer">
             <div class="g-card" style="max-width: 750px;">
                 <img src="" class="dyn-mask" style="width:90px; margin-bottom:15px; filter: drop-shadow(0 0 10px var(--ui-color));">
@@ -366,7 +352,6 @@
                 <button id="btn-start" class="g-btn-neon">START GAME</button>
             </div>
         </div>
-
         <div id="g-quiz-screen" class="g-layer g-hidden">
             <div class="g-card">
                 <img src="" class="dyn-mask" style="width:70px; margin-bottom:15px;">
@@ -374,7 +359,6 @@
                 <div id="g-q-content" style="width:100%;"></div>
             </div>
         </div>
-
         <div id="g-end-screen" class="g-layer g-hidden">
             <div class="g-card">
                 <img src="" class="dyn-mask" style="width:70px; margin-bottom:15px;">
@@ -387,29 +371,18 @@
 </div>
 
 <script>
-// ==========================================
-// БАЗА ДАННЫХ (АРХИВАТОР И СЖАТИЕ)
-// ==========================================
 const PRESETS = [
     "https://img.genially.com/67961b32a116fb001568a75e/ccde12e3-391b-41b3-9e20-803cfa4b5506.png",
     "https://img.genially.com/67961b32a116fb001568a75e/1edee495-af5e-4626-ac29-f3197e2c736e.png",
     "https://img.genially.com/67961b32a116fb001568a75e/f7c9eff0-f1eb-4302-92ab-4586dbcd51de.png",
     "https://img.genially.com/67961b32a116fb001568a75e/b40dc413-b697-41ba-87f5-b6766c421faa.png"
 ];
-
 const P_PATHS = [
     '[{"x":0.0254,"y":0.444},{"x":0.0729,"y":0.4356},{"x":0.1178,"y":0.4225},{"x":0.1579,"y":0.395},{"x":0.2021,"y":0.3532},{"x":0.2396,"y":0.3043},{"x":0.2791,"y":0.2553},{"x":0.324,"y":0.2052},{"x":0.3709,"y":0.1801},{"x":0.4184,"y":0.155},{"x":0.4619,"y":0.149},{"x":0.5068,"y":0.1502},{"x":0.5503,"y":0.1586},{"x":0.5891,"y":0.1801},{"x":0.6253,"y":0.2016},{"x":0.6621,"y":0.2458},{"x":0.6909,"y":0.2959},{"x":0.7157,"y":0.3687},{"x":0.7244,"y":0.4476},{"x":0.707,"y":0.5347},{"x":0.6742,"y":0.6064},{"x":0.6374,"y":0.6517},{"x":0.5878,"y":0.684},{"x":0.5282,"y":0.6935},{"x":0.4673,"y":0.6828},{"x":0.4211,"y":0.6506},{"x":0.3829,"y":0.5992},{"x":0.3555,"y":0.5311},{"x":0.3508,"y":0.4392},{"x":0.3742,"y":0.3652},{"x":0.4124,"y":0.3246},{"x":0.4592,"y":0.2947},{"x":0.5054,"y":0.2923},{"x":0.5476,"y":0.3126},{"x":0.5818,"y":0.3437},{"x":0.6032,"y":0.4022},{"x":0.5999,"y":0.4607},{"x":0.5878,"y":0.5108},{"x":0.5624,"y":0.5347},{"x":0.5269,"y":0.5323},{"x":0.5101,"y":0.4726}]',
     '[{"x":0.002,"y":0.4843},{"x":0.2428,"y":0.4798},{"x":0.2526,"y":0.4798},{"x":0.2604,"y":0.4798},{"x":0.2611,"y":0.4557},{"x":0.2617,"y":0.2869},{"x":0.2611,"y":0.2583},{"x":0.2786,"y":0.2583},{"x":0.5781,"y":0.2553},{"x":0.5957,"y":0.2583},{"x":0.5762,"y":0.2929},{"x":0.3288,"y":0.6486},{"x":0.3164,"y":0.6682},{"x":0.349,"y":0.6712},{"x":0.4805,"y":0.6742},{"x":0.4987,"y":0.6727},{"x":0.5143,"y":0.6486},{"x":0.6367,"y":0.4602},{"x":0.651,"y":0.4286},{"x":0.6875,"y":0.4316},{"x":0.804,"y":0.4331},{"x":0.8171,"y":0.4331},{"x":0.8177,"y":0.5054}]',
     '[{"x":0.623,"y":0.5853},{"x":0.6211,"y":0.5476},{"x":0.6211,"y":0.4964},{"x":0.6159,"y":0.4497},{"x":0.6016,"y":0.4316},{"x":0.5859,"y":0.4241},{"x":0.5703,"y":0.4271},{"x":0.556,"y":0.4482},{"x":0.5397,"y":0.4994},{"x":0.5228,"y":0.5823},{"x":0.4987,"y":0.641},{"x":0.4674,"y":0.6908},{"x":0.4421,"y":0.7104},{"x":0.4115,"y":0.7239},{"x":0.375,"y":0.7345},{"x":0.3385,"y":0.733},{"x":0.3099,"y":0.7194},{"x":0.2813,"y":0.6968},{"x":0.2565,"y":0.6802},{"x":0.2305,"y":0.641},{"x":0.2122,"y":0.6019},{"x":0.1973,"y":0.5597},{"x":0.1855,"y":0.5054},{"x":0.1803,"y":0.4557},{"x":0.1829,"y":0.403},{"x":0.1927,"y":0.3547},{"x":0.2064,"y":0.3186},{"x":0.2233,"y":0.2884},{"x":0.2441,"y":0.2583},{"x":0.2663,"y":0.2402},{"x":0.2936,"y":0.2312},{"x":0.3229,"y":0.2251},{"x":0.3529,"y":0.2327},{"x":0.3796,"y":0.2523},{"x":0.3984,"y":0.2824},{"x":0.4128,"y":0.311},{"x":0.4219,"y":0.3623},{"x":0.4154,"y":0.415},{"x":0.3939,"y":0.4331},{"x":0.3737,"y":0.4286},{"x":0.3581,"y":0.4105},{"x":0.3464,"y":0.3864},{"x":0.3294,"y":0.3698},{"x":0.3092,"y":0.3623},{"x":0.2891,"y":0.3728},{"x":0.2708,"y":0.3984},{"x":0.2546,"y":0.4482},{"x":0.2585,"y":0.5115},{"x":0.2734,"y":0.5446},{"x":0.2962,"y":0.5778},{"x":0.3249,"y":0.6019},{"x":0.3581,"y":0.6109},{"x":0.39,"y":0.6019},{"x":0.4193,"y":0.5838},{"x":0.4427,"y":0.5536},{"x":0.4616,"y":0.5054},{"x":0.4746,"y":0.4572},{"x":0.4857,"y":0.3969},{"x":0.5,"y":0.3562},{"x":0.5332,"y":0.3065},{"x":0.5625,"y":0.2884},{"x":0.5911,"y":0.2779},{"x":0.6224,"y":0.2884},{"x":0.6484,"y":0.3171},{"x":0.6719,"y":0.3608},{"x":0.6849,"y":0.4075},{"x":0.6947,"y":0.4632},{"x":0.709,"y":0.5039},{"x":0.7337,"y":0.516},{"x":0.7585,"y":0.5175},{"x":0.7793,"y":0.516},{"x":0.7995,"y":0.522},{"x":0.8164,"y":0.5145}]',
     '[{"x":0.1322,"y":0.6863},{"x":0.1484,"y":0.6983},{"x":0.2038,"y":0.7375},{"x":0.2682,"y":0.7646},{"x":0.3405,"y":0.7917},{"x":0.4238,"y":0.7887},{"x":0.4785,"y":0.7661},{"x":0.5156,"y":0.7074},{"x":0.526,"y":0.635},{"x":0.5098,"y":0.5612},{"x":0.485,"y":0.5235},{"x":0.4401,"y":0.4919},{"x":0.3047,"y":0.4858},{"x":0.2454,"y":0.4843},{"x":0.194,"y":0.4451},{"x":0.1641,"y":0.3517},{"x":0.1732,"y":0.2432},{"x":0.2142,"y":0.1784},{"x":0.2604,"y":0.1423},{"x":0.3145,"y":0.1362},{"x":0.3548,"y":0.1362},{"x":0.3887,"y":0.1634},{"x":0.4115,"y":0.2025},{"x":0.4264,"y":0.2447},{"x":0.4408,"y":0.2854},{"x":0.4661,"y":0.3231},{"x":0.4928,"y":0.3412},{"x":0.5267,"y":0.3472},{"x":0.5566,"y":0.3366},{"x":0.5911,"y":0.311},{"x":0.6185,"y":0.2688},{"x":0.6536,"y":0.2327},{"x":0.6888,"y":0.204},{"x":0.7318,"y":0.2055},{"x":0.7708,"y":0.2281},{"x":0.7988,"y":0.2869},{"x":0.8151,"y":0.3427},{"x":0.8177,"y":0.3909},{"x":0.8138,"y":0.4647},{"x":0.7982,"y":0.513},{"x":0.7819,"y":0.5521},{"x":0.7656,"y":0.5778},{"x":0.7637,"y":0.6516},{"x":0.7624,"y":0.7089},{"x":0.7487,"y":0.7435},{"x":0.7227,"y":0.7767}]'
 ];
-
-const IMG_DEF = {
-    sh: "https://img.genially.com/67961b32a116fb001568a75e/ff229730-a24f-4a1b-8050-c77cb309e646.png",
-    mk: "https://img.genially.com/67961b32a116fb001568a75e/4db0de92-1c31-4b38-8c29-df8dc6712266.png",
-    ht: "https://img.genially.com/67961b32a116fb001568a75e/213dec47-3717-4811-a68b-20fe7262ec2d.png",
-    cl: "https://img.genially.com/67961b32a116fb001568a75e/6aa141cb-f83b-4167-9de0-25eeff46e4e2.png"
-};
 
 let levels = [
     { bg: PRESETS[0], path: P_PATHS[0], qCount: 5 },
@@ -419,17 +392,23 @@ let levels = [
 ];
 let questionsDB = [];
 
+// ==========================================
+// БЕЗОПАСНАЯ РАСПАКОВКА ЧЕРЕЗ LZ-STRING
+// ==========================================
 const urlParams = new URLSearchParams(window.location.search);
 if (urlParams.has('data')) {
     document.body.classList.add('mode-game');
     try {
-        // РАСПАКОВКА И ВОССТАНОВЛЕНИЕ СПЕЦСИМВОЛОВ
-        const encodedData = urlParams.get('data');
-        const decoded = JSON.parse(decodeURIComponent(escape(atob(decodeURIComponent(encodedData)))));
+        const compressedData = urlParams.get('data');
+        // Библиотека LZString разжимает строку, которую мы сжали при генерации
+        const decodedStr = LZString.decompressFromEncodedURIComponent(compressedData);
+        if(!decodedStr) throw new Error("Не удалось расшифровать данные");
+        
+        const decoded = JSON.parse(decodedStr);
         initGameEngine(decoded);
     } catch(e) {
         document.getElementById('game-ui').innerHTML = "<h2 style='color:red; text-align:center; padding-top:20vh;'>Ошибка загрузки.<br>Убедитесь, что вы скопировали ссылку полностью.</h2>";
-        console.error(e);
+        console.error("Ошибка при распаковке данных:", e);
     }
 } else {
     document.body.classList.add('mode-editor');
@@ -586,20 +565,21 @@ function drawPreviewPath() {
 }
 
 // ----------------------------------------------------
-// УМНЫЙ АРХИВАТОР: СЖИМАЕМ ССЫЛКУ ДО МИНИМУМА
+// ЭКСПОРТ ЧЕРЕЗ АРХИВАТОР LZ-STRING (ГАРАНТИЯ 100%)
 // ----------------------------------------------------
 function generateGeniallyLink() {
     try {
+        let normPPaths = P_PATHS.map(p => p.replace(/\s/g, ''));
+        
         let cleanLevels = levels.map(l => {
-            let pStr = (l.path || "").trim();
-            let pIdx = P_PATHS.indexOf(pStr);
+            let pStr = typeof l.path === 'string' ? l.path : JSON.stringify(l.path);
+            let normPStr = pStr.replace(/\s/g, '');
+            let pIdx = normPPaths.indexOf(normPStr);
             let finalPath = "";
             
-            // Если путь стандартный - просто пишем его номер (P0, P1...)
             if(pIdx !== -1) {
                 finalPath = "P" + pIdx;
             } else {
-                // Если путь свой - сжимаем его координаты
                 try {
                     let parsed = JSON.parse(pStr);
                     finalPath = parsed.map(pt => Math.round(pt.x*1000)/1000 + "," + Math.round(pt.y*1000)/1000).join("|");
@@ -626,24 +606,25 @@ function generateGeniallyLink() {
             aC: document.getElementById('cfg-a-color').value, 
             aS: document.getElementById('cfg-a-size').value, 
             aBg: document.getElementById('cfg-a-bg').value, 
-            iS: document.getElementById('cfg-img-shooter').value === IMG_DEF.sh ? "D" : document.getElementById('cfg-img-shooter').value,
-            iM: document.getElementById('cfg-img-mask').value === IMG_DEF.mk ? "D" : document.getElementById('cfg-img-mask').value,
-            iH: document.getElementById('cfg-img-heart').value === IMG_DEF.ht ? "D" : document.getElementById('cfg-img-heart').value,
-            iC: document.getElementById('cfg-img-clock').value === IMG_DEF.cl ? "D" : document.getElementById('cfg-img-clock').value,
+            iS: document.getElementById('cfg-img-shooter').value,
+            iM: document.getElementById('cfg-img-mask').value,
+            iH: document.getElementById('cfg-img-heart').value,
+            iC: document.getElementById('cfg-img-clock').value,
             levels: cleanLevels, 
             questions: questionsDB
         };
         
-        // Надежно кодируем JSON, чтобы браузеры не "съедали" символы
-        const safeJSON = encodeURIComponent(JSON.stringify(config));
-        const encoded = encodeURIComponent(btoa(unescape(safeJSON)));
-        const finalUrl = `${window.location.href.split('?')[0]}?data=${encoded}`;
+        // МАГИЯ СЖАТИЯ (LZ-String) - Делает из огромного текста короткую и безопасную ссылку
+        const safeJSON = JSON.stringify(config);
+        const compressed = LZString.compressToEncodedURIComponent(safeJSON);
+            
+        const finalUrl = `${window.location.href.split('?')[0]}?data=${compressed}`;
         
         const textarea = document.getElementById('export-code'); 
         textarea.value = finalUrl; 
         textarea.scrollIntoView({behavior: "smooth"});
         
-        alert("✅ Ссылка успешно сжата и сгенерирована! Нажмите 'СКОПИРОВАТЬ ССЫЛКУ'.");
+        alert("✅ Ссылка успешно сжата архиватором! Теперь она короткая и безопасная. Нажмите 'СКОПИРОВАТЬ ССЫЛКУ'.");
     } catch (error) { 
         alert("❌ Ошибка при генерации! Проверьте 'Код траектории'."); 
         console.error(error); 
@@ -674,17 +655,17 @@ let G_ENGINE = null;
 function initGameEngine(data) {
     GAME_CFG = data;
     
-    // РАСПАКОВЫВАЕМ КОРОТКИЕ ПАРАМЕТРЫ ОБРАТНО
+    // РАСПАКОВЫВАЕМ ПАРАМЕТРЫ
     data.fontFamily = data.font;
     data.uiColor = data.uiC; data.progColor = data.prC;
     data.qColor = data.qC; data.qSize = data.qS + "px";
     data.aColor = data.aC; data.aSize = data.aS + "px";
     data.neonEnabled = data.neon;
 
-    data.imgShooter = data.iS === "D" ? IMG_DEF.sh : data.iS;
-    data.imgMask = data.iM === "D" ? IMG_DEF.mk : data.iM;
-    data.imgHeart = data.iH === "D" ? IMG_DEF.ht : data.iH;
-    data.imgClock = data.iC === "D" ? IMG_DEF.cl : data.iC;
+    data.imgShooter = data.iS;
+    data.imgMask = data.iM;
+    data.imgHeart = data.iH;
+    data.imgClock = data.iC;
 
     data.levels.forEach(l => {
         if (l.bg && l.bg.startsWith("B")) { l.bg = `url('${PRESETS[parseInt(l.bg.substring(1))]}')`; } 
