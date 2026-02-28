@@ -16,7 +16,7 @@
         body, html { margin: 0; padding: 0; background: var(--bg-dark); color: #ddd; font-family: 'Segoe UI', sans-serif; overflow-x: hidden; width: 100%; height: 100%; }
         
         /* EDITOR UI CSS */
-        #editor-ui { display: none; min-height: 100vh; overflow-y: auto; }
+        #editor-ui { display: none; min-height: 100vh; overflow-y: auto; overflow-x: hidden; }
         header { display: flex; align-items: center; justify-content: space-between; padding: 15px 30px; background: #000; border-bottom: 2px solid var(--ui-color); box-shadow: 0 0 15px var(--ui-color); }
         .logo-container { display: flex; align-items: center; gap: 15px; }
         .logo-container img { height: 60px; filter: drop-shadow(0 0 10px var(--ui-color)); }
@@ -61,33 +61,33 @@
         .q-item-lvl { display: inline-block; background: #333; padding: 2px 6px; border-radius: 4px; font-size: 11px; color: #fff; margin-top: 5px; }
 
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; justify-content: center; align-items: center; }
-        .modal-content { background: #1a1a1a; padding: 25px; border-radius: 10px; width: 90%; max-width: 800px; border: 2px solid var(--ui-color); max-height: 90vh; overflow-y: auto; }
+        .modal-content { background: #1a1a1a; padding: 25px; border-radius: 10px; width: 90%; max-width: 800px; border: 2px solid var(--ui-color); max-height: 90vh; overflow-y: auto; overflow-x: hidden; }
         .preset-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 15px; }
         .preset-img { width: 100%; height: 200px; object-fit: cover; border-radius: 8px; cursor: pointer; border: 2px solid transparent; transition: 0.2s; }
         .preset-img:hover { border-color: var(--ui-color); transform: scale(1.05); }
         #export-code { width: 100%; height: 250px; background: #000; color: #00ff66; font-family: monospace; border: 1px solid #555; padding: 15px; box-sizing: border-box; font-size: 13px; margin-bottom: 20px; border-radius: 8px; resize: vertical; word-wrap: break-word; }
 
         /* GAME UI CSS (MAZE 14 STYLE) */
-        #game-wrapper { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #000; z-index: 99999; overflow: hidden; user-select: none; font-family: 'Orbitron', 'Segoe UI', sans-serif; font-weight: bold; }
+        #game-wrapper { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #000; z-index: 99999; overflow: hidden; user-select: none; font-family: var(--game-font); font-weight: bold; }
         #g-game-container { position: relative; width: 100%; height: 100%; background-color: #000; background-size: 100% 100%; background-position: center; display: flex; justify-content: center; align-items: center; transition: 0.5s; }
         #game-wrapper canvas { display: block; position: absolute; top: 0; left: 0; z-index: 1; }
         
         #g-progress-wrapper { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 15px; z-index: 25; width: 45%; max-width: 450px; }
         #g-progress-bar-container { flex-grow: 1; height: 18px; background: rgba(0, 0, 0, 0.7); border: 2px solid var(--prog-color); border-radius: 20px; box-shadow: 0 0 10px rgba(0, 255, 102, 0.3); overflow: hidden; }
         #g-progress-fill { width: 0%; height: 100%; background: var(--prog-color); box-shadow: 0 0 15px var(--prog-color), inset 0 0 5px rgba(255,255,255,0.8); transition: width 0.5s; }
-        .g-val-q { color: var(--prog-color); font-size: 22px; text-shadow: 0 2px 5px #000; white-space: nowrap; }
+        .g-val-q { color: var(--prog-color); font-size: 22px; text-shadow: 0 2px 5px #000; white-space: nowrap; font-family: var(--game-font); }
         
         #g-hud-right { position: absolute; top: 15px; right: 20px; display: flex; z-index: 20; pointer-events: none; }
         #g-hud-left { position: absolute; top: 15px; left: 20px; display: flex; gap: 20px; z-index: 20; pointer-events: none; }
         .g-hud-item { display: flex; align-items: center; gap: 8px; text-shadow: 0 2px 5px #000; }
         .g-hud-icon { width: 35px; height: 35px; object-fit: contain; filter: drop-shadow(0 0 5px rgba(255,255,255,0.3)); }
-        .g-val-text { color: #fff; font-size: 24px; } 
+        .g-val-text { color: #fff; font-size: 24px; font-family: var(--game-font); } 
         .pulse-urgent { animation: pulseRed 0.5s infinite alternate; color: #ff0000 !important; display: inline-block; }
         @keyframes pulseRed { from { text-shadow: 0 0 10px #f00; } to { text-shadow: 0 0 30px #f00; } }
 
         .g-ui-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: auto; z-index: 100; display: flex; justify-content: center; align-items: center; background: rgba(0,0,0,0.85); font-family: var(--game-font); font-weight: normal; }
         .g-hidden { display: none !important; }
-        .g-neon-card { background: rgba(15, 5, 25, 0.95); border: 1px solid var(--ui-color); box-shadow: 0 0 30px rgba(57, 255, 20, 0.3), inset 0 0 20px rgba(57, 255, 20, 0.1); border-radius: 20px; padding: 30px 20px; text-align: center; color: #fff; max-height: 95vh; overflow-y: auto; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .g-neon-card { background: rgba(15, 5, 25, 0.95); border: 1px solid var(--ui-color); box-shadow: 0 0 30px rgba(57, 255, 20, 0.3), inset 0 0 20px rgba(57, 255, 20, 0.1); border-radius: 20px; padding: 30px 20px; text-align: center; color: #fff; max-height: 95vh; overflow-y: auto; overflow-x: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; box-sizing: border-box; }
         #g-start-screen .g-neon-card { width: 90%; max-width: 750px; padding: 30px; }
         #g-quiz-screen .g-neon-card, #g-end-screen .g-neon-card { width: 90%; max-width: 450px; min-height: 75vh; }
         .g-deco-mask { width: 90px; height: auto; margin-bottom: 15px; filter: drop-shadow(0 0 10px var(--ui-color)); }
@@ -97,7 +97,7 @@
         .g-btn-neon { background: transparent; border: 2px solid var(--ui-color); color: var(--ui-color); padding: 15px 40px; font-size: 22px; border-radius: 50px; cursor: pointer; margin-top: 20px; transition: all 0.3s ease; font-family: var(--game-font); text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 0 10px rgba(57, 255, 20, 0.2); }
         .g-btn-neon:hover { background: var(--ui-color); color: #000; box-shadow: 0 0 25px rgba(57, 255, 20, 0.6); transform: scale(1.05); }
 
-        .rules-grid { display: grid; grid-template-columns: auto 1fr auto 1fr; gap: 12px 20px; text-align: left; margin: 15px 0; font-size: 16px; color: #ddd; background: rgba(255,255,255,0.05); padding: 20px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.1); width: 95%; }
+        .rules-grid { display: grid; grid-template-columns: auto 1fr auto 1fr; gap: 12px 20px; text-align: left; margin: 15px 0; font-size: 16px; color: #ddd; background: rgba(255,255,255,0.05); padding: 20px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.1); width: 95%; box-sizing: border-box; }
         @media (max-width: 650px) { .rules-grid { grid-template-columns: auto 1fr; } }
         .rules-icon { width: 36px; height: 36px; display: flex; justify-content: center; align-items: center; }
         .rules-icon img { width: 100%; height: 100%; border-radius: 50%; box-shadow: 0 0 8px rgba(0,0,0,0.8); }
@@ -109,17 +109,17 @@
 
         #g-q-text { color:var(--q-color); margin-bottom:30px; text-shadow: 0 0 10px var(--q-color); font-size: var(--q-size); line-height: 1.3;}
         #g-q-content { width: 100%; display: flex; flex-direction: column; align-items: center; }
-        .g-ans-btn { width: 90%; background: var(--a-bg); border: 1px solid rgba(255, 255, 255, 0.3); color: var(--a-color); padding: 15px 20px; margin: 10px 0; border-radius: 10px; cursor: pointer; text-align: center; transition: 0.2s; font-size: var(--a-size); font-family: var(--game-font); }
+        .g-ans-btn { width: 90%; background: var(--a-bg); border: 1px solid rgba(255, 255, 255, 0.3); color: var(--a-color); padding: 15px 20px; margin: 10px 0; border-radius: 10px; cursor: pointer; text-align: center; transition: 0.2s; font-size: var(--a-size); font-family: var(--game-font); box-sizing: border-box; }
         .g-ans-btn:hover { background: rgba(255, 255, 255, 0.2); border-color: var(--ui-color); color: var(--ui-color); text-shadow: 0 0 8px var(--ui-color); transform: scale(1.02); }
 
-        .g-input-field { width: 80%; padding: 15px; background: rgba(0,0,0,0.5); border: 2px solid var(--ui-color); color:#fff; font-size: var(--a-size); text-align:center; border-radius: 10px; font-family: var(--game-font); margin-bottom: 20px; }
-        .g-order-slots { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 20px; min-height: 50px; border-bottom: 2px solid #555; padding: 15px; width: 100%;}
+        .g-input-field { width: 80%; padding: 15px; background: rgba(0,0,0,0.5); border: 2px solid var(--ui-color); color:#fff; font-size: var(--a-size); text-align:center; border-radius: 10px; font-family: var(--game-font); margin-bottom: 20px; box-sizing: border-box; }
+        .g-order-slots { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 20px; min-height: 50px; border-bottom: 2px solid #555; padding: 15px; width: 100%; box-sizing: border-box;}
         .g-word-slot { font-size: var(--a-size); color: var(--ui-color); padding: 0 8px; border-bottom: 2px solid var(--ui-color); }
-        .g-word-btn { background: var(--a-bg); border: 1px solid rgba(255,255,255,0.3); color: var(--a-color); padding: 12px 20px; border-radius: 8px; cursor: pointer; margin: 6px; font-size: var(--a-size); font-family: var(--game-font); transition: 0.2s;}
+        .g-word-btn { background: var(--a-bg); border: 1px solid rgba(255,255,255,0.3); color: var(--a-color); padding: 12px 20px; border-radius: 8px; cursor: pointer; margin: 6px; font-size: var(--a-size); font-family: var(--game-font); transition: 0.2s; box-sizing: border-box;}
         .g-word-btn:hover { border-color:var(--ui-color); color: var(--ui-color);}
         .g-word-btn.used { opacity: 0.3; pointer-events: none; }
 
-        #g-float-text { position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); font-size: 60px; color: #fff; text-shadow: 0 0 20px #00ffff; font-weight: 900; opacity: 0; pointer-events: none; z-index: 150; transition: opacity 0.5s, transform 0.5s; white-space: nowrap; font-family: 'Orbitron', sans-serif; }
+        #g-float-text { position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); font-size: 60px; color: #fff; text-shadow: 0 0 20px #00ffff; font-weight: 900; opacity: 0; pointer-events: none; z-index: 150; transition: opacity 0.5s, transform 0.5s; white-space: nowrap; font-family: var(--game-font); }
         .g-shake { animation: shakeAnim 0.4s; }
         @keyframes shakeAnim { 0% { transform: translate(0,0); } 20% { transform: translate(-4px, 2px); } 40% { transform: translate(4px, -2px); } 60% { transform: translate(-4px, -2px); } 80% { transform: translate(4px, 2px); } 100% { transform: translate(0,0); } }
     </style>
@@ -151,11 +151,15 @@
                         <option value="ru">Русский</option>
                         <option value="en">English (Английский)</option>
                         <option value="uk">Українська (Украинский)</option>
+                        <option value="de">Deutsch (Немецкий)</option>
+                        <option value="fr">Français (Французский)</option>
+                        <option value="kk">Қазақша (Казахский)</option>
                     </select>
                 </div>
-                <div class="grid-2">
+                <div class="grid-4">
                     <div class="form-group"><label>Жизни (1-5):</label><input type="number" id="cfg-lives" min="1" max="5" value="3"></div>
                     <div class="form-group"><label>Время (сек):</label><input type="number" id="cfg-time" value="120"></div>
+                    <div class="form-group" style="grid-column: span 2;"><label>Базовая скорость (по ум. 1.2):</label><input type="number" id="cfg-speed" step="0.1" value="1.2"></div>
                 </div>
             </div>
 
@@ -353,7 +357,7 @@
                 <img src="" class="g-deco-mask dyn-mask">
                 <h1 class="g-h1">MAZE TRAP</h1>
                 
-                <p class="g-p" style="color:var(--ui-color); text-shadow: 0 0 5px var(--ui-color); font-weight:bold;" id="t-goal">GOAL: ANSWER ALL QUESTIONS<br><span style="color:var(--q-color); font-size:0.9em; text-shadow: 0 0 5px var(--q-color);">OTHERWISE YOU MUST DESTROY ALL BALLS</span></p>
+                <p class="g-p" style="color:var(--ui-color); text-shadow: 0 0 5px var(--ui-color); font-weight:bold;" id="t-goal"></p>
                 
                 <div class="rules-grid">
                     <div class="rules-icon"><img src="https://img.genially.com/67961b32a116fb001568a75e/87a94615-9492-4862-8d39-d5a93e8fb3e2.png"></div> <div class="rules-desc">Question (+100)</div>
@@ -385,15 +389,15 @@
                 <p id="g-end-reason" style="color:var(--q-color); font-size:1.4em; margin-bottom:15px; text-shadow: 0 0 5px var(--q-color);"></p>
                 
                 <table class="stats-table">
-                    <tr><td>Balls Score:</td><td class="st-val" id="g-st-balls">0</td></tr>
-                    <tr><td>Questions Score:</td><td class="st-val" id="g-st-q">0</td></tr>
-                    <tr><td>Bonus Score:</td><td class="st-val" id="g-st-bonus">0</td></tr>
-                    <tr><td>Penalties:</td><td class="st-val" id="g-st-pen" style="color:#ff3300">0</td></tr>
-                    <tr><td style="font-weight:bold; color:var(--ui-color);">TOTAL SCORE:</td><td class="st-val" id="g-st-total" style="color:var(--ui-color); font-size:1.4em; text-shadow: 0 0 10px var(--ui-color); font-weight:bold;">0</td></tr>
+                    <tr><td id="lbl-st-balls">Balls Score:</td><td class="st-val" id="g-st-balls">0</td></tr>
+                    <tr><td id="lbl-st-q">Questions Score:</td><td class="st-val" id="g-st-q">0</td></tr>
+                    <tr><td id="lbl-st-bonus">Bonus Score:</td><td class="st-val" id="g-st-bonus">0</td></tr>
+                    <tr><td id="lbl-st-pen">Penalties:</td><td class="st-val" id="g-st-pen" style="color:#ff3300">0</td></tr>
+                    <tr><td id="lbl-st-total" style="font-weight:bold; color:var(--ui-color);">TOTAL SCORE:</td><td class="st-val" id="g-st-total" style="color:var(--ui-color); font-size:1.4em; text-shadow: 0 0 10px var(--ui-color); font-weight:bold;">0</td></tr>
                 </table>
 
                 <p style="font-size:1.1em; color:#888; margin-top:15px; margin-bottom: 5px;">
-                    Mistakes: <span id="g-st-wrong" style="color:#ff3300; font-weight:bold;">0</span>
+                    <span id="lbl-st-wrong">Mistakes:</span> <span id="g-st-wrong" style="color:#ff3300; font-weight:bold;">0</span>
                 </p>
 
                 <button id="g-btn-restart" class="g-btn-neon">NEXT LEVEL</button>
@@ -428,9 +432,12 @@ let levels = [
 let questionsDB = [];
 
 const I18N = { 
-    en: { start: "START GAME", next: "NEXT LEVEL", play: "PLAY AGAIN", over: "GAME OVER", cleared: "LEVEL CLEARED!", quest: "QUEST COMPLETED!", goal: "GOAL: ANSWER ALL QUESTIONS" }, 
-    ru: { start: "НАЧАТЬ ИГРУ", next: "СЛЕДУЮЩИЙ УРОВЕНЬ", play: "ИГРАТЬ СНОВА", over: "ИГРА ОКОНЧЕНА", cleared: "УРОВЕНЬ ПРОЙДЕН!", quest: "КВЕСТ ЗАВЕРШЕН!", goal: "ЦЕЛЬ: ОТВЕТИТЬ НА ВСЕ ВОПРОСЫ" },
-    uk: { start: "ПОЧАТИ ГРУ", next: "НАСТУПНИЙ РІВЕНЬ", play: "ГРАТИ ЗНОВУ", over: "ГРА ЗАКІНЧЕНА", cleared: "РІВЕНЬ ПРОЙДЕНО!", quest: "КВЕСТ ЗАВЕРШЕНО!", goal: "МЕТА: ВІДПОВІСТИ НА ВСІ ПИТАННЯ" }
+    en: { start: "START GAME", next: "NEXT LEVEL", play: "PLAY AGAIN", over: "GAME OVER", cleared: "LEVEL CLEARED!", quest: "QUEST COMPLETED!", goal: "GOAL: ANSWER ALL QUESTIONS", otherwise: "OTHERWISE YOU MUST DESTROY ALL BALLS", errBalls: "BALL REACHED THE CENTER", errTime: "TIME'S UP", errLife: "OUT OF LIVES", stBalls: "Balls Score:", stQ: "Questions Score:", stBonus: "Bonus Score:", stPen: "Penalties:", stTotal: "TOTAL SCORE:", stWrong: "Mistakes:" },
+    ru: { start: "НАЧАТЬ ИГРУ", next: "СЛЕДУЮЩИЙ УРОВЕНЬ", play: "ИГРАТЬ СНОВА", over: "ИГРА ОКОНЧЕНА", cleared: "УРОВЕНЬ ПРОЙДЕН!", quest: "КВЕСТ ЗАВЕРШЕН!", goal: "ЦЕЛЬ: ОТВЕТИТЬ НА ВСЕ ВОПРОСЫ", otherwise: "ИНАЧЕ ПРИДЕТСЯ УНИЧТОЖИТЬ ВСЕ ШАРЫ", errBalls: "ШАР ДОСТИГ ЦЕНТРА", errTime: "ВРЕМЯ ВЫШЛО", errLife: "ЖИЗНИ ЗАКОНЧИЛИСЬ", stBalls: "Очки за шары:", stQ: "Очки за вопросы:", stBonus: "Бонусные очки:", stPen: "Штрафы:", stTotal: "ИТОГОВЫЙ СЧЕТ:", stWrong: "Ошибок:" },
+    uk: { start: "ПОЧАТИ ГРУ", next: "НАСТУПНИЙ РІВЕНЬ", play: "ГРАТИ ЗНОВУ", over: "ГРА ЗАКІНЧЕНА", cleared: "РІВЕНЬ ПРОЙДЕНО!", quest: "КВЕСТ ЗАВЕРШЕНО!", goal: "МЕТА: ВІДПОВІСТИ НА ВСІ ПИТАННЯ", otherwise: "ІНАКШЕ ДОВЕДЕТЬСЯ ЗНИЩИТИ ВСІ КУЛІ", errBalls: "КУЛЯ ДОСЯГЛА ЦЕНТРУ", errTime: "ЧАС ВИЙШОВ", errLife: "ЖИТТЯ ЗАКІНЧИЛИСЬ", stBalls: "Окуляри за кулі:", stQ: "Окуляри за питання:", stBonus: "Бонусні очки:", stPen: "Штрафи:", stTotal: "ПІДСУМКОВИЙ РАХУНОК:", stWrong: "Помилок:" },
+    de: { start: "SPIEL STARTEN", next: "NÄCHSTES LEVEL", play: "NOCHMAL SPIELEN", over: "SPIEL VORBEI", cleared: "LEVEL GESCHAFFT!", quest: "QUEST ABGESCHLOSSEN!", goal: "ZIEL: ALLE FRAGEN BEANTWORTEN", otherwise: "SONST MUSST DU ALLE BÄLLE ZERSTÖREN", errBalls: "BALL HAT DAS ZENTRUM ERREICHT", errTime: "ZEIT ABGELAUFEN", errLife: "KEINE LEBEN MEHR", stBalls: "Bälle Punkte:", stQ: "Fragen Punkte:", stBonus: "Bonus Punkte:", stPen: "Strafen:", stTotal: "GESAMTPUNKTZAHL:", stWrong: "Fehler:" },
+    fr: { start: "COMMENCER", next: "NIVEAU SUIVANT", play: "REJOUER", over: "JEU TERMINÉ", cleared: "NIVEAU TERMINÉ!", quest: "QUÊTE ACHEVÉE!", goal: "OBJECTIF: RÉPONDRE À TOUT", otherwise: "SINON VOUS DEVEZ DÉTRUIRE TOUTES LES BALLES", errBalls: "LA BALLE A ATTEINT LE CENTRE", errTime: "TEMPS ÉCOULÉ", errLife: "PLUS DE VIES", stBalls: "Score des Balles:", stQ: "Score des Questions:", stBonus: "Score Bonus:", stPen: "Pénalités:", stTotal: "SCORE TOTAL:", stWrong: "Erreurs:" },
+    kk: { start: "ОЙЫНДЫ БАСТАУ", next: "КЕЛЕСІ ДЕҢГЕЙ", play: "ҚАЙТА ОЙНАУ", over: "ОЙЫН АЯҚТАЛДЫ", cleared: "ДЕҢГЕЙ АЯҚТАЛДЫ!", quest: "КВЕСТ АЯҚТАЛДЫ!", goal: "МАҚСАТ: БАРЛЫҚ СҰРАҚТАРҒА ЖАУАП БЕРУ", otherwise: "ӘЙТПЕСЕ БАРЛЫҚ ШАРЛАРДЫ ЖОЮ КЕРЕК", errBalls: "ШАР ОРТАҒА ЖЕТТІ", errTime: "УАҚЫТ БІТТІ", errLife: "ӨМІРЛЕР ТАУСЫЛДЫ", stBalls: "Шарлар ұпайы:", stQ: "Сұрақтар ұпайы:", stBonus: "Бонус ұпайы:", stPen: "Айыппұлдар:", stTotal: "ЖАЛПЫ ҰПАЙ:", stWrong: "Қателер:" }
 };
 
 // Звуковая система
@@ -459,7 +466,12 @@ const AudioSys = {
         const g = this.ctx.createGain(); g.gain.setValueAtTime(0.05, this.ctx.currentTime); g.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime+0.4);
         n.connect(f); f.connect(g); g.connect(this.ctx.destination); n.start();
     },
-    tick: function() { this.tone(800, 'square', 0.05, 0.05); }
+    tick: function() { this.tone(800, 'square', 0.05, 0.05); },
+    heartbeat: function() { 
+        if(!this.ctx) return; 
+        this.tone(150, 'sine', 0.1, 0.3, -50); 
+        setTimeout(() => this.tone(150, 'sine', 0.15, 0.3, -50), 200); 
+    }
 };
 
 // Частицы и эффекты
@@ -504,8 +516,10 @@ class GameCore {
         // Жесткая защита стартовых массивов
         this.balls = []; this.bullets = []; this.parts = []; this.queue = []; this.path = []; this.fworks = []; this.lightnings = [];
         
-        // Настройки физики из maze 14
-        this.radius = 22; this.spacing = 44; this.speed = 1.2; this.bulletSpeed = 24;
+        // Настройки физики (скорость берем из настроек)
+        this.radius = 22; this.spacing = 44; 
+        this.speed = this.cfg.speed || 1.2; 
+        this.bulletSpeed = 24;
         this.colors = ["red", "blue", "green", "yellow", "purple", "orange"];
         this.bTypes = {
             normal: { imgKey: "c_" }, neutral: { imgKey: "t_neutral" }, question: { imgKey: "t_question" },
@@ -549,9 +563,17 @@ class GameCore {
         document.querySelectorAll('.dyn-mask').forEach(el => el.src = this.cfg.imgMask); 
         document.querySelectorAll('.dyn-heart').forEach(el => el.src = this.cfg.imgHeart); 
         document.querySelectorAll('.dyn-clock').forEach(el => el.src = this.cfg.imgClock);
-        const t = I18N[this.cfg.lang] || I18N.ru; 
-        document.getElementById('t-goal').innerHTML = `${t.goal}<br><span style="color:var(--q-color); font-size:0.9em; text-shadow: 0 0 5px var(--q-color);">OTHERWISE YOU MUST DESTROY ALL BALLS</span>`; 
-        document.getElementById('g-btn-start').innerText = t.start;
+        
+        this.t = I18N[this.cfg.lang] || I18N.ru; 
+        document.getElementById('t-goal').innerHTML = `${this.t.goal}<br><span style="color:var(--q-color); font-size:0.9em; text-shadow: 0 0 5px var(--q-color);">${this.t.otherwise}</span>`; 
+        document.getElementById('g-btn-start').innerText = this.t.start;
+        
+        document.getElementById('lbl-st-balls').innerText = this.t.stBalls;
+        document.getElementById('lbl-st-q').innerText = this.t.stQ;
+        document.getElementById('lbl-st-bonus').innerText = this.t.stBonus;
+        document.getElementById('lbl-st-pen').innerText = this.t.stPen;
+        document.getElementById('lbl-st-total').innerText = this.t.stTotal;
+        document.getElementById('lbl-st-wrong').innerText = this.t.stWrong;
     }
     bindEvents() {
         const move=(e)=>{ const r=this.cvs.getBoundingClientRect(); const cx=e.touches?e.touches[0].clientX:e.clientX; this.player.x=Math.max(35, Math.min(this.w-35, cx-r.left)); };
@@ -584,7 +606,6 @@ class GameCore {
     start(lvlIdx) {
         document.querySelectorAll('.g-ui-layer').forEach(el=>el.classList.add('g-hidden')); this.state='playing'; 
         
-        // Сброс глобальной статистики только на первом уровне
         if (lvlIdx === 0) { 
             this.score=0; this.lives=this.maxLives; this.scoreBalls = 0; this.scoreQ = 0; this.scoreBonus = 0; this.sPen = 0; this.statWrong = 0;
         } 
@@ -610,7 +631,7 @@ class GameCore {
                 if (this.time <= 5 && this.time > 0) { AudioSys.tick(); timeDisp.classList.add('pulse-urgent'); } 
                 else { timeDisp.classList.remove('pulse-urgent'); } 
                 this.ui(); 
-                if(this.time<=0) this.over("TIME'S UP", false); 
+                if(this.time<=0) this.over(this.t.errTime, false); 
             } 
         },1000);
     }
@@ -639,12 +660,20 @@ class GameCore {
         if(this.state!=='playing') return; 
         
         let need=this.balls.length===0; if(!need && this.balls[this.balls.length-1].d > this.curSpacing) need=true; if(need) this.spawn(); 
-        if(this.balls.length === 0 && this.queue.length === 0) { this.over("LEVEL CLEARED!", true); return; }
+        if(this.balls.length === 0 && this.queue.length === 0) { this.over(this.t.cleared, true); return; }
         
         this.balls?.forEach((b, i) => { 
             b.d+=this.speed; 
-            if(b.d>=this.path.length-1) { this.over("BALL REACHED THE CENTER", false); return; } 
-            let idx=Math.floor(b.d); let p1=this.path[idx]||this.path[this.path.length-1], p2=this.path[idx+1]||p1, f=b.d-idx; 
+            if(b.d>=this.path.length-1) { this.over(this.t.errBalls, false); return; } 
+            
+            // Идеальное чтение позиции, даже если шарик находится "в откате" (на точке старта)
+            let idx = Math.floor(b.d); 
+            if(idx < 0) idx = 0; 
+            if(idx >= this.path.length) idx = this.path.length - 1;
+            let p1 = this.path[idx]; 
+            let p2 = this.path[idx+1] || p1; 
+            let f = Math.max(0, b.d) - idx;
+            
             b.x=p1.x+(p2.x-p1.x)*f; b.y=p1.y+(p2.y-p1.y)*f; 
         });
         
@@ -674,7 +703,7 @@ class GameCore {
             case 'question': this.state='paused_for_q'; AudioSys.bonus(); this.ask(); break;
             case 'time_add': this.time+=20; AudioSys.bonus(); this.showFlash("+20s"); this.balls.splice(idx,1); this.scoreBonus+=20; this.score+=20; break;
             case 'life_add': if(this.lives<5)this.lives++; this.showFlash("+LIFE"); AudioSys.bonus(); this.balls.splice(idx,1); break;
-            case 'compress': this.curSpacing=Math.max(25,this.curSpacing-10); this.showFlash("COMPRESS!"); AudioSys.bonus(); this.balls.splice(idx,1); break;
+            case 'compress': this.curSpacing=Math.max(35,this.curSpacing-10); this.showFlash("COMPRESS!"); AudioSys.bonus(); this.balls.splice(idx,1); break;
             case 'time_sub': this.time=Math.max(0,this.time-10); this.showFlash("-10s!"); AudioSys.bad(); this.sPen+=50; this.balls.splice(idx,1); break;
             case 'stretch': this.curSpacing=Math.min(80,this.curSpacing+10); this.showFlash("STRETCH!"); AudioSys.bad(); this.balls.splice(idx,1); break;
             case 'add_ball': 
@@ -714,29 +743,34 @@ class GameCore {
         document.getElementById('g-quiz-screen').classList.add('g-hidden'); const qi = this.balls.findIndex(b=>b.type==='question'); if(qi!==-1) this.balls.splice(qi,1);
         if(isOk) { 
             this.combo++; if(this.combo>this.maxCombo)this.maxCombo=this.combo; const pts = 100 * this.combo; this.score += pts; this.scoreQ += pts; this.qDone++; 
-            this.showFlash("COMBO x" + this.combo); AudioSys.correct(); this.balls?.forEach(bl => bl.d = Math.max(0, bl.d - 100)); this.showFlash("ROLLBACK!"); 
+            this.showFlash("COMBO x" + this.combo); AudioSys.correct(); 
+            
+            // Идеальный откат без наслоения
+            this.balls?.forEach(bl => bl.d -= 100); 
+            this.showFlash("ROLLBACK!"); 
+            
         } else { 
             this.combo=0; this.statWrong++; this.lives--; AudioSys.wrong(); this.shakeScreen(); 
             let maxD = 0; if(this.balls.length>0) maxD = this.balls.reduce((m, b) => Math.max(m, b.d), 0);
             for(let k=1; k<=3; k++) { this.balls.push({ d: maxD + (this.spacing * k), type: 'neutral', c: 'gray' }); } this.balls.sort((a,b)=>a.d-b.d); 
         }
         this.ui(); 
-        if(this.lives<=0) { this.over("OUT OF LIVES", false); return; } 
-        if(this.qDone >= this.levelQuestions.length && this.statWrong === 0) { this.over("LEVEL CLEARED!", true); } 
+        if(this.lives<=0) { this.over(this.t.errLife, false); return; } 
+        if(this.qDone >= this.levelQuestions.length && this.statWrong === 0) { this.over(this.t.cleared, true); } 
         else if(this.qDone >= this.levelQuestions.length) { this.state='playing'; } 
         else { this.state='playing'; }
     }
     
     over(txt, win) {
         this.state='gameover'; clearInterval(this.tmr); this.isWin = win; document.getElementById('g-end-screen').classList.remove('g-hidden');
-        const t = I18N[this.cfg.lang] || I18N.ru; let titleEl = document.getElementById('g-end-title'); let btnEl = document.getElementById('g-btn-restart');
+        let titleEl = document.getElementById('g-end-title'); let btnEl = document.getElementById('g-btn-restart');
         
         if (win) { 
-            if (this.currentLevelIndex < this.cfg.levels.length - 1) { titleEl.innerText = t.cleared; btnEl.innerText = t.next; } 
-            else { titleEl.innerText = t.quest; btnEl.innerText = t.play; } 
+            if (this.currentLevelIndex < this.cfg.levels.length - 1) { titleEl.innerText = this.t.cleared; btnEl.innerText = this.t.next; } 
+            else { titleEl.innerText = this.t.quest; btnEl.innerText = this.t.play; } 
             AudioSys.win();
         } else { 
-            titleEl.innerText = t.over; btnEl.innerText = t.play; 
+            titleEl.innerText = this.t.over; btnEl.innerText = this.t.play; 
             AudioSys.lose();
         }
         
@@ -764,11 +798,11 @@ class GameCore {
             const last = this.path[this.path.length-1]; 
             if (this.ASSETS['center_mask'] && this.ASSETS['center_mask'].complete) { 
                 
-                // УМНАЯ ЗОЛОТАЯ МАСКА: Пульсирует за 3 см до бездны!
+                // УМНАЯ ЗОЛОТАЯ МАСКА: Пульсирует за 150 пикселей (около 3-4 см) до бездны!
                 let danger = false;
                 if(this.balls.length > 0) {
                     let leadingD = this.balls.reduce((max, b) => Math.max(max, b.d), 0);
-                    if (this.path.length - leadingD < 60) danger = true; // 60 точек до центра = ~3см
+                    if (this.path.length - leadingD < 150) danger = true;
                 }
                 
                 this.ctx.save(); 
@@ -778,6 +812,12 @@ class GameCore {
                     maskSize = 90 + pulse * 15;
                     this.ctx.shadowBlur = 20 + pulse * 20; 
                     this.ctx.shadowColor = "rgba(255, 0, 0, 0.9)"; // Тревожный красный
+                    
+                    // Запуск звука сердцебиения
+                    if (!this.lastHeartbeat || Date.now() - this.lastHeartbeat > 600) {
+                        AudioSys.heartbeat();
+                        this.lastHeartbeat = Date.now();
+                    }
                 } else if (this.cfg.neonEnabled) { 
                     this.ctx.shadowBlur = 20; this.ctx.shadowColor = this.cfg.uiColor; 
                 } 
@@ -1003,14 +1043,14 @@ function generateEmbedCode() {
 
     const config = {
         lang: document.getElementById('cfg-lang').value, lives: parseInt(document.getElementById('cfg-lives').value) || 3, 
-        timerStart: parseInt(document.getElementById('cfg-time').value) || 120, neonEnabled: document.getElementById('cfg-neon').checked, 
-        fontFamily: document.getElementById('cfg-font').value, uiColor: document.getElementById('cfg-ui-color').value, 
-        progColor: document.getElementById('cfg-prog-color').value, qColor: document.getElementById('cfg-q-color').value, 
-        qSize: document.getElementById('cfg-q-size').value + "px", aColor: document.getElementById('cfg-a-color').value, 
-        aSize: document.getElementById('cfg-a-size').value + "px", aBg: document.getElementById('cfg-a-bg').value, 
-        imgShooter: document.getElementById('cfg-img-shooter').value, imgMask: document.getElementById('cfg-img-mask').value,
-        imgHeart: document.getElementById('cfg-img-heart').value, imgClock: document.getElementById('cfg-img-clock').value,
-        levels: cleanLevels, questions: questionsDB
+        timerStart: parseInt(document.getElementById('cfg-time').value) || 120, speed: parseFloat(document.getElementById('cfg-speed').value) || 1.2,
+        neonEnabled: document.getElementById('cfg-neon').checked, fontFamily: document.getElementById('cfg-font').value, 
+        uiColor: document.getElementById('cfg-ui-color').value, progColor: document.getElementById('cfg-prog-color').value, 
+        qColor: document.getElementById('cfg-q-color').value, qSize: document.getElementById('cfg-q-size').value + "px", 
+        aColor: document.getElementById('cfg-a-color').value, aSize: document.getElementById('cfg-a-size').value + "px", 
+        aBg: document.getElementById('cfg-a-bg').value, imgShooter: document.getElementById('cfg-img-shooter').value, 
+        imgMask: document.getElementById('cfg-img-mask').value, imgHeart: document.getElementById('cfg-img-heart').value, 
+        imgClock: document.getElementById('cfg-img-clock').value, levels: cleanLevels, questions: questionsDB
     };
 
     let configStr = JSON.stringify(config);
