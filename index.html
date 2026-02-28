@@ -3,56 +3,100 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Maze Trap PRO - Final Edition</title>
+    <title>Maze Trap - Iframe Pro</title>
     <link href="https://fonts.googleapis.com/css2?family=Metamorphous&family=Orbitron:wght@700&family=Caveat:wght@700&family=Cinzel:wght@700&family=Macondo&family=Montserrat:wght@800&family=Comic+Neue:wght@700&family=Pacifico&display=swap" rel="stylesheet">
+    
     <style>
         :root {
             --ui-color: #39ff14; --q-color: #ffe600; --q-size: 28px; --a-color: #ffffff;
-            --a-bg: rgba(255, 255, 255, 0.1); --a-size: 22px; --game-font: 'Metamorphous', serif;
-            --bg-dark: #090909; --panel-bg: #151515; --neon-glow: 0 0 10px var(--ui-color);
+            --a-bg: rgba(255, 255, 255, 0.05); --a-size: 22px; --game-font: 'Metamorphous', serif;
+            --bg-dark: #111; --panel-bg: #1a1a1a; --neon-glow: 0 0 10px var(--ui-color);
         }
 
-        body, html { margin: 0; padding: 0; background: var(--bg-dark); color: #ddd; font-family: 'Segoe UI', sans-serif; overflow: hidden; width: 100%; height: 100%; }
+        body, html { margin: 0; padding: 0; background: var(--bg-dark); color: #ddd; font-family: 'Segoe UI', sans-serif; overflow-x: hidden; width: 100%; height: 100%; }
         
-        /* СТИЛИ РЕДАКТОРА */
-        #editor-ui { display: none; height: 100vh; overflow-y: auto; background: #000; }
+        /* EDITOR UI CSS */
+        #editor-ui { display: none; min-height: 100vh; overflow-y: auto; }
         header { display: flex; align-items: center; justify-content: space-between; padding: 15px 30px; background: #000; border-bottom: 2px solid var(--ui-color); box-shadow: 0 0 15px var(--ui-color); }
         .logo-container { display: flex; align-items: center; gap: 15px; }
-        .logo-container img { height: 50px; filter: drop-shadow(0 0 10px var(--ui-color)); }
-        .logo-container h1 { margin: 0; font-family: 'Metamorphous', serif; color: #fff; font-size: 20px; }
+        .logo-container img { height: 60px; filter: drop-shadow(0 0 10px var(--ui-color)); }
+        .logo-container h1 { margin: 0; font-family: 'Metamorphous', serif; color: #fff; text-shadow: 0 0 10px var(--ui-color); font-size: 22px; }
         
-        .tabs { display: flex; gap: 5px; padding: 0 30px; background: #000; border-bottom: 1px solid #333; }
-        .tab-btn { background: #1a1a1a; border: 1px solid #333; color: #888; padding: 12px 20px; cursor: pointer; border-radius: 8px 8px 0 0; font-family: 'Metamorphous', serif; font-size: 13px; transition: 0.3s; }
-        .tab-btn.active { background: var(--panel-bg); color: var(--ui-color); border-color: var(--ui-color); border-bottom: 2px solid var(--panel-bg); }
+        .tabs { display: flex; gap: 5px; padding: 0 30px; background: #000; }
+        .tab-btn { background: #222; border: 1px solid #444; color: #aaa; padding: 12px 20px; cursor: pointer; border-radius: 8px 8px 0 0; font-family: 'Metamorphous', serif; font-size: 14px; font-weight: bold; }
+        .tab-btn:hover { background: #333; color: #fff; }
+        .tab-btn.active { background: var(--panel-bg); color: #ffe600; border-color: #ffe600; border-bottom: none; }
 
-        main { padding: 25px; background: var(--panel-bg); min-height: calc(100vh - 140px); }
-        .tab-content { display: none; max-width: 1000px; margin: 0 auto; }
+        main { padding: 25px; background: var(--panel-bg); min-height: calc(100vh - 160px); }
+        .tab-content { display: none; max-width: 1100px; margin: 0 auto; }
         .tab-content.active { display: block; }
 
-        .form-group { margin-bottom: 15px; background: #222; padding: 15px; border-radius: 10px; border: 1px solid #333; }
+        .form-group { margin-bottom: 15px; background: #222; padding: 15px; border-radius: 8px; border: 1px solid #333; }
         label { display: block; margin-bottom: 8px; color: #fff; font-weight: bold; font-size: 14px; }
-        input, select, textarea { width: 100%; padding: 10px; background: #000; color: #fff; border: 1px solid #444; border-radius: 6px; box-sizing: border-box; font-family: inherit; }
+        input[type="text"], input[type="number"], select, textarea { width: 100%; padding: 10px; background: #000; color: #fff; border: 1px solid #555; border-radius: 5px; box-sizing: border-box; }
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+        
+        .color-picker-group { display: flex; align-items: center; justify-content: space-between; background: #000; padding: 10px; border-radius: 5px; border: 1px solid #555; }
+        .color-picker-group input[type="color"] { width: 40px; height: 30px; padding: 0; border: none; cursor: pointer; background: transparent; }
+        .color-picker-group input[type="text"] { width: 80px; border: none; padding: 5px; border-bottom: 1px solid #555; border-radius: 0; margin-left: 10px; }
+
         .btn-main { background: transparent; border: 2px solid var(--ui-color); color: var(--ui-color); padding: 12px 25px; border-radius: 30px; cursor: pointer; font-family: 'Metamorphous', serif; font-weight: bold; transition: 0.3s; }
         .btn-main:hover { background: var(--ui-color); color: #000; box-shadow: 0 0 15px var(--ui-color); }
+        .btn-del { background: #ff3333; color: #fff; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; }
 
-        /* СТИЛИ ИГРЫ */
-        #game-wrapper { display: none; position: fixed; inset: 0; background: #000; z-index: 99999; overflow: hidden; user-select: none; }
-        #game-container { position: relative; width: 100%; height: 100%; background-size: 100% 100%; background-position: center; transition: 0.5s; }
-        canvas { display: block; position: absolute; inset: 0; z-index: 1; }
+        .preview-box { width: 100%; height: 500px; background: #000; background-size: cover; background-position: center; position: relative; border: 2px solid var(--ui-color); border-radius: 10px; overflow: hidden; }
+        .preview-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: flex; justify-content: center; align-items: center; transition: 0.3s; }
+        .preview-overlay.hidden { opacity: 0; pointer-events: none; }
+        .preview-card { background: rgba(15, 5, 25, 0.95); border: 1px solid var(--ui-color); border-radius: 20px; padding: 30px; text-align: center; width: 85%; max-width: 400px; box-sizing: border-box; box-shadow: var(--neon-glow); }
+        #p-q { color: var(--q-color); font-size: var(--q-size); margin-bottom: 20px; font-family: var(--game-font); }
+        .ans-btn-preview { width: 100%; padding: 15px; margin: 10px 0; background: var(--a-bg); border: 1px solid rgba(255,255,255,0.3); border-radius: 10px; color: var(--a-color); box-sizing: border-box; text-align: center; font-size: var(--a-size); font-family: var(--game-font); }
+
+        .q-item { background: #000; border: 1px solid #444; padding: 15px; margin-bottom: 10px; border-radius: 8px; display: flex; justify-content: space-between; align-items: flex-start; }
+        .q-item-content { flex-grow: 1; }
+        .q-item-type { font-size: 11px; color: #888; text-transform: uppercase; margin-bottom: 5px; }
+        .q-item-q { font-size: 16px; color: #ffe600; font-weight: bold; margin-bottom: 5px; }
+        .q-item-a { font-size: 14px; color: #00ff66; margin-bottom: 3px; }
+        .q-item-o { font-size: 12px; color: #aaa; }
+        .q-item-lvl { display: inline-block; background: #333; padding: 2px 6px; border-radius: 4px; font-size: 11px; color: #fff; margin-top: 5px; }
+
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; justify-content: center; align-items: center; }
+        .modal-content { background: #1a1a1a; padding: 25px; border-radius: 10px; width: 90%; max-width: 800px; border: 2px solid var(--ui-color); max-height: 90vh; overflow-y: auto; }
+        .preset-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 15px; }
+        .preset-img { width: 100%; height: 200px; object-fit: cover; border-radius: 8px; cursor: pointer; border: 2px solid transparent; transition: 0.2s; }
+        .preset-img:hover { border-color: var(--ui-color); transform: scale(1.05); }
+        #export-code { width: 100%; height: 250px; background: #000; color: #00ff66; font-family: monospace; border: 1px solid #555; padding: 15px; box-sizing: border-box; font-size: 13px; margin-bottom: 20px; border-radius: 8px; resize: vertical; word-wrap: break-word; }
+
+        /* GAME UI CSS */
+        #game-wrapper { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #000; z-index: 99999; overflow: hidden; user-select: none; }
+        #game-container { position: relative; width: 100%; height: 100%; background-color: #000; background-size: 100% 100%; background-position: center; display: flex; justify-content: center; align-items: center; transition: 0.5s; }
+        canvas { display: block; position: absolute; top: 0; left: 0; z-index: 1; }
         .g-hud-wrap { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 15px; z-index: 25; width: 45%; max-width: 450px; }
-        .g-prog-cont { flex-grow: 1; height: 18px; background: rgba(0,0,0,0.8); border: 2px solid var(--ui-color); border-radius: 20px; overflow: hidden; }
-        .g-prog-fill { width: 0%; height: 100%; background: var(--ui-color); box-shadow: 0 0 15px var(--ui-color); transition: 0.5s; }
+        .g-prog-cont { flex-grow: 1; height: 18px; background: rgba(0,0,0,0.7); border: 2px solid var(--prog-color); border-radius: 20px; box-shadow: 0 0 10px var(--prog-color); overflow: hidden; }
+        .g-prog-fill { width: 0%; height: 100%; background: var(--prog-color); box-shadow: 0 0 15px var(--prog-color); transition: 0.5s; }
         .g-val { color: #fff; font-size: 24px; font-weight: bold; text-shadow: 0 2px 5px #000; font-family: var(--game-font); }
-        .g-hud-item { display: flex; align-items: center; gap: 8px; }
-        .g-icon { width: 35px; height: 35px; object-fit: contain; }
-        .g-layer { position: absolute; inset: 0; z-index: 100; display: flex; justify-content: center; align-items: center; background: rgba(0,0,0,0.85); font-family: var(--game-font); }
-        .g-card { background: rgba(10, 5, 20, 0.98); border: 2px solid var(--ui-color); border-radius: 20px; padding: 30px; text-align: center; color: #fff; width: 90%; max-width: 450px; box-shadow: var(--neon-glow); }
-        .g-ans-btn { width: 100%; background: var(--a-bg); border: 1px solid rgba(255,255,255,0.2); color: var(--a-color); padding: 15px; margin: 10px 0; border-radius: 12px; cursor: pointer; font-size: var(--a-size); transition: 0.2s; }
-        .g-ans-btn:hover { background: var(--ui-color); color: #000; }
-        #g-float-text { position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); font-size: 50px; color: #fff; text-shadow: 0 0 20px var(--ui-color); font-weight: 900; opacity: 0; pointer-events: none; z-index: 150; }
+        .g-hud-left { position: absolute; top: 15px; left: 20px; display: flex; gap: 20px; z-index: 20; }
+        .g-hud-right { position: absolute; top: 15px; right: 20px; display: flex; z-index: 20; }
+        .g-hud-item { display: flex; align-items: center; gap: 8px; text-shadow: 0 2px 5px #000; }
+        .g-icon { width: 35px; height: 35px; object-fit: contain; filter: drop-shadow(0 0 5px rgba(255,255,255,0.3)); }
+        .pulse-urgent { animation: pulseRed 0.3s infinite alternate; color: #ff0000 !important; }
+        @keyframes pulseRed { from { text-shadow: 0 0 10px #f00; transform: scale(1); } to { text-shadow: 0 0 30px #f00; transform: scale(1.2); } }
+        .g-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: auto; z-index: 100; display: flex; justify-content: center; align-items: center; background: rgba(0,0,0,0.85); font-family: var(--game-font);}
         .g-hidden { display: none !important; }
-        #export-code { font-family: monospace; font-size: 11px; height: 120px; background: #050505; color: #0f0; border-color: #333; margin-top: 15px; }
+        .g-card { background: rgba(15, 5, 25, 0.95); border: 2px solid var(--ui-color); border-radius: 20px; padding: 30px 20px; text-align: center; color: #fff; max-height: 95vh; overflow-y: auto; display: flex; flex-direction: column; align-items: center; width: 90%; max-width: 450px; box-sizing: border-box; }
+        .g-btn-neon { background: transparent; border: 2px solid var(--ui-color); color: var(--ui-color); padding: 15px 40px; font-size: 22px; border-radius: 50px; cursor: pointer; margin-top: 20px; transition: 0.3s; font-family: var(--game-font); font-weight: bold; }
+        .g-btn-neon:hover { background: var(--ui-color); color: #000; box-shadow: 0 0 25px var(--ui-color); transform: scale(1.05); }
+        .g-ans-btn { width: 100%; background: var(--a-bg); border: 1px solid rgba(255, 255, 255, 0.3); color: var(--a-color); padding: 15px 20px; margin: 10px 0; border-radius: 10px; cursor: pointer; text-align: center; transition: 0.2s; font-size: var(--a-size); font-family: var(--game-font); box-sizing: border-box;}
+        .g-ans-btn:hover { background: rgba(255, 255, 255, 0.2); border-color: var(--ui-color); color: var(--ui-color); text-shadow: 0 0 8px var(--ui-color); transform: scale(1.02); }
+        .g-input-field { width: 90%; padding: 15px; background: rgba(0,0,0,0.5); border: 2px solid var(--ui-color); color:#fff; font-size: var(--a-size); text-align:center; border-radius: 10px; font-family: var(--game-font); margin-bottom: 20px; box-sizing: border-box; outline:none;}
+        .g-order-slots { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 20px; min-height: 50px; border-bottom: 2px solid #555; padding: 15px; width: 100%; box-sizing: border-box;}
+        .g-word-slot { font-size: var(--a-size); color: var(--ui-color); padding: 0 8px; border-bottom: 2px solid var(--ui-color); }
+        .g-word-btn { background: var(--a-bg); border: 1px solid rgba(255,255,255,0.3); color: var(--a-color); padding: 12px 20px; border-radius: 8px; cursor: pointer; margin: 6px; font-size: var(--a-size); font-family: var(--game-font); transition: 0.2s;}
+        .g-word-btn:hover { border-color:var(--ui-color); color: var(--ui-color);}
+        .g-word-btn.used { opacity: 0.3; pointer-events: none; }
+        #g-float-text { position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); font-size: 60px; color: #fff; text-shadow: 0 0 20px #00ffff; font-weight: 900; opacity: 0; pointer-events: none; z-index: 150; transition: opacity 0.5s, transform 0.5s; white-space: nowrap; font-family: var(--game-font); }
+        .g-shake { animation: gShakeAnim 0.4s; }
+        @keyframes gShakeAnim { 0% { transform: translate(0,0); } 20% { transform: translate(-4px, 2px); } 40% { transform: translate(4px, -2px); } 60% { transform: translate(-4px, -2px); } 80% { transform: translate(4px, 2px); } 100% { transform: translate(0,0); } }
     </style>
 </head>
 <body>
@@ -61,380 +105,651 @@
     <header>
         <div class="logo-container">
             <img src="https://img.genially.com/67961b32a116fb001568a75e/aa411ed1-1aef-4f00-a1a6-59b64d18dc7a.png">
-            <h1>MAZE TRAP: PRO BUILDER</h1>
+            <h1>MAZE TRAP: PRO ENGINE</h1>
         </div>
-        <button class="btn-main" onclick="generateEmbedCode()">⚙️ СОЗДАТЬ IFRAME</button>
     </header>
 
     <div class="tabs">
-        <button class="tab-btn active" onclick="openTab('t-design', this)">ДИЗАЙН</button>
-        <button class="tab-btn" onclick="openTab('t-questions', this)">ВОПРОСЫ</button>
-        <button class="tab-btn" onclick="openTab('t-levels', this)">УРОВНИ</button>
+        <button class="tab-btn active" onclick="openTab('tab-design', this)">1. ДИЗАЙН</button>
+        <button class="tab-btn" onclick="openTab('tab-levels', this)">2. УРОВНИ</button>
+        <button class="tab-btn" onclick="openTab('tab-questions', this)">3. ВОПРОСЫ</button>
+        <button class="tab-btn" onclick="openTab('tab-preview', this)">4. ПРЕДПРОСМОТР</button>
+        <button class="tab-btn" onclick="openTab('tab-export', this)" style="color:#39ff14;">5. ЭКСПОРТ (IFRAME)</button>
     </div>
 
     <main>
-        <div id="t-design" class="tab-content active">
+        <div id="tab-design" class="tab-content active">
             <div class="grid-2">
                 <div class="form-group">
-                    <label>Цвет интерфейса:</label>
-                    <input type="color" id="cfg-ui-color" value="#39ff14">
-                </div>
-                <div class="form-group">
-                    <label>Шрифт игры:</label>
-                    <select id="cfg-font">
-                        <option value="'Metamorphous', serif">Metamorphous</option>
-                        <option value="'Orbitron', sans-serif">Orbitron</option>
-                        <option value="'Comic Neue', cursive">Comic Neue</option>
+                    <label>Язык интерфейса:</label>
+                    <select id="cfg-lang">
+                        <option value="ru">Русский</option>
+                        <option value="en">English (Английский)</option>
+                        <option value="uk">Українська (Украинский)</option>
+                        <option value="de">Deutsch (Немецкий)</option>
+                        <option value="fr">Français (Французский)</option>
+                        <option value="kk">Қазақша (Казахский)</option>
                     </select>
                 </div>
+                <div class="grid-2">
+                    <div class="form-group"><label>Жизни (1-5):</label><input type="number" id="cfg-lives" min="1" max="5" value="3"></div>
+                    <div class="form-group"><label>Время (сек):</label><input type="number" id="cfg-time" value="120"></div>
+                </div>
             </div>
+
             <div class="form-group">
-                <label>Результат экспорта (Iframe):</label>
-                <textarea id="export-code" readonly placeholder="Здесь появится код для Genially..."></textarea>
-                <button class="btn-main" style="width:100%; margin-top:10px;" onclick="copyToClipboard()">📋 Копировать код</button>
+                <label>Цвета интерфейса:</label>
+                <div class="grid-4">
+                    <div class="color-picker-group">
+                        <span style="font-size:12px; color:#aaa;">Неон</span>
+                        <input type="color" id="cfg-ui-color" value="#39ff14" oninput="syncColor(this, 'txt-ui-color'); updatePreview()">
+                        <input type="text" id="txt-ui-color" value="#39ff14" oninput="document.getElementById('cfg-ui-color').value=this.value; updatePreview()">
+                    </div>
+                    <div class="color-picker-group">
+                        <span style="font-size:12px; color:#aaa;">Прогресс</span>
+                        <input type="color" id="cfg-prog-color" value="#00ff66" oninput="syncColor(this, 'txt-prog-color')">
+                        <input type="text" id="txt-prog-color" value="#00ff66" oninput="document.getElementById('cfg-prog-color').value=this.value">
+                    </div>
+                    <div class="color-picker-group">
+                        <span style="font-size:12px; color:#aaa;">Текст Вопроса</span>
+                        <input type="color" id="cfg-q-color" value="#ffe600" oninput="syncColor(this, 'txt-q-color'); updatePreview()">
+                        <input type="text" id="txt-q-color" value="#ffe600" oninput="document.getElementById('cfg-q-color').value=this.value; updatePreview()">
+                    </div>
+                    <div class="color-picker-group">
+                        <span style="font-size:12px; color:#aaa;">Текст Ответа</span>
+                        <input type="color" id="cfg-a-color" value="#ffffff" oninput="syncColor(this, 'txt-a-color'); updatePreview()">
+                        <input type="text" id="txt-a-color" value="#ffffff" oninput="document.getElementById('cfg-a-color').value=this.value; updatePreview()">
+                    </div>
+                    <div class="color-picker-group" style="grid-column: span 2;">
+                        <span style="font-size:12px; color:#aaa;">Фон кнопок ответа</span>
+                        <input type="color" id="cfg-a-bg" value="#333333" oninput="syncColor(this, 'txt-a-bg'); updatePreview()">
+                        <input type="text" id="txt-a-bg" value="#333333" oninput="document.getElementById('cfg-a-bg').value=this.value; updatePreview()">
+                    </div>
+                </div>
+                <div style="margin-top: 15px;">
+                    <label style="display:inline-flex; align-items:center; cursor:pointer;">
+                        <input type="checkbox" id="cfg-neon" checked style="width:20px; height:20px; margin-right:10px;" onchange="updatePreview()">
+                        Включить неоновое свечение
+                    </label>
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>Шрифт игры:</label>
+                    <select id="cfg-font" onchange="updatePreview()">
+                        <option value="'Metamorphous', serif">Metamorphous</option>
+                        <option value="'Orbitron', sans-serif">Orbitron</option>
+                        <option value="'Caveat', cursive">Caveat</option>
+                        <option value="'Cinzel', serif">Cinzel</option>
+                        <option value="'Macondo', cursive">Macondo</option>
+                        <option value="'Montserrat', sans-serif">Montserrat</option>
+                        <option value="'Comic Neue', cursive">Comic Neue</option>
+                        <option value="'Pacifico', cursive">Pacifico</option>
+                    </select>
+                </div>
+                <div class="grid-2">
+                    <div class="form-group"><label>Размер вопроса:</label><input type="number" id="cfg-q-size" value="28" onchange="updatePreview()"></div>
+                    <div class="form-group"><label>Размер ответа:</label><input type="number" id="cfg-a-size" value="22" onchange="updatePreview()"></div>
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="form-group"><label>Спрайт Пушки:</label><input type="text" id="cfg-img-shooter" value="https://img.genially.com/67961b32a116fb001568a75e/ff229730-a24f-4a1b-8050-c77cb309e646.png"></div>
+                <div class="form-group"><label>Спрайт Финиша:</label><input type="text" id="cfg-img-mask" value="https://img.genially.com/67961b32a116fb001568a75e/4db0de92-1c31-4b38-8c29-df8dc6712266.png" onchange="updatePreview()"></div>
+                <div class="form-group"><label>Спрайт Жизни:</label><input type="text" id="cfg-img-heart" value="https://img.genially.com/67961b32a116fb001568a75e/213dec47-3717-4811-a68b-20fe7262ec2d.png"></div>
+                <div class="form-group"><label>Спрайт Таймера:</label><input type="text" id="cfg-img-clock" value="https://img.genially.com/67961b32a116fb001568a75e/6aa141cb-f83b-4167-9de0-25eeff46e4e2.png"></div>
             </div>
         </div>
 
-        <div id="t-questions" class="tab-content">
-            <div class="form-group">
-                <label>Добавить вопросы списком (Вопрос . Правильный | Ложный1 | Ложный2):</label>
-                <textarea id="bulk-q" style="height:150px;" placeholder="Столица Франции . Париж | Лондон | Берлин"></textarea>
-                <button class="btn-main" style="margin-top:10px;" onclick="importQuestions()">+ Загрузить вопросы</button>
+        <div id="tab-levels" class="tab-content">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
+                <h2>Настройка уровней игры</h2>
+                <button class="btn-main" onclick="addLevel()">+ ДОБАВИТЬ УРОВЕНЬ</button>
             </div>
-            <div id="q-list"></div>
+            <div id="levels-container"></div>
         </div>
 
-        <div id="t-levels" class="tab-content">
-            <p style="color:#888;">Здесь можно настроить фон уровней. По умолчанию используются 4 стандартных фона.</p>
-            <div id="lvl-list"></div>
+        <div id="tab-questions" class="tab-content">
+            <div class="grid-2">
+                <div>
+                    <h2>База вопросов</h2>
+                    <div id="questions-list" style="max-height: 600px; overflow-y: auto; padding-right: 10px;"></div>
+                </div>
+                <div style="position: sticky; top: 20px;">
+                    <div class="form-group">
+                        <h3 style="margin-top:0; color:var(--ui-color);">Массовое добавление вопросов</h3>
+                        <label>Вставьте список (Вопрос . Правильный | Ложь 1 | Ложь 2):</label>
+                        <textarea id="bulk-q" style="height: 120px;" placeholder="Dog переводится как... . Собака | Кот | Мышь"></textarea>
+                        <button class="btn-main" style="width:100%; margin-top:10px;" onclick="importBulkQuestions()">+ Загрузить список</button>
+                    </div>
+                    
+                    <div class="form-group">
+                        <h3 style="margin-top:0; color:var(--ui-color);">Добавить один сложный вопрос</h3>
+                        <label>Тип вопроса:</label>
+                        <select id="q-type" onchange="toggleQType()">
+                            <option value="mcq">Выбор ответа (Кнопки)</option>
+                            <option value="order">Сборка фразы из слов</option>
+                            <option value="input">Ручной ввод текста</option>
+                        </select>
+                        
+                        <label style="margin-top:10px;">Текст вопроса:</label>
+                        <textarea id="q-text" placeholder="Введите вопрос..."></textarea>
+                        
+                        <div id="wrap-mcq">
+                            <label style="margin-top:10px;">Правильный ответ:</label>
+                            <input type="text" id="q-mcq-a" placeholder="Правильный вариант">
+                            <label style="margin-top:10px;">Неправильные ответы (через |):</label>
+                            <input type="text" id="q-mcq-w" placeholder="Ложь 1 | Ложь 2 | Ложь 3">
+                        </div>
+                        
+                        <div id="wrap-order" style="display:none;">
+                            <label style="margin-top:10px;">Фраза (слова через пробел):</label>
+                            <input type="text" id="q-order-a" placeholder="I have a dog">
+                        </div>
+                        
+                        <div id="wrap-input" style="display:none;">
+                            <label style="margin-top:10px;">Правильный ответ (можно несколько через |):</label>
+                            <input type="text" id="q-input-a" placeholder="dog | a dog">
+                        </div>
+                        
+                        <label style="margin-top:10px;">Для какого уровня?</label>
+                        <select id="q-lvl"><option value="all">Для всех уровней</option></select>
+                        
+                        <button class="btn-main" style="width:100%; margin-top:20px;" onclick="saveQuestion()">+ Добавить вопрос</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="tab-preview" class="tab-content">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 15px;">
+                <h2>Предпросмотр экрана викторины и траектории</h2>
+                <div>
+                    <select id="preview-bg-sel" onchange="changePreviewBg()" style="width:250px; display:inline-block; margin-right:10px; padding:8px;"></select>
+                    <button class="btn-main" onclick="togglePreviewMode()">Вкл/Выкл Плашку Вопроса</button>
+                </div>
+            </div>
+            <div class="preview-box" id="p-box">
+                <canvas id="preview-canvas" width="800" height="500" style="position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none;"></canvas>
+                <div class="preview-overlay" id="p-overlay">
+                    <div class="preview-card" id="p-card">
+                        <img id="p-mask" src="" style="width:90px; margin-bottom:15px; filter: drop-shadow(0 0 10px #fff);">
+                        <div id="p-q">What is the capital of Great Britain?</div>
+                        <div class="ans-btn-preview" id="p-btn1">London</div>
+                        <div class="ans-btn-preview" id="p-btn2">Paris</div>
+                        <div class="ans-btn-preview" id="p-btn3">New York</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="tab-export" class="tab-content">
+            <div style="text-align: center; padding: 20px;">
+                <h2 style="color:var(--ui-color); font-size:28px;">Скрытая Iframe Ссылка для Genially</h2>
+                <p style="color:#aaa; max-width:700px; margin: 0 auto 20px;">
+                    Больше никаких гигантских кодов, которые Genially отторгает! Этот код математически прячет ссылку на ваш GitHub. <br><br><b>Важно:</b> просто загрузите этот редактор на свой GitHub один раз. В будущем просто копируйте сгенерированный код и вставляйте в Genially!
+                </p>
+                <button class="btn-main" style="width:100%; margin-bottom:15px; background:var(--ui-color); color:#000; font-size:20px;" onclick="generateEmbedCode()">⚙️ СГЕНЕРИРОВАТЬ IFRAME КОД</button>
+                <textarea id="export-code" placeholder="Здесь появится зашифрованный код..." readonly></textarea>
+                <button class="btn-main" style="width:100%;" onclick="copyToClipboard()">📋 СКОПИРОВАТЬ КОД И ИДТИ В GENIALLY</button>
+            </div>
         </div>
     </main>
+
+    <div id="bg-modal" class="modal">
+        <div class="modal-content">
+            <h2 style="color:var(--ui-color); margin-top:0;">Ваши фоны</h2>
+            <div class="preset-grid" id="bg-presets"></div>
+            <button class="btn-main" style="margin-top:20px; width:100%; border-color:#ff3333; color:#ff3333;" onclick="closeModal('bg-modal')">Закрыть</button>
+        </div>
+    </div>
 </div>
 
 <div id="game-wrapper">
     <div id="game-container">
         <canvas id="gameCanvas"></canvas>
-        <div class="g-hud-wrap">
-            <div class="g-prog-cont"><div id="g-prog-fill" class="g-prog-fill"></div></div>
-            <span id="g-q-disp" class="g-val" style="font-size:20px;">0/0</span>
+        <div class="g-hud-wrap"><div class="g-prog-cont"><div id="g-prog-fill" class="g-prog-fill"></div></div><span id="g-q-disp" style="color:var(--prog-color); font-size:22px; font-weight:bold; font-family: var(--game-font);">0/0</span></div>
+        <div class="g-hud-left">
+            <div class="g-hud-item"><img class="g-icon dyn-heart" src=""><span id="g-lives" class="g-val">3</span></div>
+            <div class="g-hud-item"><img class="g-icon" src="https://img.genially.com/67961b32a116fb001568a75e/03a676ec-a263-478b-a675-d6e17a7a36e1.png"><span id="g-score" class="g-val">0</span></div>
         </div>
-        <div style="position:absolute; top:15px; left:20px; display:flex; gap:20px; z-index:30;">
-            <div class="g-hud-item"><img id="icon-heart" class="g-icon" src=""><span id="g-lives" class="g-val">3</span></div>
-        </div>
-        <div style="position:absolute; top:15px; right:20px; z-index:30;">
-            <div class="g-hud-item"><img id="icon-clock" class="g-icon" src=""><span id="g-time" class="g-val">120</span></div>
-        </div>
+        <div class="g-hud-right"><div class="g-hud-item"><img class="g-icon dyn-clock" src=""><span id="g-time" class="g-val">120</span></div></div>
         <div id="g-float-text"></div>
-
         <div id="g-start-screen" class="g-layer">
-            <div class="g-card">
-                <h1 style="font-size:40px; margin:0;">MAZE TRAP</h1>
-                <p id="t-goal">ОТВЕТЬТЕ НА ВСЕ ВОПРОСЫ</p>
-                <button id="btn-start" class="g-btn-neon">ИГРАТЬ</button>
+            <div class="g-card" style="max-width: 750px;">
+                <img src="" class="dyn-mask" style="width:90px; margin-bottom:15px; filter: drop-shadow(0 0 10px var(--ui-color));">
+                <h1 style="margin:0 0 10px; color:#fff; text-shadow:0 0 10px var(--ui-color); font-size:2.5em; font-family:var(--game-font);">MAZE TRAP</h1>
+                <p id="t-goal" style="color:var(--ui-color); font-size:1.4em; margin-bottom:20px; font-weight:bold;">GOAL: ANSWER ALL QUESTIONS</p>
+                <button id="btn-start" class="g-btn-neon">START GAME</button>
             </div>
         </div>
-
         <div id="g-quiz-screen" class="g-layer g-hidden">
             <div class="g-card">
-                <h2 id="g-q-text" style="color:var(--q-color);">?</h2>
-                <div id="g-q-content"></div>
+                <img src="" class="dyn-mask" style="width:70px; margin-bottom:15px;">
+                <h2 id="g-q-text" style="color:var(--q-color); text-shadow:0 0 10px var(--q-color); font-size:var(--q-size); margin-bottom:20px;">?</h2>
+                <div id="g-q-content" style="width:100%;"></div>
             </div>
         </div>
-
         <div id="g-end-screen" class="g-layer g-hidden">
             <div class="g-card">
-                <h1 id="g-end-title">ИГРА ОКОНЧЕНА</h1>
-                <p id="g-final-score" style="font-size:24px; color:var(--ui-color);">СЧЕТ: 0</p>
-                <button id="btn-restart" class="g-btn-neon">ЗАНОВО</button>
+                <img src="" class="dyn-mask" style="width:70px; margin-bottom:15px;">
+                <h1 id="g-end-title" style="margin:0 0 10px; color:#fff; text-shadow:0 0 10px var(--ui-color); font-size:2.2em;">GAME OVER</h1>
+                <p id="g-st-total" style="color:var(--ui-color); font-size:1.8em; font-weight:bold; margin:20px 0;">SCORE: 0</p>
+                <button id="btn-restart" class="g-btn-neon">PLAY AGAIN</button>
             </div>
         </div>
     </div>
 </div>
 
 <script>
-// --- ВСЯ ЛОГИКА ИГРЫ (ЯДРО) ---
-class GameCore {
-    constructor(cfg) {
-        this.cfg = cfg;
-        this.cvs = document.getElementById('gameCanvas');
-        this.ctx = this.cvs.getContext('2d');
-        this.w = 800; this.h = 600; this.state = 'idle';
-        this.score = 0; this.lives = cfg.lives || 3;
-        this.currentLvl = 0; this.qDone = 0;
-        this.balls = []; this.bullets = []; this.parts = [];
-        this.player = { x: 400, y: 550 };
-        this.ASSETS = {};
-        
-        this.init();
-        window.addEventListener('resize', () => this.resize());
-        this.resizeCheck = setInterval(() => { if(this.resize()) clearInterval(this.resizeCheck); }, 100);
-        this.loop();
-    }
-
-    init() {
-        const r = document.documentElement;
-        r.style.setProperty('--game-font', this.cfg.fontFamily);
-        r.style.setProperty('--ui-color', this.cfg.uiColor);
-        
-        document.getElementById('icon-heart').src = this.cfg.imgHeart || "https://img.genially.com/67961b32a116fb001568a75e/213dec47-3717-4811-a68b-20fe7262ec2d.png";
-        document.getElementById('icon-clock').src = this.cfg.imgClock || "https://img.genially.com/67961b32a116fb001568a75e/6aa141cb-f83b-4167-9de0-25eeff46e4e2.png";
-        
-        const loader = (key, url) => { this.ASSETS[key] = new Image(); this.ASSETS[key].src = url; };
-        loader('shooter', this.cfg.imgShooter || "https://img.genially.com/67961b32a116fb001568a75e/ff229730-a24f-4a1b-8050-c77cb309e646.png");
-        loader('q_ball', "https://img.genially.com/67961b32a116fb001568a75e/87a94615-9492-4862-8d39-d5a93e8fb3e2.png");
-        loader('finish', this.cfg.imgMask || "https://img.genially.com/67961b32a116fb001568a75e/4db0de92-1c31-4b38-8c29-df8dc6712266.png");
-
-        document.getElementById('btn-start').onclick = () => this.start(0);
-        document.getElementById('btn-restart').onclick = () => window.location.reload();
-        
-        this.cvs.onmousemove = (e) => {
-            const rect = this.cvs.getBoundingClientRect();
-            this.player.x = e.clientX - rect.left;
-        };
-        this.cvs.onclick = () => this.shoot();
-    }
-
-    resize() {
-        const el = document.getElementById('game-container');
-        if(!el || el.clientWidth === 0) return false;
-        this.w = el.clientWidth; this.h = el.clientHeight;
-        this.cvs.width = this.w; this.cvs.height = this.h;
-        this.player.y = this.h - 60;
-        this.buildPath();
-        return true;
-    }
-
-    buildPath() {
-        const lvl = this.cfg.levels[this.currentLvl];
-        if(!lvl) return;
-        this.path = lvl.path.map(p => ({ x: p.x * this.w, y: p.y * this.h }));
-    }
-
-    start(lvlIdx) {
-        this.currentLvl = lvlIdx;
-        this.buildPath();
-        document.getElementById('g-start-screen').classList.add('g-hidden');
-        document.getElementById('game-container').style.backgroundImage = `url('${this.cfg.levels[lvlIdx].bg}')`;
-        
-        this.state = 'playing';
-        this.time = this.cfg.timerStart || 120;
-        this.qDone = 0;
-        this.balls = []; this.queue = [];
-        
-        // Наполняем очередь шариков
-        const count = this.cfg.levels[lvlIdx].qCount || 5;
-        for(let i=0; i<count; i++) this.queue.push('question');
-        while(this.queue.length < 15) this.queue.push('normal');
-        this.queue.sort(() => Math.random() - 0.5);
-
-        if(this.tmr) clearInterval(this.tmr);
-        this.tmr = setInterval(() => {
-            if(this.state === 'playing') {
-                this.time--;
-                document.getElementById('g-time').innerText = this.time;
-                if(this.time <= 0) this.over(false);
-            }
-        }, 1000);
-    }
-
-    shoot() {
-        if(this.state !== 'playing' || this.bullets.length > 0) return;
-        this.bullets.push({ x: this.player.x, y: this.player.y - 20 });
-    }
-
-    update() {
-        if(this.state !== 'playing') return;
-
-        // Спавн шариков
-        if(this.queue.length > 0) {
-            let lastBall = this.balls[this.balls.length-1];
-            if(!lastBall || lastBall.dist > 50) {
-                this.balls.push({ dist: 0, type: this.queue.shift() });
-            }
-        }
-
-        // Движение шариков
-        this.balls.forEach((b, i) => {
-            b.dist += 1.5;
-            if(b.dist >= this.path.length - 1) this.over(false);
-            const p = this.path[Math.floor(b.dist)];
-            b.x = p.x; b.y = p.y;
-        });
-
-        // Движение пуль
-        for(let i=this.bullets.length-1; i>=0; i--) {
-            let bu = this.bullets[i];
-            bu.y -= 15;
-            if(bu.y < 0) this.bullets.splice(i, 1);
-            
-            this.balls.forEach((ba, j) => {
-                if(Math.hypot(bu.x - ba.x, bu.y - ba.y) < 30) {
-                    this.bullets.splice(i, 1);
-                    if(ba.type === 'question') this.ask();
-                    this.balls.splice(j, 1);
-                }
-            });
-        }
-    }
-
-    ask() {
-        this.state = 'paused';
-        const qList = this.cfg.questions.filter(q => q.lvl === 'all' || q.lvl == this.currentLvl);
-        const q = qList[Math.floor(Math.random() * qList.length)] || { q: "Нет вопросов", a: "ОК", o: ["ОК"] };
-        
-        document.getElementById('g-quiz-screen').classList.remove('g-hidden');
-        document.getElementById('g-q-text').innerText = q.q;
-        const cont = document.getElementById('g-q-content');
-        cont.innerHTML = '';
-        
-        q.o.forEach(opt => {
-            const btn = document.createElement('button');
-            btn.className = 'g-ans-btn';
-            btn.innerText = opt;
-            btn.onclick = () => {
-                document.getElementById('g-quiz-screen').classList.add('g-hidden');
-                if(opt === q.a) {
-                    this.qDone++;
-                    this.score += 100;
-                    this.showFlash("ВЕРНО!");
-                    this.ui();
-                    if(this.qDone >= (this.cfg.levels[this.currentLvl].qCount || 5)) this.over(true);
-                    else this.state = 'playing';
-                } else {
-                    this.lives--;
-                    this.showFlash("ОШИБКА!");
-                    this.ui();
-                    if(this.lives <= 0) this.over(false);
-                    else this.state = 'playing';
-                }
-            };
-            cont.appendChild(btn);
-        });
-    }
-
-    showFlash(txt) {
-        const f = document.getElementById('g-float-text');
-        f.innerText = txt; f.style.opacity = 1;
-        setTimeout(() => f.style.opacity = 0, 800);
-    }
-
-    ui() {
-        document.getElementById('g-lives').innerText = this.lives;
-        document.getElementById('g-q-disp').innerText = this.qDone + "/" + (this.cfg.levels[this.currentLvl].qCount || 5);
-        document.getElementById('g-prog-fill').style.width = (this.qDone / (this.cfg.levels[this.currentLvl].qCount || 5) * 100) + "%";
-    }
-
-    over(win) {
-        this.state = 'gameover';
-        clearInterval(this.tmr);
-        document.getElementById('g-end-screen').classList.remove('g-hidden');
-        document.getElementById('g-end-title').innerText = win ? "УРОВЕНЬ ПРОЙДЕН!" : "ИГРА ОКОНЧЕНА";
-        document.getElementById('g-final-score').innerText = "СЧЕТ: " + this.score;
-    }
-
-    draw() {
-        this.ctx.clearRect(0,0,this.w,this.h);
-        
-        // Финиш
-        if(this.path && this.path.length > 0) {
-            const f = this.path[this.path.length-1];
-            if(this.ASSETS.finish.complete) this.ctx.drawImage(this.ASSETS.finish, f.x-45, f.y-45, 90, 90);
-        }
-
-        // Шарики
-        this.balls.forEach(b => {
-            if(this.ASSETS.q_ball.complete) this.ctx.drawImage(this.ASSETS.q_ball, b.x-25, b.y-25, 50, 50);
-        });
-
-        // Пули
-        this.ctx.fillStyle = this.cfg.uiColor;
-        this.bullets.forEach(bu => {
-            this.ctx.beginPath(); this.ctx.arc(bu.x, bu.y, 8, 0, 7); this.ctx.fill();
-        });
-
-        // Игрок
-        if(this.ASSETS.shooter.complete) this.ctx.drawImage(this.ASSETS.shooter, this.player.x-45, this.player.y-45, 90, 90);
-    }
-
-    loop() {
-        this.update();
-        this.draw();
-        requestAnimationFrame(() => this.loop());
-    }
-}
-
-// --- ЛОГИКА РЕДАКТОРА ---
-let questionsDB = [];
-let levelsData = [
-    { bg: "https://img.genially.com/67961b32a116fb001568a75e/ccde12e3-391b-41b3-9e20-803cfa4b5506.png", qCount: 5, path: [{"x":0.02,"y":0.44},{"x":0.15,"y":0.40},{"x":0.32,"y":0.20},{"x":0.50,"y":0.15},{"x":0.69,"y":0.30},{"x":0.72,"y":0.45},{"x":0.58,"y":0.68},{"x":0.35,"y":0.53},{"x":0.46,"y":0.29},{"x":0.60,"y":0.40},{"x":0.51,"y":0.47}] },
-    { bg: "https://img.genially.com/67961b32a116fb001568a75e/1edee495-af5e-4626-ac29-f3197e2c736e.png", qCount: 5, path: [{"x":0.00,"y":0.48},{"x":0.26,"y":0.48},{"x":0.26,"y":0.25},{"x":0.58,"y":0.25},{"x":0.32,"y":0.65},{"x":0.50,"y":0.67},{"x":0.65,"y":0.43},{"x":0.81,"y":0.43}] }
+// ==========================================
+// ЛОГИКА РЕДАКТОРА И ИГРЫ
+// ==========================================
+const PRESETS = [
+    "https://img.genially.com/67961b32a116fb001568a75e/ccde12e3-391b-41b3-9e20-803cfa4b5506.png",
+    "https://img.genially.com/67961b32a116fb001568a75e/1edee495-af5e-4626-ac29-f3197e2c736e.png",
+    "https://img.genially.com/67961b32a116fb001568a75e/f7c9eff0-f1eb-4302-92ab-4586dbcd51de.png",
+    "https://img.genially.com/67961b32a116fb001568a75e/b40dc413-b697-41ba-87f5-b6766c421faa.png"
+];
+const P_PATHS = [
+    '[{"x":0.0254,"y":0.444},{"x":0.0729,"y":0.4356},{"x":0.1178,"y":0.4225},{"x":0.1579,"y":0.395},{"x":0.2021,"y":0.3532},{"x":0.2396,"y":0.3043},{"x":0.2791,"y":0.2553},{"x":0.324,"y":0.2052},{"x":0.3709,"y":0.1801},{"x":0.4184,"y":0.155},{"x":0.4619,"y":0.149},{"x":0.5068,"y":0.1502},{"x":0.5503,"y":0.1586},{"x":0.5891,"y":0.1801},{"x":0.6253,"y":0.2016},{"x":0.6621,"y":0.2458},{"x":0.6909,"y":0.2959},{"x":0.7157,"y":0.3687},{"x":0.7244,"y":0.4476},{"x":0.707,"y":0.5347},{"x":0.6742,"y":0.6064},{"x":0.6374,"y":0.6517},{"x":0.5878,"y":0.684},{"x":0.5282,"y":0.6935},{"x":0.4673,"y":0.6828},{"x":0.4211,"y":0.6506},{"x":0.3829,"y":0.5992},{"x":0.3555,"y":0.5311},{"x":0.3508,"y":0.4392},{"x":0.3742,"y":0.3652},{"x":0.4124,"y":0.3246},{"x":0.4592,"y":0.2947},{"x":0.5054,"y":0.2923},{"x":0.5476,"y":0.3126},{"x":0.5818,"y":0.3437},{"x":0.6032,"y":0.4022},{"x":0.5999,"y":0.4607},{"x":0.5878,"y":0.5108},{"x":0.5624,"y":0.5347},{"x":0.5269,"y":0.5323},{"x":0.5101,"y":0.4726}]',
+    '[{"x":0.002,"y":0.4843},{"x":0.2428,"y":0.4798},{"x":0.2526,"y":0.4798},{"x":0.2604,"y":0.4798},{"x":0.2611,"y":0.4557},{"x":0.2617,"y":0.2869},{"x":0.2611,"y":0.2583},{"x":0.2786,"y":0.2583},{"x":0.5781,"y":0.2553},{"x":0.5957,"y":0.2583},{"x":0.5762,"y":0.2929},{"x":0.3288,"y":0.6486},{"x":0.3164,"y":0.6682},{"x":0.349,"y":0.6712},{"x":0.4805,"y":0.6742},{"x":0.4987,"y":0.6727},{"x":0.5143,"y":0.6486},{"x":0.6367,"y":0.4602},{"x":0.651,"y":0.4286},{"x":0.6875,"y":0.4316},{"x":0.804,"y":0.4331},{"x":0.8171,"y":0.4331},{"x":0.8177,"y":0.5054}]',
+    '[{"x":0.623,"y":0.5853},{"x":0.6211,"y":0.5476},{"x":0.6211,"y":0.4964},{"x":0.6159,"y":0.4497},{"x":0.6016,"y":0.4316},{"x":0.5859,"y":0.4241},{"x":0.5703,"y":0.4271},{"x":0.556,"y":0.4482},{"x":0.5397,"y":0.4994},{"x":0.5228,"y":0.5823},{"x":0.4987,"y":0.641},{"x":0.4674,"y":0.6908},{"x":0.4421,"y":0.7104},{"x":0.4115,"y":0.7239},{"x":0.375,"y":0.7345},{"x":0.3385,"y":0.733},{"x":0.3099,"y":0.7194},{"x":0.2813,"y":0.6968},{"x":0.2565,"y":0.6802},{"x":0.2305,"y":0.641},{"x":0.2122,"y":0.6019},{"x":0.1973,"y":0.5597},{"x":0.1855,"y":0.5054},{"x":0.1803,"y":0.4557},{"x":0.1829,"y":0.403},{"x":0.1927,"y":0.3547},{"x":0.2064,"y":0.3186},{"x":0.2233,"y":0.2884},{"x":0.2441,"y":0.2583},{"x":0.2663,"y":0.2402},{"x":0.2936,"y":0.2312},{"x":0.3229,"y":0.2251},{"x":0.3529,"y":0.2327},{"x":0.3796,"y":0.2523},{"x":0.3984,"y":0.2824},{"x":0.4128,"y":0.311},{"x":0.4219,"y":0.3623},{"x":0.4154,"y":0.415},{"x":0.3939,"y":0.4331},{"x":0.3737,"y":0.4286},{"x":0.3581,"y":0.4105},{"x":0.3464,"y":0.3864},{"x":0.3294,"y":0.3698},{"x":0.3092,"y":0.3623},{"x":0.2891,"y":0.3728},{"x":0.2708,"y":0.3984},{"x":0.2546,"y":0.4482},{"x":0.2585,"y":0.5115},{"x":0.2734,"y":0.5446},{"x":0.2962,"y":0.5778},{"x":0.3249,"y":0.6019},{"x":0.3581,"y":0.6109},{"x":0.39,"y":0.6019},{"x":0.4193,"y":0.5838},{"x":0.4427,"y":0.5536},{"x":0.4616,"y":0.5054},{"x":0.4746,"y":0.4572},{"x":0.4857,"y":0.3969},{"x":0.5,"y":0.3562},{"x":0.5332,"y":0.3065},{"x":0.5625,"y":0.2884},{"x":0.5911,"y":0.2779},{"x":0.6224,"y":0.2884},{"x":0.6484,"y":0.3171},{"x":0.6719,"y":0.3608},{"x":0.6849,"y":0.4075},{"x":0.6947,"y":0.4632},{"x":0.709,"y":0.5039},{"x":0.7337,"y":0.516},{"x":0.7585,"y":0.5175},{"x":0.7793,"y":0.516},{"x":0.7995,"y":0.522},{"x":0.8164,"y":0.5145}]',
+    '[{"x":0.1322,"y":0.6863},{"x":0.1484,"y":0.6983},{"x":0.2038,"y":0.7375},{"x":0.2682,"y":0.7646},{"x":0.3405,"y":0.7917},{"x":0.4238,"y":0.7887},{"x":0.4785,"y":0.7661},{"x":0.5156,"y":0.7074},{"x":0.526,"y":0.635},{"x":0.5098,"y":0.5612},{"x":0.485,"y":0.5235},{"x":0.4401,"y":0.4919},{"x":0.3047,"y":0.4858},{"x":0.2454,"y":0.4843},{"x":0.194,"y":0.4451},{"x":0.1641,"y":0.3517},{"x":0.1732,"y":0.2432},{"x":0.2142,"y":0.1784},{"x":0.2604,"y":0.1423},{"x":0.3145,"y":0.1362},{"x":0.3548,"y":0.1362},{"x":0.3887,"y":0.1634},{"x":0.4115,"y":0.2025},{"x":0.4264,"y":0.2447},{"x":0.4408,"y":0.2854},{"x":0.4661,"y":0.3231},{"x":0.4928,"y":0.3412},{"x":0.5267,"y":0.3472},{"x":0.5566,"y":0.3366},{"x":0.5911,"y":0.311},{"x":0.6185,"y":0.2688},{"x":0.6536,"y":0.2327},{"x":0.6888,"y":0.204},{"x":0.7318,"y":0.2055},{"x":0.7708,"y":0.2281},{"x":0.7988,"y":0.2869},{"x":0.8151,"y":0.3427},{"x":0.8177,"y":0.3909},{"x":0.8138,"y":0.4647},{"x":0.7982,"y":0.513},{"x":0.7819,"y":0.5521},{"x":0.7656,"y":0.5778},{"x":0.7637,"y":0.6516},{"x":0.7624,"y":0.7089},{"x":0.7487,"y":0.7435},{"x":0.7227,"y":0.7767}]'
 ];
 
-function openTab(id, btn) {
-    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById(id).classList.add('active'); btn.classList.add('active');
+let levels = [
+    { bg: PRESETS[0], path: P_PATHS[0], qCount: 5 },
+    { bg: PRESETS[1], path: P_PATHS[1], qCount: 5 },
+    { bg: PRESETS[2], path: P_PATHS[2], qCount: 5 },
+    { bg: PRESETS[3], path: P_PATHS[3], qCount: 5 }
+];
+let questionsDB = [];
+
+const I18N = { 
+    en: { start: "START GAME", next: "NEXT LEVEL", play: "PLAY AGAIN", over: "GAME OVER", cleared: "LEVEL CLEARED!", quest: "QUEST COMPLETED!", goal: "GOAL: ANSWER ALL QUESTIONS" }, 
+    ru: { start: "НАЧАТЬ ИГРУ", next: "СЛЕДУЮЩИЙ УРОВЕНЬ", play: "ИГРАТЬ СНОВА", over: "ИГРА ОКОНЧЕНА", cleared: "УРОВЕНЬ ПРОЙДЕН!", quest: "КВЕСТ ЗАВЕРШЕН!", goal: "ЦЕЛЬ: ОТВЕТИТЬ НА ВСЕ ВОПРОСЫ" },
+    de: { start: "SPIEL STARTEN", next: "NÄCHSTES LEVEL", play: "NOCHMAL SPIELEN", over: "SPIEL VORBEI", cleared: "LEVEL GESCHAFFT!", quest: "QUEST ABGESCHLOSSEN!", goal: "ZIEL: ALLE FRAGEN BEANTWORTEN" },
+    fr: { start: "COMMENCER", next: "NIVEAU SUIVANT", play: "REJOUER", over: "JEU TERMINÉ", cleared: "NIVEAU TERMINÉ!", quest: "QUÊTE ACHEVÉE!", goal: "OBJECTIF: RÉPONDRE À TOUT" },
+    uk: { start: "ПОЧАТИ ГРУ", next: "НАСТУПНИЙ РІВЕНЬ", play: "ГРАТИ ЗНОВУ", over: "ГРА ЗАКІНЧЕНА", cleared: "РІВЕНЬ ПРОЙДЕНО!", quest: "КВЕСТ ЗАВЕРШЕНО!", goal: "МЕТА: ВІДПОВІСТИ НА ВСІ ПИТАННЯ" },
+    kk: { start: "ОЙЫНДЫ БАСТАУ", next: "КЕЛЕСІ ДЕҢГЕЙ", play: "ҚАЙТА ОЙНАУ", over: "ОЙЫН АЯҚТАЛДЫ", cleared: "ДЕҢГЕЙ АЯҚТАЛДЫ!", quest: "КВЕСТ АЯҚТАЛДЫ!", goal: "МАҚСАТ: БАРЛЫҚ СҰРАҚТАРҒА ЖАУАП БЕРУ" }
+};
+
+class Part { constructor(x,y,c){ this.x=x; this.y=y; this.c=c; this.life=1; this.vx=(Math.random()-0.5)*6; this.vy=(Math.random()-0.5)*6; } up(){ this.x+=this.vx; this.y+=this.vy; this.life-=0.04; } draw(ctx){ ctx.globalAlpha=this.life; ctx.fillStyle=this.c; ctx.beginPath(); ctx.arc(this.x,this.y,4,0,7); ctx.fill(); ctx.globalAlpha=1; } }
+
+class GameCore {
+    constructor() {
+        this.cfg = window.GAME_CFG;
+        this.initDOM(); this.cvs = document.getElementById('gameCanvas'); this.ctx = this.cvs.getContext('2d');
+        this.w=800; this.h=600; this.state='idle'; this.score=0; this.maxLives = this.cfg.lives; this.lives=this.maxLives; this.currentLevelIndex = 0; this.player={x:400, y:550};
+        this.ASSETS = {}; this.IMG_URLS = { c_red: 'https://img.genially.com/67961b32a116fb001568a75e/966b4fee-e623-41f6-8bf5-f6d84662cf56.png', c_blue: 'https://img.genially.com/67961b32a116fb001568a75e/9d4f9653-a305-4ecd-b49a-6094fbacaf74.png', c_green: 'https://img.genially.com/67961b32a116fb001568a75e/c377dca1-25bb-4924-8060-430631ae28cc.png', c_yellow: 'https://img.genially.com/67961b32a116fb001568a75e/0a927476-ce04-4639-b1a4-cd50af772e9d.png', t_question: 'https://img.genially.com/67961b32a116fb001568a75e/87a94615-9492-4862-8d39-d5a93e8fb3e2.png', shooter: this.cfg.imgShooter, center_mask: this.cfg.imgMask };
+        for(let key in this.IMG_URLS) { this.ASSETS[key] = new Image(); this.ASSETS[key].src = this.IMG_URLS[key]; }
+        this.bindEvents(); this.applyLevel(0); 
+        
+        // ---- ИСПРАВЛЕНИЕ #1: Окно и clientWidth (Защита от ошибки) ----
+        this.resizeInterval = setInterval(() => { this.resize(); }, 200);
+        this.loop();
+    }
+    initDOM() {
+        const r = document.documentElement; 
+        r.style.setProperty('--game-font', this.cfg.fontFamily); r.style.setProperty('--ui-color', this.cfg.uiColor); 
+        r.style.setProperty('--prog-color', this.cfg.progColor); r.style.setProperty('--q-color', this.cfg.qColor); 
+        r.style.setProperty('--q-size', this.cfg.qSize); r.style.setProperty('--a-color', this.cfg.aColor); 
+        r.style.setProperty('--a-size', this.cfg.aSize); r.style.setProperty('--a-bg', this.cfg.aBg); 
+        r.style.setProperty('--neon-glow', this.cfg.neonEnabled ? `0 0 10px ${this.cfg.uiColor}` : 'none');
+        if(!this.cfg.neonEnabled) { document.querySelectorAll('.g-card').forEach(el=>el.style.boxShadow='none'); }
+        document.querySelectorAll('.dyn-mask').forEach(el => el.src = this.cfg.imgMask); 
+        document.querySelectorAll('.dyn-heart').forEach(el => el.src = this.cfg.imgHeart); 
+        document.querySelectorAll('.dyn-clock').forEach(el => el.src = this.cfg.imgClock);
+        const t = I18N[this.cfg.lang] || I18N.ru; 
+        document.getElementById('t-goal').innerText = t.goal; document.getElementById('btn-start').innerText = t.start;
+    }
+    bindEvents() {
+        const move=(e)=>{ const r=this.cvs.getBoundingClientRect(); const cx=e.touches?e.touches[0].clientX:e.clientX; this.player.x=Math.max(35, Math.min(this.w-35, cx-r.left)); };
+        this.cvs.addEventListener('mousemove',move); this.cvs.addEventListener('touchmove',e=>{e.preventDefault();move(e)},{passive:false}); this.cvs.addEventListener('click',()=>this.shoot());
+        document.getElementById('btn-start').onclick = () => this.start(0);
+        document.getElementById('btn-restart').onclick = () => { document.getElementById('g-end-screen').classList.add('g-hidden'); if (this.isWin && this.currentLevelIndex < this.cfg.levels.length - 1) { this.start(this.currentLevelIndex + 1); } else { document.getElementById('g-start-screen').classList.remove('g-hidden'); } };
+    }
+    applyLevel(idx) { document.getElementById('game-container').style.backgroundImage = `url('${this.cfg.levels[idx].bg}')`; this.genPath(); }
+    
+    // ---- ИСПРАВЛЕНИЕ #1 (Продолжение) ----
+    resize() { 
+        const el = document.getElementById('game-container'); 
+        if (!el || el.clientWidth === 0) return; // Если контейнера еще нет, просто ждем
+        
+        if (el.clientWidth !== this.w || el.clientHeight !== this.h) { 
+            this.w = el.clientWidth; 
+            this.h = el.clientHeight; 
+            this.cvs.width = this.w; 
+            this.cvs.height = this.h; 
+            this.player.y = this.h - 50; 
+            this.genPath(); 
+        } 
+    }
+    
+    genPath() { if(this.h<100) return; let raw = this.cfg.levels[this.currentLevelIndex].path.map(p => ({ x: p.x * this.w, y: p.y * this.h })); this.path=[]; if(raw.length>0) this.path.push(raw[0]); for(let i=0; i<raw.length-1; i++){ let a=raw[i], b=raw[i+1], d=Math.hypot(b.x-a.x, b.y-a.y); let steps=Math.ceil(d); for(let k=1; k<=steps; k++){ let t=k/steps; this.path.push({x:a.x+(b.x-a.x)*t, y:a.y+(b.y-a.y)*t}); } } }
+    start(lvlIdx) {
+        document.querySelectorAll('.g-layer').forEach(el=>el.classList.add('g-hidden')); this.state='playing'; if (lvlIdx === 0) { this.score=0; this.lives=this.maxLives; } this.currentLevelIndex = lvlIdx; this.applyLevel(lvlIdx);
+        let targetCount = this.cfg.levels[lvlIdx].qCount; let availableQ = this.cfg.questions.filter(q => q.lvl === 'all' || parseInt(q.lvl) === lvlIdx); availableQ.sort(() => Math.random() - 0.5); this.levelQuestions = availableQ.slice(0, targetCount); if(this.levelQuestions.length === 0) { this.levelQuestions = [{type:"mcq", q:"NO DB", o:["OK"], a:"OK"}]; }
+        this.time = this.cfg.timerStart; this.qDone=0; this.nextQIndex=0; this.combo=0; this.balls=[]; this.bullets=[]; this.parts=[]; this.queue=[]; this.curSpacing=44; this.nextCol=this.rndCol();
+        for(let i=0; i<this.levelQuestions.length; i++) this.queue.push('question'); while(this.queue.length < 20) this.queue.push('normal'); this.queue.sort(() => Math.random() - 0.5); this.ui();
+        if(this.tmr) clearInterval(this.tmr); this.tmr=setInterval(()=>{ if(this.state==='playing' || this.state==='paused_for_q'){ this.time--; let timeDisp = document.getElementById('g-time'); if (this.time <= 5 && this.time > 0) { timeDisp.classList.add('pulse-urgent'); } else { timeDisp.classList.remove('pulse-urgent'); } this.ui(); if(this.time<=0) this.over(false); } },1000);
+    }
+    rndCol(){ const cols=["red","blue","green","yellow"]; return cols[Math.floor(Math.random()*cols.length)]; }
+    spawn() { if(this.queue.length===0) return; let t = this.queue.shift(); this.balls.push({ d:0, type: t, c: this.rndCol() }); }
+    shoot() { if(this.state!=='playing' || this.bullets.length>0) return; this.bullets.push({x:this.player.x, y:this.player.y-20, c:this.nextCol}); this.nextCol=this.rndCol(); }
+    update() {
+        if(this.state!=='playing') return; let need=this.balls.length===0; if(!need && this.balls[this.balls.length-1].d > this.curSpacing) need=true; if(need) this.spawn(); if(this.balls.length === 0 && this.queue.length === 0) { this.over(true); return; }
+        for(let i=0; i<this.balls.length; i++){ let b=this.balls[i]; b.d+=1.2; if(b.d>=this.path.length-1) { this.over(false); return; } let idx=Math.floor(b.d); let p1=this.path[idx]||this.path[this.path.length-1], p2=this.path[idx+1]||p1, f=b.d-idx; b.x=p1.x+(p2.x-p1.x)*f; b.y=p1.y+(p2.y-p1.y)*f; }
+        for(let i=this.bullets.length-1; i>=0; i--){ let bu=this.bullets[i]; bu.y -= 24; if(bu.y<-50) { this.bullets.splice(i,1); continue; } let hit=false; for(let j=0; j<this.balls.length; j++){ if(Math.hypot(bu.x-this.balls[j].x, bu.y-this.balls[j].y) < 30){ this.hit(j, bu); hit=true; break; } } if(hit) this.bullets.splice(i,1); }
+        for(let i=this.parts.length-1; i>=0; i--){ this.parts[i].up(); if(this.parts[i].life<=0) this.parts.splice(i,1); }
+    }
+    hit(idx, bullet) {
+        let b = this.balls[idx]; for(let k=0;k<8;k++) this.parts.push(new Part(b.x, b.y, "#fff"));
+        if(b.type === 'normal' && b.c === bullet.c) { this.score += 50; this.showFlash("MATCH!"); }
+        if(b.type === 'question'){ this.state='paused_for_q'; this.balls.splice(idx,1); this.ask(); return; }
+        this.balls.splice(idx,1); this.ui();
+    }
+    showFlash(txt){ const el=document.getElementById('g-float-text'); el.innerText=txt; el.style.opacity=1; el.style.transform="translate(-50%,-50%) scale(1.5)"; setTimeout(()=>{ el.style.opacity=0; el.style.transform="translate(-50%,-50%) scale(1)"; },800); }
+    
+    ask() {
+        const q = this.levelQuestions[this.nextQIndex % this.levelQuestions.length]; this.nextQIndex++; document.getElementById('g-quiz-screen').classList.remove('g-hidden'); document.getElementById('g-q-text').innerText = q.q; const c = document.getElementById('g-q-content'); c.innerHTML='';
+        
+        // ---- ИСПРАВЛЕНИЕ #2: Защита forEach для кнопок вопроса (q.o || []) ----
+        if (q.type === 'mcq') { 
+            (q.o || []).forEach(opt=>{ 
+                const b=document.createElement('div'); b.className='g-ans-btn'; b.innerText=opt; b.onclick=()=>this.check(opt===q.a); c.appendChild(b); 
+            }); 
+        } 
+        else if (q.type === 'order') {
+            const wrp = document.createElement('div'); wrp.style.width="100%"; const slots = document.createElement('div'); slots.className = "g-order-slots"; const pool = document.createElement('div'); let ans = [];
+            const redraw = () => { slots.innerHTML=''; ans.forEach(w=>{ const s=document.createElement('span'); s.className='g-word-slot'; s.innerText=w; slots.appendChild(s); }); };
+            const words = [...(q.words || [])].sort(()=>Math.random()-0.5); const wordBtns = [];
+            words.forEach(w=>{ const btn=document.createElement('button'); btn.className='g-word-btn'; btn.innerText=w; btn.onclick=()=>{ if(!ans.includes(w)){ ans.push(w); btn.classList.add('used'); redraw(); } }; pool.appendChild(btn); wordBtns.push(btn); });
+            const btnsDiv = document.createElement('div'); btnsDiv.style.marginTop="20px"; const rst = document.createElement('button'); rst.className='g-btn-neon'; rst.innerText="RESET"; rst.style.marginRight="10px"; rst.onclick=()=>{ ans=[]; redraw(); wordBtns.forEach(b=>b.classList.remove('used')); };
+            const ok = document.createElement('button'); ok.className='g-btn-neon'; ok.innerText="OK"; ok.onclick=()=>this.check(ans.join(" ")===q.a); btnsDiv.append(rst, ok); wrp.append(slots, pool, btnsDiv); c.appendChild(wrp);
+        } else {
+            const w = document.createElement('div'); w.style.textAlign="center"; const i=document.createElement('input'); i.className='g-input-field'; const b=document.createElement('button'); b.className='g-btn-neon'; b.innerText="OK"; 
+            b.onclick=()=>{ let userAns = i.value.trim().toLowerCase(); let correctArr = q.a.toLowerCase().split('|').map(s=>s.trim()); this.check(correctArr.includes(userAns)); }; w.append(i,b); c.appendChild(w); setTimeout(()=>i.focus(), 100);
+        }
+    }
+
+    check(isOk) {
+        document.getElementById('g-quiz-screen').classList.add('g-hidden');
+        if(isOk) { this.combo++; this.qDone++; this.score+=(100*this.combo); this.balls.forEach(bl => bl.d = Math.max(0, bl.d - 100)); this.showFlash("COMBO!"); } else { this.combo=0; this.lives--; document.getElementById('game-container').classList.add('g-shake'); setTimeout(()=>document.getElementById('game-container').classList.remove('g-shake'),400); }
+        this.ui(); if(this.lives<=0) { this.over(false); } else if(this.qDone >= this.levelQuestions.length) { this.over(true); } else { this.state='playing'; }
+    }
+    over(win) {
+        this.state='gameover'; clearInterval(this.tmr); this.isWin = win; document.getElementById('g-end-screen').classList.remove('g-hidden');
+        const t = I18N[this.cfg.lang] || I18N.ru; let titleEl = document.getElementById('g-end-title'); let btnEl = document.getElementById('btn-restart');
+        if (win) { if (this.currentLevelIndex < this.cfg.levels.length - 1) { titleEl.innerText = t.cleared; btnEl.innerText = t.next; } else { titleEl.innerText = t.quest; btnEl.innerText = t.play; } } else { titleEl.innerText = t.over; btnEl.innerText = t.play; }
+        document.getElementById('g-st-total').innerText = "SCORE: " + this.score; 
+    }
+    ui() { document.getElementById('g-lives').innerText=this.lives; document.getElementById('g-score').innerText=this.score; document.getElementById('g-time').innerText=this.time; document.getElementById('g-q-disp').innerText=this.qDone+"/"+this.levelQuestions.length; document.getElementById('g-prog-fill').style.width = ((this.qDone / this.levelQuestions.length) * 100) + '%'; }
+    drawImg(key, x, y, size) { if(this.ASSETS[key] && this.ASSETS[key].complete) { this.ctx.drawImage(this.ASSETS[key], x - size/2, y - size/2, size, size); } }
+    draw() {
+        this.ctx.clearRect(0,0,this.w,this.h);
+        if(this.path && this.path.length>0){ const last = this.path[this.path.length-1]; if (this.ASSETS['center_mask'] && this.ASSETS['center_mask'].complete) { this.ctx.save(); let maskSize = 90; if (this.cfg.neonEnabled) { this.ctx.shadowBlur = 20; this.ctx.shadowColor = this.cfg.uiColor; } this.ctx.drawImage(this.ASSETS['center_mask'], last.x - maskSize/2, last.y - maskSize/2, maskSize, maskSize); this.ctx.restore(); } }
+        this.parts.forEach(p=>p.draw(this.ctx)); this.balls.forEach(b=>{ let imgKey = b.type==='question' ? 't_question' : 'c_'+b.c; this.drawImg(imgKey, b.x, b.y, 50); }); this.bullets.forEach(b=>{ this.drawImg("c_" + b.c, b.x, b.y, 44); });
+        this.ctx.save(); this.ctx.translate(this.player.x, this.player.y); this.drawImg("shooter", 0, 0, 90); if(this.bullets.length===0){ this.drawImg("c_" + this.nextCol, 0, -15, 30); } this.ctx.restore();
+    }
+    loop() { this.update(); this.draw(); requestAnimationFrame(()=>this.loop()); }
 }
 
-function importQuestions() {
-    const text = document.getElementById('bulk-q').value;
-    const lines = text.split('\n');
-    lines.forEach(l => {
-        if(l.includes('.')) {
-            const [q, rawAns] = l.split('.');
-            const ans = rawAns.split('|').map(s => s.trim());
-            questionsDB.push({ q: q.trim(), a: ans[0], o: ans.sort(() => Math.random() - 0.5), lvl: "all" });
+
+// ==========================================
+// ИНИЦИАЛИЗАЦИЯ И РЕЖИМ 2-В-1
+// ==========================================
+window.onload = () => {
+    let href = window.location.href;
+    let playIdx = href.indexOf('#play=');
+    
+    if (playIdx !== -1) {
+        // Мы в режиме ИГРЫ (внутри Genially)
+        document.getElementById('editor-ui').style.display = 'none';
+        document.getElementById('game-wrapper').style.display = 'block';
+        
+        let b64 = href.substring(playIdx + 6);
+        
+        try {
+            // Защита от URL-encode (Genially любит менять = на %3D и + на %2B)
+            try { b64 = decodeURIComponent(b64); } catch(e) {}
+            
+            // Восстанавливаем оригинальный Base64
+            b64 = b64.replace(/-/g, '+').replace(/_/g, '/');
+            while(b64.length % 4) b64 += '=';
+            
+            // Безопасное чтение русских букв и юникода
+            let utf8Bytes = atob(b64);
+            let jsonStr = decodeURIComponent(utf8Bytes.split('').map(function(c) {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            }).join(''));
+            
+            window.GAME_CFG = JSON.parse(jsonStr);
+            new GameCore();
+            
+        } catch(e) {
+            // Если что-то пошло не так, покажем детальную ошибку
+            document.getElementById('game-wrapper').innerHTML = `
+                <div style="color:white;text-align:center;margin-top:20vh;font-family:sans-serif;">
+                    <h1 style="color:#ff3333;">ОШИБКА РАСШИФРОВКИ ИГРЫ</h1>
+                    <p style="background:#222;padding:20px;border-radius:10px;display:inline-block;max-width:80%;word-wrap:break-word;">
+                        Детали ошибки: ${e.message}
+                    </p>
+                </div>
+            `;
+        }
+    } else {
+        // Открываем обычный интерфейс РЕДАКТОРА
+        document.getElementById('editor-ui').style.display = 'block';
+        renderLevels(); updateQLevelSelect(); updatePreviewBgSelect();
+    }
+};
+
+function syncColor(src, targetId) { document.getElementById(targetId).value = src.value; }
+function openTab(id, btn) {
+    document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.getElementById(id).classList.add('active'); btn.classList.add('active');
+    if(id==='tab-preview') { updatePreview(); drawPreviewPath(); }
+}
+
+function addLevel() { levels.push({ bg: PRESETS[0], path: "[]", qCount: 5 }); renderLevels(); updateQLevelSelect(); updatePreviewBgSelect(); }
+function removeLevel(idx) { levels.splice(idx,1); renderLevels(); updateQLevelSelect(); updatePreviewBgSelect(); }
+
+function renderLevels() {
+    const cont = document.getElementById('levels-container'); cont.innerHTML = '';
+    levels.forEach((l, i) => {
+        let bgStyle = l.bg.startsWith('http') ? `background-image: url('${l.bg}');` : `background-color: #333;`;
+        cont.innerHTML += `
+        <div class="form-group" style="position:relative;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                <h3 style="margin:0; color:var(--ui-color);">УРОВЕНЬ ${i+1}</h3>
+                <button class="btn-del" onclick="removeLevel(${i})">✖ Удалить</button>
+            </div>
+            <div class="grid-2">
+                <div>
+                    <label>Фон (Изображение):</label>
+                    <div style="display:flex; gap:10px;">
+                        <div style="width:120px; height:60px; border-radius:5px; border:1px solid #555; background-size:cover; background-position:center; ${bgStyle}"></div>
+                        <input type="text" id="lvl-bg-${i}" value="${l.bg}" onchange="levels[${i}].bg=this.value; renderLevels(); updatePreviewBgSelect();">
+                        <button class="btn-main" style="padding:10px;" onclick="openBgModal('lvl-bg-${i}', ${i})">Выбрать</button>
+                    </div>
+                    <label style="margin-top:15px;">Кол-во вопросов:</label>
+                    <input type="number" value="${l.qCount}" onchange="levels[${i}].qCount=parseInt(this.value)">
+                </div>
+                <div>
+                    <label>Код траектории (Path):</label>
+                    <textarea onchange="levels[${i}].path=this.value; drawPreviewPath();" style="height:90px; font-family:monospace; font-size:11px;">${typeof l.path === 'string' ? l.path : JSON.stringify(l.path)}</textarea>
+                </div>
+            </div>
+        </div>`;
+    });
+}
+
+function openBgModal(targetId, index) {
+    let targetLvlInput = { id: targetId, idx: index };
+    const grid = document.getElementById('bg-presets'); grid.innerHTML = '';
+    PRESETS.forEach(url => {
+        const img = document.createElement('img'); img.src = url; img.className = 'preset-img';
+        img.onclick = () => { document.getElementById(targetLvlInput.id).value = url; levels[targetLvlInput.idx].bg = url; closeModal('bg-modal'); renderLevels(); updatePreviewBgSelect(); };
+        grid.appendChild(img);
+    });
+    document.getElementById('bg-modal').style.display = 'flex';
+}
+function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+function toggleQType() {
+    const t = document.getElementById('q-type').value;
+    document.getElementById('wrap-mcq').style.display = t==='mcq' ? 'block' : 'none';
+    document.getElementById('wrap-order').style.display = t==='order' ? 'block' : 'none';
+    document.getElementById('wrap-input').style.display = t==='input' ? 'block' : 'none';
+}
+
+function updateQLevelSelect() {
+    const sel = document.getElementById('q-lvl'); sel.innerHTML = '<option value="all">Для всех уровней</option>';
+    levels.forEach((_, i) => sel.innerHTML += `<option value="${i}">Только Уровень ${i+1}</option>`);
+}
+
+function importBulkQuestions() {
+    const lines = document.getElementById('bulk-q').value.split('\n'); let added = 0;
+    lines.forEach(line => {
+        if(line.includes('.')) {
+            let parts = line.split('.'); let qText = parts[0].trim(); let opts = parts[1].split('|').map(s=>s.trim()).filter(s=>s!=="");
+            if(qText && opts.length >= 2) { questionsDB.push({ type: 'mcq', q: qText, o: [...opts].sort(()=>Math.random()-0.5), a: opts[0], lvl: 'all' }); added++; }
         }
     });
+    document.getElementById('bulk-q').value = ''; alert("Добавлено вопросов: " + added); renderQuestions();
+}
+
+function saveQuestion() {
+    const type = document.getElementById('q-type').value; const qText = document.getElementById('q-text').value.trim();
+    if(!qText) return alert("Введите текст вопроса!");
+    let qObj = { type: type, q: qText, lvl: document.getElementById('q-lvl').value };
+    if(type === 'mcq') {
+        const a = document.getElementById('q-mcq-a').value.trim(); const w = document.getElementById('q-mcq-w').value.split('|').map(s=>s.trim()).filter(s=>s!=="");
+        if(!a) return alert("Введите правильный ответ!");
+        qObj.a = a; qObj.o = [a, ...w].sort(()=>Math.random()-0.5);
+    } else if(type === 'order') {
+        const a = document.getElementById('q-order-a').value.trim();
+        if(!a) return alert("Введите фразу!"); qObj.a = a; qObj.words = a.split(' ').map(s=>s.trim()).filter(s=>s!=="");
+    } else if(type === 'input') {
+        const a = document.getElementById('q-input-a').value.trim();
+        if(!a) return alert("Введите правильный ответ!"); qObj.a = a;
+    }
+    questionsDB.push(qObj);
+    document.getElementById('q-text').value = ''; document.getElementById('q-mcq-a').value = ''; document.getElementById('q-mcq-w').value = ''; document.getElementById('q-order-a').value = ''; document.getElementById('q-input-a').value = '';
     renderQuestions();
 }
 
+function removeQuestion(idx) { questionsDB.splice(idx,1); renderQuestions(); }
 function renderQuestions() {
-    const cont = document.getElementById('q-list'); cont.innerHTML = '';
+    const cont = document.getElementById('questions-list'); cont.innerHTML = '';
+    if(questionsDB.length === 0) cont.innerHTML = '<p style="color:#666;">Пока нет вопросов.</p>';
     questionsDB.forEach((q, i) => {
-        cont.innerHTML += `<div style="background:#111; padding:10px; margin-bottom:5px; border-radius:5px;">${q.q} (Ответ: ${q.a})</div>`;
+        let details = '';
+        if(q.type === 'mcq') details = `<div class="q-item-a">Ответ: ${q.a}</div><div class="q-item-o">Варианты: ${q.o ? q.o.join(', ') : ''}</div>`;
+        else if(q.type === 'order') details = `<div class="q-item-a">Собрать фразу: ${q.a}</div>`;
+        else if(q.type === 'input') details = `<div class="q-item-a">Принимаемые ответы: ${q.a}</div>`;
+        let lvlText = q.lvl === 'all' ? 'Все уровни' : `Уровень ${parseInt(q.lvl)+1}`;
+        cont.innerHTML += `<div class="q-item"><div class="q-item-content"><div class="q-item-type">Тип: ${q.type}</div><div class="q-item-q">${q.q}</div>${details}<div class="q-item-lvl">${lvlText}</div></div><button class="btn-del" style="margin-left:15px;" onclick="removeQuestion(${i})">✖</button></div>`;
     });
 }
 
+function updatePreviewBgSelect() {
+    const sel = document.getElementById('preview-bg-sel'); sel.innerHTML = '<option value="">Черный фон</option>';
+    levels.forEach((l, i) => sel.innerHTML += `<option value="${i}">Фон Уровня ${i+1}</option>`);
+    changePreviewBg();
+}
+function changePreviewBg() {
+    const sel = document.getElementById('preview-bg-sel').value; const box = document.getElementById('p-box');
+    if(sel === "") { box.style.backgroundImage = 'none'; } else { let lvlIdx = parseInt(sel); if(levels[lvlIdx]) box.style.backgroundImage = `url('${levels[lvlIdx].bg}')`; }
+    drawPreviewPath();
+}
+function togglePreviewMode() { document.getElementById('p-overlay').classList.toggle('hidden'); }
+function updatePreview() {
+    const root = document.documentElement; const uiC = document.getElementById('cfg-ui-color').value; const isNeon = document.getElementById('cfg-neon').checked;
+    root.style.setProperty('--ui-color', uiC); root.style.setProperty('--q-color', document.getElementById('cfg-q-color').value);
+    root.style.setProperty('--a-color', document.getElementById('cfg-a-color').value); root.style.setProperty('--q-size', document.getElementById('cfg-q-size').value + 'px');
+    root.style.setProperty('--a-size', document.getElementById('cfg-a-size').value + 'px'); root.style.setProperty('--game-font', document.getElementById('cfg-font').value);
+    root.style.setProperty('--neon-glow', isNeon ? `0 0 10px ${uiC}` : 'none');
+    let hex = document.getElementById('cfg-a-bg').value; let r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
+    root.style.setProperty('--a-bg', `rgba(${r},${g},${b}, 0.6)`);
+    document.getElementById('p-mask').src = document.getElementById('cfg-img-mask').value; document.getElementById('p-mask').style.filter = `drop-shadow(0 0 10px ${uiC})`;
+    document.getElementById('p-card').style.boxShadow = isNeon ? `0 0 15px ${uiC}` : 'none';
+    drawPreviewPath();
+}
+function drawPreviewPath() {
+    const cvs = document.getElementById('preview-canvas'); const ctx = cvs.getContext('2d'); ctx.clearRect(0, 0, cvs.width, cvs.height);
+    const sel = document.getElementById('preview-bg-sel').value; if(sel === "") return; 
+    let lvlIdx = parseInt(sel);
+    if(levels[lvlIdx] && levels[lvlIdx].path) {
+        let pathArr = []; try { pathArr = typeof levels[lvlIdx].path === 'string' ? JSON.parse(levels[lvlIdx].path) : levels[lvlIdx].path; } catch(e){}
+        
+        // ---- ИСПРАВЛЕНИЕ #3: Защита forEach для отрисовки линии ----
+        if(Array.isArray(pathArr) && pathArr.length > 0) {
+            ctx.beginPath(); ctx.strokeStyle = document.getElementById('cfg-ui-color').value; ctx.lineWidth = 4; ctx.setLineDash([10, 10]);
+            pathArr.forEach((p, i) => { let px = p.x * cvs.width; let py = p.y * cvs.height; if(i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py); });
+            ctx.stroke(); ctx.setLineDash([]);
+        }
+    }
+}
+
+// ----------------------------------------------------
+// ГЕНЕРАЦИЯ БЕЗОПАСНОГО И СКРЫТОГО IFRAME
+// ----------------------------------------------------
 function generateEmbedCode() {
-    if(questionsDB.length === 0) return alert("Добавьте вопросы!");
-    
+    if(questionsDB.length === 0) {
+        alert("Пожалуйста, добавьте вопросы во вкладке '3. ВОПРОСЫ'!"); return;
+    }
+
+    let cleanLevels = levels.map(l => {
+        let pathData = typeof l.path === 'string' ? JSON.parse(l.path) : l.path;
+        return { bg: l.bg, path: pathData, qCount: l.qCount };
+    });
+
     const config = {
-        uiColor: document.getElementById('cfg-ui-color').value,
-        fontFamily: document.getElementById('cfg-font').value,
-        lives: 3, timerStart: 120,
-        levels: levelsData,
-        questions: questionsDB
+        lang: document.getElementById('cfg-lang').value, lives: parseInt(document.getElementById('cfg-lives').value) || 3, 
+        timerStart: parseInt(document.getElementById('cfg-time').value) || 120, neonEnabled: document.getElementById('cfg-neon').checked, 
+        fontFamily: document.getElementById('cfg-font').value, uiColor: document.getElementById('cfg-ui-color').value, 
+        progColor: document.getElementById('cfg-prog-color').value, qColor: document.getElementById('cfg-q-color').value, 
+        qSize: document.getElementById('cfg-q-size').value + "px", aColor: document.getElementById('cfg-a-color').value, 
+        aSize: document.getElementById('cfg-a-size').value + "px", aBg: document.getElementById('cfg-a-bg').value, 
+        imgShooter: document.getElementById('cfg-img-shooter').value, imgMask: document.getElementById('cfg-img-mask').value,
+        imgHeart: document.getElementById('cfg-img-heart').value, imgClock: document.getElementById('cfg-img-clock').value,
+        levels: cleanLevels, questions: questionsDB
     };
 
-    const str = JSON.stringify(config);
-    const b64 = btoa(unescape(encodeURIComponent(str))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
-    const url = window.location.href.split('#')[0] + "#play=" + b64;
+    // 1. Идеальное кодирование в URL-Safe Base64 (без символов +, / и =)
+    let configStr = JSON.stringify(config);
+    let utf8Bytes = encodeURIComponent(configStr).replace(/%([0-9A-F]{2})/g, function(match, p1) { return String.fromCharCode('0x' + p1); });
+    let configB64 = btoa(utf8Bytes).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
     
-    document.getElementById('export-code').value = `<iframe src="${url}" width="100%" height="600" style="border:none; border-radius:10px;" allowfullscreen></iframe>`;
+    // 2. Берем текущую ссылку редактора
+    let editorUrl = window.location.href.split('#')[0] + '#play=';
+    
+    // 3. Прячем ваш адрес GitHub через HTML-сущности (маскировка)
+    let hiddenUrl = editorUrl.split('').map(c => '&#' + c.charCodeAt(0) + ';').join('');
+    
+    // 4. Склеиваем
+    let finalSrc = hiddenUrl + configB64;
+
+    let embedCode = `<iframe src="${finalSrc}" width="100%" height="600" style="border:none; border-radius: 10px;" allowfullscreen></iframe>`;
+
+    let copyText = document.getElementById("export-code");
+    copyText.value = embedCode;
+    copyText.scrollIntoView({behavior: "smooth"});
+    
+    alert("✅ Iframe-код успешно сгенерирован!\n\nОшибок с Genially больше не будет, код на 100% защищен от искажений.");
 }
 
 function copyToClipboard() {
-    const c = document.getElementById('export-code');
-    c.select(); document.execCommand('copy');
-    alert("Код скопирован!");
+    let copyText = document.getElementById("export-code");
+    if(copyText.value === "") return alert("Сначала сгенерируйте код!");
+    copyText.select(); document.execCommand("copy"); 
+    alert("📋 Код скопирован! Теперь вставьте его в Genially.");
 }
-
-// --- СТАРТ ПРИ ЗАГРУЗКЕ ---
-window.onload = () => {
-    const hash = window.location.hash;
-    if(hash.startsWith('#play=')) {
-        document.getElementById('game-wrapper').style.display = 'block';
-        try {
-            let b64 = hash.substring(6).replace(/-/g, '+').replace(/_/g, '/');
-            while(b64.length % 4) b64 += '=';
-            const json = decodeURIComponent(escape(atob(b64)));
-            new GameCore(JSON.parse(json));
-        } catch(e) { console.error(e); }
-    } else {
-        document.getElementById('editor-ui').style.display = 'block';
-    }
-};
 </script>
 </body>
 </html>
