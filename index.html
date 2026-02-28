@@ -16,20 +16,22 @@
         body, html { margin: 0; padding: 0; background: var(--bg-dark); color: #ddd; font-family: 'Segoe UI', sans-serif; overflow-x: hidden; width: 100%; height: 100%; }
         
         /* EDITOR UI CSS */
-        #editor-ui { display: none; min-height: 100vh; overflow-y: auto; overflow-x: hidden; }
+        #editor-ui { display: none; min-height: 100vh; overflow-y: auto; overflow-x: hidden; display: flex; flex-direction: column; }
         header { display: flex; align-items: center; justify-content: space-between; padding: 15px 30px; background: #000; border-bottom: 2px solid var(--ui-color); box-shadow: 0 0 15px var(--ui-color); }
         .logo-container { display: flex; align-items: center; gap: 15px; }
         .logo-container img { height: 60px; filter: drop-shadow(0 0 10px var(--ui-color)); }
-        .logo-container h1 { margin: 0; font-family: 'Metamorphous', serif; color: #fff; text-shadow: 0 0 10px var(--ui-color); font-size: 22px; }
+        .logo-container h1 { margin: 0; font-family: 'Metamorphous', serif; color: #fff; text-shadow: 0 0 10px var(--ui-color); font-size: 20px; letter-spacing: 1px; }
         
         .tabs { display: flex; gap: 5px; padding: 0 30px; background: #000; }
         .tab-btn { background: #222; border: 1px solid #444; color: #aaa; padding: 12px 20px; cursor: pointer; border-radius: 8px 8px 0 0; font-family: 'Metamorphous', serif; font-size: 14px; font-weight: bold; }
         .tab-btn:hover { background: #333; color: #fff; }
         .tab-btn.active { background: var(--panel-bg); color: #ffe600; border-color: #ffe600; border-bottom: none; }
 
-        main { padding: 25px; background: var(--panel-bg); min-height: calc(100vh - 160px); }
+        main { padding: 25px; background: var(--panel-bg); flex-grow: 1; }
         .tab-content { display: none; max-width: 1100px; margin: 0 auto; }
         .tab-content.active { display: block; }
+
+        footer { text-align: center; padding: 20px; color: #888; font-size: 14px; font-family: 'Segoe UI', sans-serif; background: #000; border-top: 1px solid #333; }
 
         .form-group { margin-bottom: 15px; background: #222; padding: 15px; border-radius: 8px; border: 1px solid #333; }
         label { display: block; margin-bottom: 8px; color: #fff; font-weight: bold; font-size: 14px; }
@@ -129,8 +131,8 @@
 <div id="editor-ui">
     <header>
         <div class="logo-container">
-            <img src="https://img.genially.com/67961b32a116fb001568a75e/aa411ed1-1aef-4f00-a1a6-59b64d18dc7a.png">
-            <h1>MAZE TRAP: PRO ENGINE</h1>
+            <img src="https://img.genially.com/67961b32a116fb001568a75e/aa411ed1-1aef-4f00-a1a6-59b64d18dc7a.png" alt="English Bootcamp Logo">
+            <h1>Maze Trap Game Editor from English Bootcamp</h1>
         </div>
     </header>
 
@@ -312,16 +314,17 @@
 
         <div id="tab-export" class="tab-content">
             <div style="text-align: center; padding: 20px;">
-                <h2 style="color:var(--ui-color); font-size:28px;">Скрытая Iframe Ссылка для Genially</h2>
-                <p style="color:#aaa; max-width:700px; margin: 0 auto 20px;">
-                    Больше никаких гигантских кодов, которые Genially отторгает! Этот код математически прячет ссылку на ваш GitHub. <br><br><b>Важно:</b> просто загрузите этот редактор на свой GitHub один раз. В будущем просто копируйте сгенерированный код и вставляйте в Genially!
-                </p>
+                <h2 style="color:var(--ui-color); font-size:28px;">Iframe Ссылка для Genially</h2>
                 <button class="btn-main" style="width:100%; margin-bottom:15px; background:var(--ui-color); color:#000; font-size:20px;" onclick="generateEmbedCode()">⚙️ СГЕНЕРИРОВАТЬ IFRAME КОД</button>
-                <textarea id="export-code" placeholder="Здесь появится зашифрованный код..." readonly></textarea>
+                <textarea id="export-code" placeholder="Здесь появится сгенерированный код..." readonly></textarea>
                 <button class="btn-main" style="width:100%;" onclick="copyToClipboard()">📋 СКОПИРОВАТЬ КОД И ИДТИ В GENIALLY</button>
             </div>
         </div>
     </main>
+    
+    <footer>
+        &copy; Все права принадлежат Башлыковой Оксане Михайловне
+    </footer>
 
     <div id="bg-modal" class="modal">
         <div class="modal-content">
@@ -516,7 +519,7 @@ class GameCore {
         // Жесткая защита стартовых массивов
         this.balls = []; this.bullets = []; this.parts = []; this.queue = []; this.path = []; this.fworks = []; this.lightnings = [];
         
-        // Настройки физики (скорость берем из настроек)
+        // Настройки физики
         this.radius = 22; this.spacing = 44; 
         this.speed = this.cfg.speed || 1.2; 
         this.bulletSpeed = 24;
@@ -666,7 +669,6 @@ class GameCore {
             b.d+=this.speed; 
             if(b.d>=this.path.length-1) { this.over(this.t.errBalls, false); return; } 
             
-            // Идеальное чтение позиции, даже если шарик находится "в откате" (на точке старта)
             let idx = Math.floor(b.d); 
             if(idx < 0) idx = 0; 
             if(idx >= this.path.length) idx = this.path.length - 1;
@@ -745,7 +747,6 @@ class GameCore {
             this.combo++; if(this.combo>this.maxCombo)this.maxCombo=this.combo; const pts = 100 * this.combo; this.score += pts; this.scoreQ += pts; this.qDone++; 
             this.showFlash("COMBO x" + this.combo); AudioSys.correct(); 
             
-            // Идеальный откат без наслоения
             this.balls?.forEach(bl => bl.d -= 100); 
             this.showFlash("ROLLBACK!"); 
             
@@ -798,11 +799,11 @@ class GameCore {
             const last = this.path[this.path.length-1]; 
             if (this.ASSETS['center_mask'] && this.ASSETS['center_mask'].complete) { 
                 
-                // УМНАЯ ЗОЛОТАЯ МАСКА: Пульсирует за 150 пикселей (около 3-4 см) до бездны!
+                // УМНАЯ ЗОЛОТАЯ МАСКА: Пульсирует за 200 пикселей (около 4-5 см) до бездны!
                 let danger = false;
                 if(this.balls.length > 0) {
                     let leadingD = this.balls.reduce((max, b) => Math.max(max, b.d), 0);
-                    if (this.path.length - leadingD < 150) danger = true;
+                    if (this.path.length - leadingD < 200) danger = true;
                 }
                 
                 this.ctx.save(); 
@@ -876,7 +877,7 @@ window.onload = () => {
             `;
         }
     } else {
-        document.getElementById('editor-ui').style.display = 'block';
+        document.getElementById('editor-ui').style.display = 'flex';
         renderLevels(); updateQLevelSelect(); updatePreviewBgSelect();
     }
 };
