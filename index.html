@@ -68,7 +68,6 @@
         .preset-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 15px; }
         .preset-img { width: 100%; height: 200px; object-fit: cover; border-radius: 8px; cursor: pointer; border: 2px solid transparent; transition: 0.2s; }
         .preset-img:hover { border-color: var(--ui-color); transform: scale(1.05); }
-        #export-code { width: 100%; height: 250px; background: #000; color: #00ff66; font-family: monospace; border: 1px solid #555; padding: 15px; box-sizing: border-box; font-size: 13px; margin-bottom: 20px; border-radius: 8px; resize: vertical; word-wrap: break-word; }
 
         /* GAME UI CSS (MAZE 14 STYLE) */
         #game-wrapper { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #000; z-index: 99999; overflow: hidden; user-select: none; font-family: var(--game-font); font-weight: bold; }
@@ -143,7 +142,7 @@
         <button class="tab-btn" onclick="openTab('tab-levels', this)">2. УРОВНИ</button>
         <button class="tab-btn" onclick="openTab('tab-questions', this)">3. ВОПРОСЫ</button>
         <button class="tab-btn" onclick="openTab('tab-preview', this)">4. ПРЕДПРОСМОТР</button>
-        <button class="tab-btn" onclick="openTab('tab-export', this)" style="color:#39ff14;">5. ЭКСПОРТ (IFRAME)</button>
+        <button class="tab-btn" onclick="openTab('tab-export', this)" style="color:#39ff14;">5. ЭКСПОРТ И ССЫЛКИ</button>
     </div>
 
     <main>
@@ -316,10 +315,22 @@
 
         <div id="tab-export" class="tab-content">
             <div style="text-align: center; padding: 20px;">
-                <h2 style="color:var(--ui-color); font-size:28px;">Iframe Ссылка для Genially</h2>
-                <button class="btn-main" style="width:100%; margin-bottom:15px; background:var(--ui-color); color:#000; font-size:20px;" onclick="generateEmbedCode()">⚙️ СГЕНЕРИРОВАТЬ IFRAME КОД</button>
-                <textarea id="export-code" placeholder="Здесь появится сгенерированный код..." readonly></textarea>
-                <button class="btn-main" style="width:100%;" onclick="copyToClipboard()">📋 СКОПИРОВАТЬ КОД И ИДТИ В GENIALLY</button>
+                <h2 style="color:var(--ui-color); font-size:28px;">ЭКСПОРТ: Iframe и Ссылки</h2>
+                <button class="btn-main" style="width:100%; margin-bottom:20px; background:var(--ui-color); color:#000; font-size:20px;" onclick="generateEmbedCode()">⚙️ СГЕНЕРИРОВАТЬ КОДЫ</button>
+                
+                <div class="grid-2">
+                    <div class="form-group" style="text-align:left;">
+                        <label style="color:var(--q-color); font-size:16px;">Код для вставки в Genially:</label>
+                        <textarea id="export-code" placeholder="Iframe код появится здесь..." readonly style="height: 120px; font-family: monospace; font-size: 13px; resize: none; margin-bottom:10px;"></textarea>
+                        <button class="btn-main" style="width:100%; font-size: 14px;" onclick="copyToClipboard('export-code')">📋 СКОПИРОВАТЬ IFRAME</button>
+                    </div>
+                    
+                    <div class="form-group" style="text-align:left;">
+                        <label style="color:var(--ui-color); font-size:16px;">Прямая ссылка (для браузера):</label>
+                        <textarea id="export-link" placeholder="Прямая ссылка появится здесь..." readonly style="height: 120px; font-family: monospace; font-size: 13px; resize: none; margin-bottom:10px;"></textarea>
+                        <button class="btn-main" style="width:100%; font-size: 14px;" onclick="copyToClipboard('export-link')">🔗 СКОПИРОВАТЬ ССЫЛКУ</button>
+                    </div>
+                </div>
             </div>
         </div>
     </main>
@@ -1033,7 +1044,7 @@ function drawPreviewPath() {
 }
 
 // ----------------------------------------------------
-// ГЕНЕРАЦИЯ БЕЗОПАСНОГО И СКРЫТОГО IFRAME
+// ГЕНЕРАЦИЯ БЕЗОПАСНОГО И СКРЫТОГО IFRAME И ССЫЛКИ
 // ----------------------------------------------------
 function generateEmbedCode() {
     if(questionsDB.length === 0) {
@@ -1060,24 +1071,29 @@ function generateEmbedCode() {
     let configStr = JSON.stringify(config);
     let utf8Bytes = encodeURIComponent(configStr).replace(/%([0-9A-F]{2})/g, function(match, p1) { return String.fromCharCode('0x' + p1); });
     let configB64 = btoa(utf8Bytes).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
-    let editorUrl = window.location.href.split('#')[0] + '#play=';
-    let hiddenUrl = editorUrl.split('').map(c => '&#' + c.charCodeAt(0) + ';').join('');
-    let finalSrc = hiddenUrl + configB64;
-
-    let embedCode = `<iframe src="${finalSrc}" width="100%" height="600" style="border:none; border-radius: 10px;" allowfullscreen></iframe>`;
-
-    let copyText = document.getElementById("export-code");
-    copyText.value = embedCode;
-    copyText.scrollIntoView({behavior: "smooth"});
     
-    alert("✅ Iframe-код успешно сгенерирован!\n\nИдеальная интеграция завершена.");
+    let editorUrl = window.location.href.split('#')[0] + '#play=';
+    
+    // Скрытая ссылка для Iframe (Genially)
+    let hiddenUrl = editorUrl.split('').map(c => '&#' + c.charCodeAt(0) + ';').join('');
+    let finalIframeSrc = hiddenUrl + configB64;
+    
+    // Прямая ссылка для браузера (Обычная)
+    let directUrl = editorUrl + configB64;
+
+    let embedCode = `<iframe src="${finalIframeSrc}" width="100%" height="600" style="border:none; border-radius: 10px;" allowfullscreen></iframe>`;
+
+    document.getElementById("export-code").value = embedCode;
+    document.getElementById("export-link").value = directUrl;
+    
+    alert("✅ Ссылки успешно сгенерированы!");
 }
 
-function copyToClipboard() {
-    let copyText = document.getElementById("export-code");
+function copyToClipboard(elementId) {
+    let copyText = document.getElementById(elementId);
     if(copyText.value === "") return alert("Сначала сгенерируйте код!");
     copyText.select(); document.execCommand("copy"); 
-    alert("📋 Код скопирован! Теперь вставьте его в Genially.");
+    alert(elementId === 'export-code' ? "📋 Iframe скопирован! Вставьте в Genially." : "🔗 Прямая ссылка скопирована! Отправьте её ученикам.");
 }
 </script>
 </body>
